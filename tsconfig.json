@@ -1,0 +1,80 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "ES2022",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "manual_typings"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "@angular/*": [
+        "./node_modules/@angular/*"
+      ],
+      "lodash/*": [
+        "node_modules/@types/lodash-es/*"
+      ],
+      "@zajsf/core": [
+        "dist/@zajsf/core"
+      ],
+      "@zajsf/core/*": [
+        "dist/@zajsf/core/*"
+      ],
+      "@zajsf/bootstrap3": [
+        "dist/@zajsf/bootstrap3"
+      ],
+      "@zajsf/bootstrap3/*": [
+        "dist/@zajsf/bootstrap3/*"
+      ],
+      "@zajsf/bootstrap4": [
+        "dist/@zajsf/bootstrap4"
+      ],
+      "@zajsf/bootstrap4/*": [
+        "dist/@zajsf/bootstrap4/*"
+      ],
+      "@zajsf/bootstrap5": [
+        "dist/@zajsf/bootstrap5"
+      ],
+      "@zajsf/bootstrap5/*": [
+        "dist/@zajsf/bootstrap5/*"
+      ],
+      "@zajsf/material": [
+        "dist/@zajsf/material"
+      ],
+      "@zajsf/material/*": [
+        "dist/@zajsf/material/*"
+      ],
+      "@zajsf/daisyui": [
+        "dist/@zajsf/daisyui"
+      ],
+      "@zajsf/daisyui/*": [
+        "dist/@zajsf/daisyui/*"
+      ],
+      "@zajsf/cssframework": [
+        "dist/@zajsf/cssframework"
+      ],
+      "@zajsf/cssframework/*": [
+        "dist/@zajsf/cssframework/*"
+      ]
+    },
+    "useDefineForClassFields": false
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  }
+}
