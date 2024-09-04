@@ -25,14 +25,14 @@ jobs:
     - name: version core
       uses: nyaa8/package-version@v1
       with:
-       path: './dist/@zajsf/core/package.json'  
+       path: './dist/@ng-formworks/core/package.json'  
     
     - name: dist core versioned
       uses: s0/git-publish-subdir-action@develop
       env:
         REPO: self
         BRANCH: dist_core_v${{ env.PACKAGE_VERSION }}
-        FOLDER: ./dist/@zajsf/core
+        FOLDER: ./dist/@ng-formworks/core
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: dist core
@@ -40,20 +40,20 @@ jobs:
       env:
         REPO: self
         BRANCH: dist_core
-        FOLDER: ./dist/@zajsf/core
+        FOLDER: ./dist/@ng-formworks/core
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
 
     - name: version bootstrap3
       uses: nyaa8/package-version@v1
       with:
-       path: './dist/@zajsf/bootstrap3/package.json'    
+       path: './dist/@ng-formworks/bootstrap3/package.json'    
   
     - name: dist bootstrap3 versioned
       uses: s0/git-publish-subdir-action@develop
       env:
         REPO: self
         BRANCH: dist_bootstrap3_v${{ env.PACKAGE_VERSION }}
-        FOLDER: ./dist/@zajsf/bootstrap3
+        FOLDER: ./dist/@ng-formworks/bootstrap3
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
     - name: dist bootstrap3
@@ -61,13 +61,13 @@ jobs:
       env:
         REPO: self
         BRANCH: dist_bootstrap3
-        FOLDER: ./dist/@zajsf/bootstrap3
+        FOLDER: ./dist/@ng-formworks/bootstrap3
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
 
     - name: version bootstrap4
       uses: nyaa8/package-version@v1
       with:
-       path: './dist/@zajsf/bootstrap4/package.json'          
+       path: './dist/@ng-formworks/bootstrap4/package.json'          
 
    
     - name: dist_bootstrap4 versioned
@@ -75,7 +75,7 @@ jobs:
       env:
         REPO: self
         BRANCH: dist_bootstrap4_v${{ env.PACKAGE_VERSION }}
-        FOLDER: ./dist/@zajsf/bootstrap4
+        FOLDER: ./dist/@ng-formworks/bootstrap4
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: dist_bootstrap4
@@ -83,21 +83,21 @@ jobs:
       env:
         REPO: self
         BRANCH: dist_bootstrap4
-        FOLDER: ./dist/@zajsf/bootstrap4
+        FOLDER: ./dist/@ng-formworks/bootstrap4
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
         
 
     - name: version material
       uses: nyaa8/package-version@v1
       with:
-       path: './dist/@zajsf/material/package.json'  
+       path: './dist/@ng-formworks/material/package.json'  
 
     - name: dist material versioned
       uses: s0/git-publish-subdir-action@develop
       env:
         REPO: self
         BRANCH: dist_material_v${{ env.PACKAGE_VERSION }}
-        FOLDER: ./dist/@zajsf/material
+        FOLDER: ./dist/@ng-formworks/material
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: dist material
@@ -105,7 +105,7 @@ jobs:
       env:
         REPO: self
         BRANCH: dist_material
-        FOLDER: ./dist/@zajsf/material
+        FOLDER: ./dist/@ng-formworks/material
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
    
 

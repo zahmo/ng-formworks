@@ -57,18 +57,18 @@
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "options": {
-                      "buildTarget": "demo:build"
+                        "buildTarget": "demo:build"
                     },
                     "configurations": {
                         "production": {
-                          "buildTarget": "demo:build:production"
+                            "buildTarget": "demo:build:production"
                         }
                     }
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                      "buildTarget": "demo:build"
+                        "buildTarget": "demo:build"
                     }
                 },
                 "test": {
@@ -108,136 +108,136 @@
                 }
             }
         },
-        "@zajsf/core": {
-            "root": "projects/zajsf-core",
-            "sourceRoot": "projects/zajsf-core/src",
+        "@ng-formworks/core": {
+            "root": "projects/ng-formworks-core",
+            "sourceRoot": "projects/ng-formworks-core/src",
             "projectType": "library",
             "prefix": "",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
                     "options": {
-                        "tsConfig": "projects/zajsf-core/tsconfig.lib.json",
-                        "project": "projects/zajsf-core/ng-package.json"
+                        "tsConfig": "projects/ng-formworks-core/tsconfig.lib.json",
+                        "project": "projects/ng-formworks-core/ng-package.json"
                     },
                     "configurations": {
                         "production": {
-                            "tsConfig": "projects/zajsf-core/tsconfig.lib.prod.json"
+                            "tsConfig": "projects/ng-formworks-core/tsconfig.lib.prod.json"
                         }
                     }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "main": "projects/zajsf-core/src/test.ts",
-                        "tsConfig": "projects/zajsf-core/tsconfig.spec.json",
-                        "karmaConfig": "projects/zajsf-core/karma.conf.js"
+                        "main": "projects/ng-formworks-core/src/test.ts",
+                        "tsConfig": "projects/ng-formworks-core/tsconfig.spec.json",
+                        "karmaConfig": "projects/ng-formworks-core/karma.conf.js"
                     }
                 }
             }
         },
-        "@zajsf/bootstrap4": {
+        "@ng-formworks/bootstrap4": {
             "projectType": "library",
-            "root": "projects/zajsf-bootstrap4",
-            "sourceRoot": "projects/zajsf-bootstrap4/src",
+            "root": "projects/ng-formworks-bootstrap4",
+            "sourceRoot": "projects/ng-formworks-bootstrap4/src",
             "prefix": "",
             "architect": {
 
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
                     "options": {
-                        "tsConfig": "projects/zajsf-bootstrap4/tsconfig.lib.json",
-                        "project": "projects/zajsf-bootstrap4/ng-package.json"
+                        "tsConfig": "projects/ng-formworks-bootstrap4/tsconfig.lib.json",
+                        "project": "projects/ng-formworks-bootstrap4/ng-package.json"
                     },
                     "configurations": {
                         "production": {
-                            "tsConfig": "projects/zajsf-bootstrap4/tsconfig.lib.prod.json"
+                            "tsConfig": "projects/ng-formworks-bootstrap4/tsconfig.lib.prod.json"
                         }
                     }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "main": "projects/zajsf-bootstrap4/src/test.ts",
-                        "tsConfig": "projects/zajsf-bootstrap4/tsconfig.spec.json",
-                        "karmaConfig": "projects/zajsf-bootstrap4/karma.conf.js"
+                        "main": "projects/ng-formworks-bootstrap4/src/test.ts",
+                        "tsConfig": "projects/ng-formworks-bootstrap4/tsconfig.spec.json",
+                        "karmaConfig": "projects/ng-formworks-bootstrap4/karma.conf.js"
                     }
                 }
             }
         },
-        "@zajsf/bootstrap3": {
+        "@ng-formworks/bootstrap3": {
             "projectType": "library",
-            "root": "projects/zajsf-bootstrap3",
-            "sourceRoot": "projects/zajsf-bootstrap3/src",
+            "root": "projects/ng-formworks-bootstrap3",
+            "sourceRoot": "projects/ng-formworks-bootstrap3/src",
             "prefix": "",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
                     "options": {
-                        "tsConfig": "projects/zajsf-bootstrap3/tsconfig.lib.json",
-                        "project": "projects/zajsf-bootstrap3/ng-package.json"
+                        "tsConfig": "projects/ng-formworks-bootstrap3/tsconfig.lib.json",
+                        "project": "projects/ng-formworks-bootstrap3/ng-package.json"
                     },
                     "configurations": {
                         "production": {
-                            "tsConfig": "projects/zajsf-bootstrap3/tsconfig.lib.prod.json"
+                            "tsConfig": "projects/ng-formworks-bootstrap3/tsconfig.lib.prod.json"
                         }
                     }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "main": "projects/zajsf-bootstrap3/src/test.ts",
-                        "tsConfig": "projects/zajsf-bootstrap3/tsconfig.spec.json",
-                        "karmaConfig": "projects/zajsf-bootstrap3/karma.conf.js"
+                        "main": "projects/ng-formworks-bootstrap3/src/test.ts",
+                        "tsConfig": "projects/ng-formworks-bootstrap3/tsconfig.spec.json",
+                        "karmaConfig": "projects/ng-formworks-bootstrap3/karma.conf.js"
                     }
                 }
             }
         },
-        "@zajsf/material": {
+        "@ng-formworks/material": {
             "projectType": "library",
-            "root": "projects/zajsf-material",
-            "sourceRoot": "projects/zajsf-material/src",
+            "root": "projects/ng-formworks-material",
+            "sourceRoot": "projects/ng-formworks-material/src",
             "prefix": "",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
                     "options": {
-                        "tsConfig": "projects/zajsf-material/tsconfig.lib.json",
-                        "project": "projects/zajsf-material/ng-package.json"
+                        "tsConfig": "projects/ng-formworks-material/tsconfig.lib.json",
+                        "project": "projects/ng-formworks-material/ng-package.json"
                     },
                     "configurations": {
                         "production": {
-                            "tsConfig": "projects/zajsf-material/tsconfig.lib.prod.json"
+                            "tsConfig": "projects/ng-formworks-material/tsconfig.lib.prod.json"
                         }
                     }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "main": "projects/zajsf-material/src/test.ts",
-                        "tsConfig": "projects/zajsf-material/tsconfig.spec.json",
-                        "karmaConfig": "projects/zajsf-material/karma.conf.js"
+                        "main": "projects/ng-formworks-material/src/test.ts",
+                        "tsConfig": "projects/ng-formworks-material/tsconfig.spec.json",
+                        "karmaConfig": "projects/ng-formworks-material/karma.conf.js"
                     }
                 }
             }
         },
-        "@zajsf/daisyui": {
+        "@ng-formworks/daisyui": {
             "projectType": "library",
-            "root": "projects/zajsf-daisyui",
-            "sourceRoot": "projects/zajsf-daisyui/src",
+            "root": "projects/ng-formworks-daisyui",
+            "sourceRoot": "projects/ng-formworks-daisyui/src",
             "prefix": "lib",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
                     "options": {
-                        "project": "projects/zajsf-daisyui/ng-package.json"
+                        "project": "projects/ng-formworks-daisyui/ng-package.json"
                     },
                     "configurations": {
                         "production": {
-                            "tsConfig": "projects/zajsf-daisyui/tsconfig.lib.prod.json"
+                            "tsConfig": "projects/ng-formworks-daisyui/tsconfig.lib.prod.json"
                         },
                         "development": {
-                            "tsConfig": "projects/zajsf-daisyui/tsconfig.lib.json"
+                            "tsConfig": "projects/ng-formworks-daisyui/tsconfig.lib.json"
                         }
                     },
                     "defaultConfiguration": "production"
@@ -245,7 +245,7 @@
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "tsConfig": "projects/zajsf-daisyui/tsconfig.spec.json",
+                        "tsConfig": "projects/ng-formworks-daisyui/tsconfig.spec.json",
                         "polyfills": [
                             "zone.js",
                             "zone.js/testing"
@@ -254,23 +254,23 @@
                 }
             }
         },
-        "@zajsf/cssframework": {
+        "@ng-formworks/cssframework": {
             "projectType": "library",
-            "root": "projects/zajsf-cssframework",
-            "sourceRoot": "projects/zajsf-cssframework/src",
+            "root": "projects/ng-formworks-cssframework",
+            "sourceRoot": "projects/ng-formworks-cssframework/src",
             "prefix": "lib",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
                     "options": {
-                        "project": "projects/zajsf-cssframework/ng-package.json"
+                        "project": "projects/ng-formworks-cssframework/ng-package.json"
                     },
                     "configurations": {
                         "production": {
-                            "tsConfig": "projects/zajsf-cssframework/tsconfig.lib.prod.json"
+                            "tsConfig": "projects/ng-formworks-cssframework/tsconfig.lib.prod.json"
                         },
                         "development": {
-                            "tsConfig": "projects/zajsf-cssframework/tsconfig.lib.json"
+                            "tsConfig": "projects/ng-formworks-cssframework/tsconfig.lib.json"
                         }
                     },
                     "defaultConfiguration": "production"
@@ -278,7 +278,7 @@
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "tsConfig": "projects/zajsf-cssframework/tsconfig.spec.json",
+                        "tsConfig": "projects/ng-formworks-cssframework/tsconfig.spec.json",
                         "polyfills": [
                             "zone.js",
                             "zone.js/testing"
@@ -287,23 +287,23 @@
                 }
             }
         },
-        "@zajsf/bootstrap5": {
+        "@ng-formworks/bootstrap5": {
             "projectType": "library",
-            "root": "projects/zajsf-bootstrap5",
-            "sourceRoot": "projects/zajsf-bootstrap5/src",
+            "root": "projects/ng-formworks-bootstrap5",
+            "sourceRoot": "projects/ng-formworks-bootstrap5/src",
             "prefix": "lib",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
                     "options": {
-                        "project": "projects/zajsf-bootstrap5/ng-package.json"
+                        "project": "projects/ng-formworks-bootstrap5/ng-package.json"
                     },
                     "configurations": {
                         "production": {
-                            "tsConfig": "projects/zajsf-bootstrap5/tsconfig.lib.prod.json"
+                            "tsConfig": "projects/ng-formworks-bootstrap5/tsconfig.lib.prod.json"
                         },
                         "development": {
-                            "tsConfig": "projects/zajsf-bootstrap5/tsconfig.lib.json"
+                            "tsConfig": "projects/ng-formworks-bootstrap5/tsconfig.lib.json"
                         }
                     },
                     "defaultConfiguration": "production"
@@ -311,7 +311,7 @@
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "tsConfig": "projects/zajsf-bootstrap5/tsconfig.spec.json",
+                        "tsConfig": "projects/ng-formworks-bootstrap5/tsconfig.spec.json",
                         "polyfills": [
                             "zone.js",
                             "zone.js/testing"

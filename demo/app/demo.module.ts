@@ -11,16 +11,16 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule, REMOVE_STYLES_ON_COMPONENT_DESTROY } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { Bootstrap3FrameworkModule } from '@zajsf/bootstrap3';
-import { Bootstrap4FrameworkModule } from '@zajsf/bootstrap4';
-import { JsonSchemaFormModule } from '@zajsf/core';
+import { Bootstrap3FrameworkModule } from '@ng-formworks/bootstrap3';
+import { Bootstrap4FrameworkModule } from '@ng-formworks/bootstrap4';
+import { JsonSchemaFormModule } from '@ng-formworks/core';
 
 
-import { DUIOPTIONS, DaisyUIFrameworkModule } from '@zajsf/daisyui';
-import { MaterialDesignFrameworkModule } from '@zajsf/material';
+import { DUIOPTIONS, DaisyUIFrameworkModule } from '@ng-formworks/daisyui';
+import { MaterialDesignFrameworkModule } from '@ng-formworks/material';
 
-import { Bootstrap5FrameworkModule } from '@zajsf/bootstrap5';
-import { CssFrameworkModule } from '@zajsf/cssframework';
+import { Bootstrap5FrameworkModule } from '@ng-formworks/bootstrap5';
+import { CssFrameworkModule } from '@ng-formworks/cssframework';
 import { environment } from '../environments/environment';
 import { AceEditorDirective } from './ace-editor.directive';
 import { DemoRootComponent } from './demo-root.component';

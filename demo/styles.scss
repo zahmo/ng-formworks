@@ -123,5 +123,5 @@ $light-theme: mat.define-light-theme(( color: ( primary: mat.define-palette(mat.
     @include mat.button-color($demo-app-theme);
 }
 
-@import '../projects/zajsf-material/src/lib/material-design-themes.scss';
-@import '../projects/zajsf-material/src/lib/flexlayout-replacement-styles.scss';
+@import '../projects/ng-formworks-material/src/lib/material-design-themes.scss';
+@import '../projects/ng-formworks-material/src/lib/flexlayout-replacement-styles.scss';

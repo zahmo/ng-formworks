@@ -1,15 +1,15 @@
-# Contributing to zajsf
+# Contributing to ng-formworks
 
-zajsf is an open project and welcomes contributions. These guidelines are provided to help you understand how the project works and to make contributing smooth and fun for everybody involved.
+ng-formworks is an open project and welcomes contributions. These guidelines are provided to help you understand how the project works and to make contributing smooth and fun for everybody involved.
 
 There are two main forms of contribution: reporting issues and performing code changes.
 
 ## Reporting Issues
 
-If you find a problem with zajsf, report it using [GitHub issues](https://github.com/zahmo/zajsf/issues/new).
+If you find a problem with ng-formworks, report it using [GitHub issues](https://github.com/zahmo/ng-formworks/issues/new).
 
 Before reporting a new issue, please take a moment to check whether it has already been reported
-[here](https://github.com/zahmo/zajsf/issues). If this is the case, please:
+[here](https://github.com/zahmo/ng-formworks/issues). If this is the case, please:
 
 - Read all the comments to confirm that it's the same issue you're having.
 - Refrain from adding "same thing here" or "+1" comments. Just hit the
@@ -43,7 +43,7 @@ To send your code change, use GitHub pull requests. The workflow is as follows:
 
   1. Publish the branch and create a pull request.
 
-  1. zajsf developers will review your change and possibly point out issues.
+  1. ng-formworks developers will review your change and possibly point out issues.
      Adapt the code under their guidance until all issues are resolved.
 
   1. Finally, the pull request will get merged or rejected.
@@ -58,15 +58,15 @@ requests.
 Let's first generate all the bundles we need to start the demo:
 
 ```bash
-$ cd zajsf
+$ cd ng-formworks
 $ yarn install or npm install
 $ yarn start
 ```
 
 You can stop the demo application.
 The tricky part now is to run concurrently both the demo application & the library in watch mode.
-So, first choose which library you want to change then run `$ ng build @zajsf/core --watch` for example
-to build in watch mode the `@zajsf/core`.
+So, first choose which library you want to change then run `$ ng build @ng-formworks/core --watch` for example
+to build in watch mode the `@ng-formworks/core`.
 Now let's start the demo application in watch mode too. So, open a new terminal and run `$ ng serve` and there you go.
 This method is tricky but it works perfectly in all environments (I tried other methods like npm-run-all
 or concurrently packages but angular-cli build doesn't restart after a failed build).
@@ -128,13 +128,13 @@ The scope should be the name of the npm package affected (as perceived by the pe
 
 The following is the list of supported scopes:
 
-* **zajsf/core**
-* **zajsf/cssfw**
-* **zajsf/bs3**
-* **zajsf/bs4**
-* **zajsf/bs5**
-* **zajsf/daisyui**
-* **zajsf/material**
+* **ng-formworks/core**
+* **ng-formworks/cssfw**
+* **ng-formworks/bs3**
+* **ng-formworks/bs4**
+* **ng-formworks/bs5**
+* **ng-formworks/daisyui**
+* **ng-formworks/material**
 * **locales**
 * **demo**
 * ...

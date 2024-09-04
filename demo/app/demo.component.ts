@@ -4,7 +4,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Framework, FrameworkLibraryService, JsonPointer } from '@zajsf/core';
+import { Framework, FrameworkLibraryService, JsonPointer } from '@ng-formworks/core';
 import { Examples } from './example-schemas.model';
 
 @Component({

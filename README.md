@@ -1,25 +1,22 @@
 
 
-# ZAJSF (Z Angular JSON Schema Form)
+# ng-formworks
 
+This project is a continuation of [hamzahamidi/ajsf](https://github.com/hamzahamidi/ajsf) and [dschnelldavis/Angular2-json-schema-form](https://github.com/dschnelldavis/angular2-json-schema-form) and is not affiliated with any organization.
 
-This fork was created for anyone needing to use angular 15+ in their project.
-
+ng-formworks targets angular 15+ and also adds extra frameworks and theming support
 
 [hamzahamidi/ajsf](https://github.com/hamzahamidi/ajsf) can be used for angular 14 and below
-
-**N.B:** For Angular6-json-schema-form please check [this documentation](https://github.com/hamzahamidi/ajsf/tree/angular6-json-schema-form).
 
 <p  align="center">
 
 
 <a  href="https://angular.io/"><img  src="https://img.shields.io/badge/angular-15,_16,_17-red.svg?logo=Angular&logoColor=red&labelColor=white&style=plastic"  alt="Angular Versions"></a>
-<a  href="https://github.com/zahmo/zajsf/actions?query=workflow%3ACI+branch%3Amain"><img  src="https://github.com/zahmo/zajsf/workflows/CI/badge.svg"  alt="CI Status"></a> <a  href="https://www.npmjs.com/package/@zajsf/core"><img  src="https://img.shields.io/npm/dm/@zajsf/core.svg?style=plastic"  alt="npm number of downloads"></a><a  href="https://github.com/zahmo/zajsf/blob/master/LICENSE"><img  src="https://img.shields.io/github/license/zahmo/zajsf.svg?style=social"  alt="LICENSE IMT"></a><a  href="https://app.netlify.com/sites/zajsf/deploys"><img  src="https://api.netlify.com/api/v1/badges/6c5b5a1d-db7c-4d0e-8ac1-a4840d8812f0/deploy-status"  alt="Netlify Status"></a>
+<a  href="https://github.com/zahmo/ng-formworks/actions?query=workflow%3ACI+branch%3Amain"><img  src="https://github.com/zahmo/ng-formworks/workflows/CI/badge.svg"  alt="CI Status"></a> <a  href="https://www.npmjs.com/package/@ng-formworks/core"><img  src="https://img.shields.io/npm/dm/@ng-formworks/core.svg?style=plastic"  alt="npm number of downloads"></a><a  href="https://github.com/zahmo/ng-formworks/blob/master/LICENSE"><img  src="https://img.shields.io/github/license/zahmo/ng-formworks.svg?style=social"  alt="LICENSE IMT"></a><a  href="https://app.netlify.com/sites/ng-formworks/deploys"><img  src="https://api.netlify.com/api/v1/badges/6c5b5a1d-db7c-4d0e-8ac1-a4840d8812f0/deploy-status"  alt="Netlify Status"></a>
 
 
 </p>
 
-Note: This project is a continuation to [dschnelldavis/Angular2-json-schema-form](https://github.com/dschnelldavis/angular2-json-schema-form) and is not affiliated with any organization.
 
 A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, and mostly API compatible with:
 
@@ -35,35 +32,35 @@ A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, an
 ## Versions
 
 
-| angular | zajsf |
+| angular | ng-formworks |
 |--|--|
-| 15.x.x |0.8.x|
+| 15.x.x |15.x.x|
 | 16.x.x |16.x.x|
 | 17.x.x |17.x.x|
 
 
 ## Packages
 
-* [`@zajsf/core`][gh_core_project] [![npm version][npm_core_badge]][npm_core_ver][![npm RC version][npm_core_badge_alpha]][npm_core_ver_alpha]
+* [`@ng-formworks/core`][gh_core_project] [![npm version][npm_core_badge]][npm_core_ver][![npm RC version][npm_core_badge_alpha]][npm_core_ver_alpha]
 
-* [`@zajsf/cssframework`][gh_cssframework_project] [![npm version][npm_cssframework_badge]][npm_cssframework_ver][![npm RC version][npm_cssframework_badge_alpha]][npm_cssframework_ver_alpha]
+* [`@ng-formworks/cssframework`][gh_cssframework_project] [![npm version][npm_cssframework_badge]][npm_cssframework_ver][![npm RC version][npm_cssframework_badge_alpha]][npm_cssframework_ver_alpha]
 
-* [`@zajsf/bootstrap3`][gh_bootstrap3_project] [![npm version][npm_bootstrap3_badge]][npm_bootstrap3_ver][![npm RC version][npm_bootstrap3_badge_alpha]][npm_bootstrap3_ver_alpha]
+* [`@ng-formworks/bootstrap3`][gh_bootstrap3_project] [![npm version][npm_bootstrap3_badge]][npm_bootstrap3_ver][![npm RC version][npm_bootstrap3_badge_alpha]][npm_bootstrap3_ver_alpha]
 
-* [`@zajsf/bootstrap4`][gh_bootstrap4_project] [![npm version][npm_bootstrap4_badge]][npm_bootstrap4_ver][![npm RC version][npm_bootstrap4_badge_alpha]][npm_bootstrap4_ver_alpha]
-
-
-* [`@zajsf/bootstrap5`][gh_bootstrap5_project] [![npm version][npm_bootstrap5_badge]][npm_bootstrap5_ver][![npm RC version][npm_bootstrap5_badge_alpha]][npm_bootstrap5_ver_alpha]
+* [`@ng-formworks/bootstrap4`][gh_bootstrap4_project] [![npm version][npm_bootstrap4_badge]][npm_bootstrap4_ver][![npm RC version][npm_bootstrap4_badge_alpha]][npm_bootstrap4_ver_alpha]
 
 
-* [`@zajsf/daisyui`][gh_daisyui_project] [![npm version][npm_daisyui_badge]][npm_daisyui_ver][![npm RC version][npm_daisyui_badge_alpha]][npm_daisyui_ver_alpha]
+* [`@ng-formworks/bootstrap5`][gh_bootstrap5_project] [![npm version][npm_bootstrap5_badge]][npm_bootstrap5_ver][![npm RC version][npm_bootstrap5_badge_alpha]][npm_bootstrap5_ver_alpha]
 
 
-* [`@zajsf/material`][gh_material_project] [![npm version][npm_material_badge]][npm_material_ver][![npm RC version][npm_material_badge_alpha]][npm_material_ver_alpha]
+* [`@ng-formworks/daisyui`][gh_daisyui_project] [![npm version][npm_daisyui_badge]][npm_daisyui_ver][![npm RC version][npm_daisyui_badge_alpha]][npm_daisyui_ver_alpha]
+
+
+* [`@ng-formworks/material`][gh_material_project] [![npm version][npm_material_badge]][npm_material_ver][![npm RC version][npm_material_badge_alpha]][npm_material_ver_alpha]
 
 ## Check out the live demo and play with the examples
 
-[Check out some examples here.](https://zahmo.github.io/zajsf/)
+[Check out some examples here.](https://zahmo.github.io/ng-formworks/)
 
 This example playground features over 70 different JSON Schemas for you to try (including all examples used by each of the three libraries listed above), and the ability to quickly view any example formatted with Material Design, Bootstrap 3, Bootstrap 4, Bootstrap 5, DaisyUI or without any formatting.
 
@@ -73,38 +70,38 @@ This example playground features over 70 different JSON Schemas for you to try (
 
 First decide on which frameworks you plan to use (more than one can be installed) and have a look at their specific READMES regarding their installation:
 
-[@zajsf/material][npm_material_ver] — Material Design
+[@ng-formworks/material][npm_material_ver] — Material Design
 
 
-[@zajsf/bootstrap3][npm_bootstrap3_ver] — Bootstrap 3
+[@ng-formworks/bootstrap3][npm_bootstrap3_ver] — Bootstrap 3
 
 
-[@zajsf/bootstrap4][npm_bootstrap4_ver] — Bootstrap 4
+[@ng-formworks/bootstrap4][npm_bootstrap4_ver] — Bootstrap 4
 
 
-[@zajsf/bootstrap5][npm_bootstrap5_ver] — Bootstrap 5
+[@ng-formworks/bootstrap5][npm_bootstrap5_ver] — Bootstrap 5
 
 
-[@zajsf/daisyui][npm_daisyui_ver] — DaisyUi
+[@ng-formworks/daisyui][npm_daisyui_ver] — DaisyUi
 
 
- [@zajsf/core][npm_core_ver] — plain HTML (for testing)
+ [@ng-formworks/core][npm_core_ver] — plain HTML (for testing)
 
-For example if you'd like to try the material design based framework, [install @zajsf/material package from NPM][npm_material_ver] which uses `material-angular` UI. You can use either [NPM](https://www.npmjs.com) or [Yarn](https://yarnpkg.com). To install with NPM, run the following from your terminal:
+For example if you'd like to try the material design based framework, [install @ng-formworks/material package from NPM][npm_material_ver] which uses `material-angular` UI. You can use either [NPM](https://www.npmjs.com) or [Yarn](https://yarnpkg.com). To install with NPM, run the following from your terminal:
 
 
  ```shell
-npm  install @zajsf/core@latest @zajsf/cssframework@latest @zajsf/material@latest 
+npm  install @ng-formworks/core@latest @ng-formworks/cssframework@latest @ng-formworks/material@latest 
 ```  
 
 With YARN, run the following:
 ```shell
-yarn  add  @zajsf/core@latest @zajsf/cssframework@latest @zajsf/material@latest 
+yarn  add  @ng-formworks/core@latest @ng-formworks/cssframework@latest @ng-formworks/material@latest 
 ```  
 
 include the themes scss in your applications sass file(typically "styles.scss" under "src" folder -see angular docs for more details) 
 ```scss
-@import "node_modules/@zajsf/material/assets/material-design-themes.scss";
+@import "node_modules/@ng-formworks/material/assets/material-design-themes.scss";
 ```
 
 Then import `MaterialDesignFrameworkModule` in your main application module like this:
@@ -114,7 +111,7 @@ Then import `MaterialDesignFrameworkModule` in your main application module like
 
 import { BrowserModule } from  '@angular/platform-browser';
 import { NgModule } from  '@angular/core';
-import { MaterialDesignFrameworkModule } from  '@zajsf/material';
+import { MaterialDesignFrameworkModule } from  '@ng-formworks/material';
 import { AppComponent } from  './app.component';
 
 @NgModule({
@@ -131,33 +128,33 @@ export  class  AppModule { }
 
 six framework modules are currently available, their import is similar to above and may vary slightly, have a look at their specific docs :
 
-* MaterialDesignFrameworkModule from [@zajsf/material][npm_material_ver] — Material Design
+* MaterialDesignFrameworkModule from [@ng-formworks/material][npm_material_ver] — Material Design
 
 
-* Bootstrap3FrameworkModule from [@zajsf/bootstrap3][npm_bootstrap3_ver] — Bootstrap 3
+* Bootstrap3FrameworkModule from [@ng-formworks/bootstrap3][npm_bootstrap3_ver] — Bootstrap 3
 
 
-* Bootstrap4FrameworkModule from [@zajsf/bootstrap4][npm_bootstrap4_ver] — Bootstrap 4
+* Bootstrap4FrameworkModule from [@ng-formworks/bootstrap4][npm_bootstrap4_ver] — Bootstrap 4
 
 
-* Bootstrap5FrameworkModule from [@zajsf/bootstrap5][npm_bootstrap5_ver] — Bootstrap 5
+* Bootstrap5FrameworkModule from [@ng-formworks/bootstrap5][npm_bootstrap5_ver] — Bootstrap 5
 
 
-* DaisyUIFrameworkModule from [@zajsf/daisyui][npm_daisyui_ver] — DaisyUi
+* DaisyUIFrameworkModule from [@ng-formworks/daisyui][npm_daisyui_ver] — DaisyUi
 
 
-* JsonSchemaFormModule from [@zajsf/core][npm_core_ver] — plain HTML (for testing)
+* JsonSchemaFormModule from [@ng-formworks/core][npm_core_ver] — plain HTML (for testing)
 
 It is also possible to load multiple frameworks and switch between them at runtime, like the example playground on GitHub. But most typical sites will just load one framework.
 
 ### To install from GitHub
 
-To install [the library and the example playground from GitHub](https://github.com/zahmo/zajsf), clone `https://github.com/zahmo/zajsf.git` with your favorite git program. Or, assuming you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Node/YARN](https://nodejs.org/en/download/) installed, enter the following in your terminal:
+To install [the library and the example playground from GitHub](https://github.com/zahmo/ng-formworks), clone `https://github.com/zahmo/ng-formworks.git` with your favorite git program. Or, assuming you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Node/YARN](https://nodejs.org/en/download/) installed, enter the following in your terminal:
 
 
  ```shell
-git  clone  https://github.com/zahmo/zajsf.git  zajsf
-cd  zajsf
+git  clone  https://github.com/zahmo/ng-formworks.git  ng-formworks
+cd  ng-formworks
 yarn  install
 yarn  start
 ```  
@@ -166,34 +163,34 @@ This should start a server with the example playground, which you can view in yo
 
 The source code is composed as the following:
 
-*  `projects/zajsf-core` - Angular JSON Schema Form main library
+*  `projects/ng-formworks-core` - Angular JSON Schema Form main library
 
 
-*  `projects/zajsf-cssframework` - Framework module used to build other frameworks
+*  `projects/ng-formworks-cssframework` - Framework module used to build other frameworks
 
 
-*  `projects/zajsf-bootstrap3` - Framework for Bootstrap 3
+*  `projects/ng-formworks-bootstrap3` - Framework for Bootstrap 3
 
 
-*  `projects/zajsf-bootstrap4` - Framework for Bootstrap 4
+*  `projects/ng-formworks-bootstrap4` - Framework for Bootstrap 4
 
 
-*  `projects/zajsf-bootstrap5` - Framework for Bootstrap 5
+*  `projects/ng-formworks-bootstrap5` - Framework for Bootstrap 5
 
 
-*  `projects/zajsf-daisyui` - Framework for DaisyUI
+*  `projects/ng-formworks-daisyui` - Framework for DaisyUI
 
 
-*  `projects/zajsf-material` - Framework for Angular Material
+*  `projects/ng-formworks-material` - Framework for Angular Material
 
 
-*  `projects/zajsf-core/src/lib/framework-library` - framework library
+*  `projects/ng-formworks-core/src/lib/framework-library` - framework library
 
 
-*  `projects/zajsf-core/src/lib/widget-library` - widget library
+*  `projects/ng-formworks-core/src/lib/widget-library` - widget library
 
 
-*  `projects/zajsf-core/src/lib/shared` - various utilities and helper functions
+*  `projects/ng-formworks-core/src/lib/shared` - various utilities and helper functions
 
 
 *  `demo` - the demonstration playground example application
@@ -582,7 +579,7 @@ const  yourNewWidgets = {
 
  ```javascript
 
-import { WidgetLibraryService } from  '@zajsf/core';
+import { WidgetLibraryService } from  '@ng-formworks/core';
 
 
 ...
@@ -634,7 +631,7 @@ const  yourCustomFramework = {
 
 
  ```javascript
-import { FrameworkLibraryService } from  '@zajsf/core';
+import { FrameworkLibraryService } from  '@ng-formworks/core';
 
 ...
 
@@ -716,18 +713,18 @@ currently the following built-in themes are available(per framework):
 
 for more on how to customize themes, take a look at the relevant framework's docs:
 
-* [`@zajsf/bootstrap3`](./projects/zajsf-bootstrap3/README.md#custom-theming)
+* [`@ng-formworks/bootstrap3`](./projects/ng-formworks-bootstrap3/README.md#custom-theming)
 
-* [`@zajsf/bootstrap4`](./projects/zajsf-bootstrap3/README.md#custom-theming)
-
-
-* [`@zajsf/bootstrap5`](./projects/zajsf-bootstrap4/README.md#custom-theming)
+* [`@ng-formworks/bootstrap4`](./projects/ng-formworks-bootstrap3/README.md#custom-theming)
 
 
-* [`@zajsf/daisyui`](./projects/zajsf-daisyui/README.md#custom-theming)
+* [`@ng-formworks/bootstrap5`](./projects/ng-formworks-bootstrap4/README.md#custom-theming)
 
 
-* [`@zajsf/material`](./projects/zajsf-material/README.md#custom-theming)
+* [`@ng-formworks/daisyui`](./projects/ng-formworks-daisyui/README.md#custom-theming)
+
+
+* [`@ng-formworks/material`](./projects/ng-formworks-material/README.md#custom-theming)
 
 ## contributing guide
 
@@ -739,98 +736,98 @@ If you like this project and want to contribute you can check this [documentatio
 
 [gh_core_project]:./README.md
 
-[npm_core_badge]:https://img.shields.io/npm/v/%40zajsf%2Fcore.svg?color=#010101
+[npm_core_badge]:https://img.shields.io/npm/v/%40ng-formworks%2Fcore.svg?color=#010101
 
-[npm_core_ver]:https://www.npmjs.com/package/@zajsf/core
+[npm_core_ver]:https://www.npmjs.com/package/@ng-formworks/core
 
-[npm_core_badge_RC]:https://img.shields.io/npm/v/%40zajsf%2Fcore/RC.svg?color=blue
+[npm_core_badge_RC]:https://img.shields.io/npm/v/%40ng-formworks%2Fcore/RC.svg?color=blue
 
-[npm_core_ver_RC]:https://www.npmjs.com/package/@zajsf/core
+[npm_core_ver_RC]:https://www.npmjs.com/package/@ng-formworks/core
 
-[npm_core_badge_alpha]:https://img.shields.io/npm/v/%40zajsf%2Fcore/alpha.svg?color=blue
+[npm_core_badge_alpha]:https://img.shields.io/npm/v/%40ng-formworks%2Fcore/alpha.svg?color=blue
 
-[npm_core_ver_alpha]:https://www.npmjs.com/package/@zajsf/core
+[npm_core_ver_alpha]:https://www.npmjs.com/package/@ng-formworks/core
 
-[gh_cssframework_project]:./projects/zajsf-cssframework/README.md
+[gh_cssframework_project]:./projects/ng-formworks-cssframework/README.md
 
-[npm_cssframework_badge]:https://img.shields.io/npm/v/%40zajsf%2Fcssframework.svg?color=#010101
+[npm_cssframework_badge]:https://img.shields.io/npm/v/%40ng-formworks%2Fcssframework.svg?color=#010101
 
-[npm_cssframework_ver]:https://www.npmjs.com/package/@zajsf/cssframework
+[npm_cssframework_ver]:https://www.npmjs.com/package/@ng-formworks/cssframework
 
-[npm_cssframework_badge_RC]:https://img.shields.io/npm/v/%40zajsf%2Fcssframework/RC.svg?color=blue
+[npm_cssframework_badge_RC]:https://img.shields.io/npm/v/%40ng-formworks%2Fcssframework/RC.svg?color=blue
 
-[npm_cssframework_ver_RC]:https://www.npmjs.com/package/@zajsf/cssframework
+[npm_cssframework_ver_RC]:https://www.npmjs.com/package/@ng-formworks/cssframework
 
-[npm_cssframework_badge_alpha]:https://img.shields.io/npm/v/%40zajsf%2Fcssframework/alpha.svg?color=blue
+[npm_cssframework_badge_alpha]:https://img.shields.io/npm/v/%40ng-formworks%2Fcssframework/alpha.svg?color=blue
 
-[npm_cssframework_ver_alpha]:https://www.npmjs.com/package/@zajsf/cssframework
+[npm_cssframework_ver_alpha]:https://www.npmjs.com/package/@ng-formworks/cssframework
 
-[gh_bootstrap3_project]:./projects/zajsf-bootstrap3/README.md
+[gh_bootstrap3_project]:./projects/ng-formworks-bootstrap3/README.md
 
-[npm_bootstrap3_badge]:https://img.shields.io/npm/v/%40zajsf%2Fbootstrap3.svg?color=#010101
+[npm_bootstrap3_badge]:https://img.shields.io/npm/v/%40ng-formworks%2Fbootstrap3.svg?color=#010101
 
-[npm_bootstrap3_ver]:https://www.npmjs.com/package/@zajsf/bootstrap3
+[npm_bootstrap3_ver]:https://www.npmjs.com/package/@ng-formworks/bootstrap3
 
-[npm_bootstrap3_badge_RC]:https://img.shields.io/npm/v/%40zajsf%2Fbootstrap3/RC.svg?color=blue
+[npm_bootstrap3_badge_RC]:https://img.shields.io/npm/v/%40ng-formworks%2Fbootstrap3/RC.svg?color=blue
 
-[npm_bootstrap3_ver_RC]:https://www.npmjs.com/package/@zajsf/bootstrap3
+[npm_bootstrap3_ver_RC]:https://www.npmjs.com/package/@ng-formworks/bootstrap3
 
-[npm_bootstrap3_badge_alpha]:https://img.shields.io/npm/v/%40zajsf%2Fbootstrap3/alpha.svg?color=blue
+[npm_bootstrap3_badge_alpha]:https://img.shields.io/npm/v/%40ng-formworks%2Fbootstrap3/alpha.svg?color=blue
 
-[npm_bootstrap3_ver_alpha]:https://www.npmjs.com/package/@zajsf/bootstrap3
+[npm_bootstrap3_ver_alpha]:https://www.npmjs.com/package/@ng-formworks/bootstrap3
 
-[gh_bootstrap4_project]:./projects/zajsf-bootstrap4/README.md
+[gh_bootstrap4_project]:./projects/ng-formworks-bootstrap4/README.md
 
-[npm_bootstrap4_badge]:https://img.shields.io/npm/v/%40zajsf%2Fbootstrap4.svg?color=#010101
+[npm_bootstrap4_badge]:https://img.shields.io/npm/v/%40ng-formworks%2Fbootstrap4.svg?color=#010101
 
-[npm_bootstrap4_ver]:https://www.npmjs.com/package/@zajsf/bootstrap4
+[npm_bootstrap4_ver]:https://www.npmjs.com/package/@ng-formworks/bootstrap4
 
-[npm_bootstrap4_badge_RC]:https://img.shields.io/npm/v/%40zajsf%2Fbootstrap4/RC.svg?color=blue
+[npm_bootstrap4_badge_RC]:https://img.shields.io/npm/v/%40ng-formworks%2Fbootstrap4/RC.svg?color=blue
 
-[npm_bootstrap4_ver_RC]:https://www.npmjs.com/package/@zajsf/bootstrap4
+[npm_bootstrap4_ver_RC]:https://www.npmjs.com/package/@ng-formworks/bootstrap4
 
-[npm_bootstrap4_badge_alpha]:https://img.shields.io/npm/v/%40zajsf%2Fbootstrap4/alpha.svg?color=blue
+[npm_bootstrap4_badge_alpha]:https://img.shields.io/npm/v/%40ng-formworks%2Fbootstrap4/alpha.svg?color=blue
 
-[npm_bootstrap4_ver_alpha]:https://www.npmjs.com/package/@zajsf/bootstrap4
+[npm_bootstrap4_ver_alpha]:https://www.npmjs.com/package/@ng-formworks/bootstrap4
 
-[gh_bootstrap5_project]:./projects/zajsf-bootstrap5/README.md
+[gh_bootstrap5_project]:./projects/ng-formworks-bootstrap5/README.md
 
-[npm_bootstrap5_badge]:https://img.shields.io/npm/v/%40zajsf%2Fbootstrap5.svg?color=#010101
+[npm_bootstrap5_badge]:https://img.shields.io/npm/v/%40ng-formworks%2Fbootstrap5.svg?color=#010101
 
-[npm_bootstrap5_ver]:https://www.npmjs.com/package/@zajsf/bootstrap5
+[npm_bootstrap5_ver]:https://www.npmjs.com/package/@ng-formworks/bootstrap5
 
-[npm_bootstrap5_badge_RC]:https://img.shields.io/npm/v/%40zajsf%2Fbootstrap5/RC.svg?color=blue
+[npm_bootstrap5_badge_RC]:https://img.shields.io/npm/v/%40ng-formworks%2Fbootstrap5/RC.svg?color=blue
 
-[npm_bootstrap5_ver_RC]:https://www.npmjs.com/package/@zajsf/bootstrap5
+[npm_bootstrap5_ver_RC]:https://www.npmjs.com/package/@ng-formworks/bootstrap5
 
-[npm_bootstrap5_badge_alpha]:https://img.shields.io/npm/v/%40zajsf%2Fbootstrap5/alpha.svg?color=blue
+[npm_bootstrap5_badge_alpha]:https://img.shields.io/npm/v/%40ng-formworks%2Fbootstrap5/alpha.svg?color=blue
 
-[npm_bootstrap5_ver_alpha]:https://www.npmjs.com/package/@zajsf/bootstrap5
+[npm_bootstrap5_ver_alpha]:https://www.npmjs.com/package/@ng-formworks/bootstrap5
 
-[gh_daisyui_project]:./projects/zajsf-daisyui/README.md
+[gh_daisyui_project]:./projects/ng-formworks-daisyui/README.md
 
-[npm_daisyui_badge]:https://img.shields.io/npm/v/%40zajsf%2Fdaisyui.svg?color=#010101
+[npm_daisyui_badge]:https://img.shields.io/npm/v/%40ng-formworks%2Fdaisyui.svg?color=#010101
 
-[npm_daisyui_ver]:https://www.npmjs.com/package/@zajsf/daisyui
+[npm_daisyui_ver]:https://www.npmjs.com/package/@ng-formworks/daisyui
 
-[npm_daisyui_badge_RC]:https://img.shields.io/npm/v/%40zajsf%2Fdaisyui/RC.svg?color=blue
+[npm_daisyui_badge_RC]:https://img.shields.io/npm/v/%40ng-formworks%2Fdaisyui/RC.svg?color=blue
 
-[npm_daisyui_ver_RC]:https://www.npmjs.com/package/@zajsf/daisyui
+[npm_daisyui_ver_RC]:https://www.npmjs.com/package/@ng-formworks/daisyui
 
-[npm_daisyui_badge_alpha]:https://img.shields.io/npm/v/%40zajsf%2Fdaisyui/alpha.svg?color=blue
+[npm_daisyui_badge_alpha]:https://img.shields.io/npm/v/%40ng-formworks%2Fdaisyui/alpha.svg?color=blue
 
-[npm_daisyui_ver_alpha]:https://www.npmjs.com/package/@zajsf/daisyui
+[npm_daisyui_ver_alpha]:https://www.npmjs.com/package/@ng-formworks/daisyui
 
-[gh_material_project]:./projects/zajsf-material/README.md
+[gh_material_project]:./projects/ng-formworks-material/README.md
 
-[npm_material_badge]:https://img.shields.io/npm/v/%40zajsf%2Fmaterial.svg?color=#010101
+[npm_material_badge]:https://img.shields.io/npm/v/%40ng-formworks%2Fmaterial.svg?color=#010101
 
-[npm_material_ver]:https://www.npmjs.com/package/@zajsf/material
+[npm_material_ver]:https://www.npmjs.com/package/@ng-formworks/material
 
-[npm_material_badge_RC]:https://img.shields.io/npm/v/%40zajsf%2Fmaterial/RC.svg?color=blue
+[npm_material_badge_RC]:https://img.shields.io/npm/v/%40ng-formworks%2Fmaterial/RC.svg?color=blue
 
-[npm_material_ver_RC]:https://www.npmjs.com/package/@zajsf/material
+[npm_material_ver_RC]:https://www.npmjs.com/package/@ng-formworks/material
 
-[npm_material_badge_alpha]:https://img.shields.io/npm/v/%40zajsf%2Fmaterial/alpha.svg?color=blue
+[npm_material_badge_alpha]:https://img.shields.io/npm/v/%40ng-formworks%2Fmaterial/alpha.svg?color=blue
 
-[npm_material_ver_alpha]:https://www.npmjs.com/package/@zajsf/material
+[npm_material_ver_alpha]:https://www.npmjs.com/package/@ng-formworks/material
