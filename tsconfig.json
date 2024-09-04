@@ -28,47 +28,47 @@
       "lodash/*": [
         "node_modules/@types/lodash-es/*"
       ],
-      "@zajsf/core": [
-        "dist/@zajsf/core"
+      "@ng-formworks/core": [
+        "dist/@ng-formworks/core"
       ],
-      "@zajsf/core/*": [
-        "dist/@zajsf/core/*"
+      "@ng-formworks/core/*": [
+        "dist/@ng-formworks/core/*"
       ],
-      "@zajsf/bootstrap3": [
-        "dist/@zajsf/bootstrap3"
+      "@ng-formworks/bootstrap3": [
+        "dist/@ng-formworks/bootstrap3"
       ],
-      "@zajsf/bootstrap3/*": [
-        "dist/@zajsf/bootstrap3/*"
+      "@ng-formworks/bootstrap3/*": [
+        "dist/@ng-formworks/bootstrap3/*"
       ],
-      "@zajsf/bootstrap4": [
-        "dist/@zajsf/bootstrap4"
+      "@ng-formworks/bootstrap4": [
+        "dist/@ng-formworks/bootstrap4"
       ],
-      "@zajsf/bootstrap4/*": [
-        "dist/@zajsf/bootstrap4/*"
+      "@ng-formworks/bootstrap4/*": [
+        "dist/@ng-formworks/bootstrap4/*"
       ],
-      "@zajsf/bootstrap5": [
-        "dist/@zajsf/bootstrap5"
+      "@ng-formworks/bootstrap5": [
+        "dist/@ng-formworks/bootstrap5"
       ],
-      "@zajsf/bootstrap5/*": [
-        "dist/@zajsf/bootstrap5/*"
+      "@ng-formworks/bootstrap5/*": [
+        "dist/@ng-formworks/bootstrap5/*"
       ],
-      "@zajsf/material": [
-        "dist/@zajsf/material"
+      "@ng-formworks/material": [
+        "dist/@ng-formworks/material"
       ],
-      "@zajsf/material/*": [
-        "dist/@zajsf/material/*"
+      "@ng-formworks/material/*": [
+        "dist/@ng-formworks/material/*"
       ],
-      "@zajsf/daisyui": [
-        "dist/@zajsf/daisyui"
+      "@ng-formworks/daisyui": [
+        "dist/@ng-formworks/daisyui"
       ],
-      "@zajsf/daisyui/*": [
-        "dist/@zajsf/daisyui/*"
+      "@ng-formworks/daisyui/*": [
+        "dist/@ng-formworks/daisyui/*"
       ],
-      "@zajsf/cssframework": [
-        "dist/@zajsf/cssframework"
+      "@ng-formworks/cssframework": [
+        "dist/@ng-formworks/cssframework"
       ],
-      "@zajsf/cssframework/*": [
-        "dist/@zajsf/cssframework/*"
+      "@ng-formworks/cssframework/*": [
+        "dist/@ng-formworks/cssframework/*"
       ]
     },
     "useDefineForClassFields": false

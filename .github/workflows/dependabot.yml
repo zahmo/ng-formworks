@@ -13,7 +13,7 @@ updates:
       # Prefix all commit messages with "build"
       prefix: "build"
   - package-ecosystem: "npm"
-    directory: "/projects/zajsf-core"
+    directory: "/projects/ng-formworks-core"
     schedule:
       interval: "weekly"
       day: "sunday"
@@ -21,7 +21,7 @@ updates:
     commit-message:
       prefix: "build"
   - package-ecosystem: "npm"
-    directory: "/projects/zajsf-material"
+    directory: "/projects/ng-formworks-material"
     schedule:
       interval: "weekly"
       day: "sunday"
@@ -29,7 +29,7 @@ updates:
     commit-message:
       prefix: "build"
   - package-ecosystem: "npm"
-    directory: "/projects/zajsf-bootstrap3"
+    directory: "/projects/ng-formworks-bootstrap3"
     schedule:
       interval: "weekly"
       day: "sunday"
@@ -37,7 +37,7 @@ updates:
     commit-message:
       prefix: "build"
   - package-ecosystem: "npm"
-    directory: "/projects/zajsf-bootstrap4"
+    directory: "/projects/ng-formworks-bootstrap4"
     schedule:
       interval: "weekly"
       day: "sunday"
