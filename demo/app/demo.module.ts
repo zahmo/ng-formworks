@@ -4,9 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule, REMOVE_STYLES_ON_COMPONENT_DESTROY } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -35,6 +37,8 @@ import { routes } from './demo.routes';
     BrowserModule, BrowserAnimationsModule, FormsModule,
     HttpClientModule, MatButtonModule, MatCardModule, MatCheckboxModule,
     MatIconModule, MatMenuModule, MatSelectModule, MatToolbarModule,
+    MatDialogModule,
+    MatSnackBarModule,
     RouterModule.forRoot(routes, {}),
     Bootstrap4FrameworkModule,
     Bootstrap3FrameworkModule,
