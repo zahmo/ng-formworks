@@ -1,9 +1,11 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Framework, FrameworkLibraryService, JsonPointer } from '@ng-formworks/core';
 import { Examples } from './example-schemas.model';
 
@@ -23,6 +25,19 @@ import { Examples } from './example-schemas.model';
       ]),
     ]),
   ],
+  styles:[
+    `.flex-spacer {
+      flex: 1 1 auto;
+    }`,
+    `
+    .wraptext{
+        display: inline-block; /* Ensures the span behaves like a block element in terms of wrapping */
+        word-wrap: break-word; /* For older browsers */
+        overflow-wrap: break-word; /* For modern browsers */
+        white-space: break-spaces
+    }
+    `
+  ]
 })
 export class DemoComponent implements OnInit,AfterViewInit {
   examples: any = Examples;
@@ -88,13 +103,30 @@ export class DemoComponent implements OnInit,AfterViewInit {
   selectedTheme:string;
   themeList:any=[];
 
+  
+  formDataEncoded:string;
+
+  dialogRef:MatDialogRef<any>;
+
+  dialogOptions:any={
+    title:'Confirm',
+    msg:'',
+    toolbar_color:'primary'
+  }
+
   @ViewChild(MatMenuTrigger, { static: true }) menuTrigger: MatMenuTrigger;
+
+
+  @ViewChild('dialogTemplate', { read: TemplateRef }) 
+  dialogTemplate:TemplateRef<any>;
 
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
     private jsfFLService:FrameworkLibraryService,
+    public dialog: MatDialog,
+    private _snackBar: MatSnackBar
   ) { 
 
 
@@ -102,6 +134,64 @@ export class DemoComponent implements OnInit,AfterViewInit {
   ngAfterViewInit(): void {
 
   }
+
+  utf8ToB64(str) {
+    // Encode the string as a UTF-8 byte array
+    const utf8Bytes = new Uint8Array([...str].map(char => char.charCodeAt(0)));
+    
+    // Create a binary string from the byte array
+    const binaryString = Array.from(utf8Bytes, byte => String.fromCharCode(byte)).join('');
+    
+    // Encode the binary string using btoa
+    return btoa(binaryString);
+}
+
+b64ToUtf8(b64) {
+    // Decode the base64 string to binary string
+    const binaryString = atob(b64);
+    
+    // Convert the binary string to a byte array
+    const utf8Bytes = new Uint8Array([...binaryString].map(char => char.charCodeAt(0)));
+    
+    // Decode the byte array to a UTF-8 string
+    return new TextDecoder().decode(utf8Bytes);
+}
+
+ asBase64Encoded(jsonData) {
+  // Convert the JSON object to a JSON string
+  const jsonString = JSON.stringify(jsonData);
+
+  // Encode the JSON string to a Base64 string
+  const base64String = btoa(unescape(encodeURIComponent(jsonString)));
+
+  // Encode the Base64 string to be URI-safe
+  const uriSafeBase64String = base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+  return uriSafeBase64String;
+}
+
+ fromBase64Decoded(base64DataEncoded) {
+  // Decode the URI-safe Base64 string to a standard Base64 string
+  const base64String = base64DataEncoded
+      .replace(/-/g, '+')
+      .replace(/_/g, '/')
+      .concat('='.repeat((4 - base64DataEncoded.length % 4) % 4)); // Add padding if necessary
+
+  // Decode the Base64 string to a JSON string
+  const jsonString = decodeURIComponent(escape(atob(base64String)));
+
+  // Parse the JSON string to a JSON object
+  let jsonData;
+  try {
+      jsonData = JSON.parse(jsonString);
+  } catch (error) {
+      throw new Error("Invalid JSON format: " + error.message);
+  }
+
+  return jsonData;
+}
+  
+
 
   ngOnInit() {
     // Subscribe to query string to detect schema to load
@@ -133,7 +223,15 @@ export class DemoComponent implements OnInit,AfterViewInit {
         if (params['theme']) {
           this.selectedTheme = params['theme'];
         }
-        this.loadSelectedExample();
+        if (params['formData']){
+          this.formDataEncoded=params['formData'];
+            let formData=this.fromBase64Decoded(this.formDataEncoded);
+            this.jsonFormSchema = JSON.stringify(formData,null,2);
+          this.generateForm(this.jsonFormSchema);
+        }else{
+          this.loadSelectedExample();
+        }
+        
       }
     );
     
@@ -232,7 +330,9 @@ export class DemoComponent implements OnInit,AfterViewInit {
         '&example=' + selectedExample +
         '&framework=' + this.selectedFramework +
         '&language=' + this.selectedLanguage+
-        '&theme=' + this.selectedTheme
+        '&theme=' + this.selectedTheme+
+        '&formData='+this.formDataEncoded
+
       );
       this.liveFormData = {};
       this.submittedFormData = null;
@@ -271,6 +371,8 @@ export class DemoComponent implements OnInit,AfterViewInit {
       // Parse entered content as JSON
       this.jsonFormObject = JSON.parse(newFormString);
       this.jsonFormValid = true;
+      this.formDataEncoded=this.asBase64Encoded(this.jsonFormObject);
+
     } catch (jsonError) {
       try {
 
@@ -308,6 +410,44 @@ export class DemoComponent implements OnInit,AfterViewInit {
       this.jsonFormOptions[option] = !this.jsonFormOptions[option];
     }
     this.generateForm(this.jsonFormSchema);
+  }
+
+  onDialogConfirm(e){
+    if(this.dialogRef){
+      this.dialogRef.close();
+      this.dialogRef=null;
+    }
+  }
+  copyUrlToClipBoard(e){
+    let formData=this.jsonFormObject;
+    if(this.liveFormData && Object.keys(this.liveFormData).length > 0){
+      formData.data=this.liveFormData;
+    }
+    this.formDataEncoded=this.asBase64Encoded(formData);
+    let path= `?set=${this.selectedSet}`+
+    `&example=${this.selectedExample}`+
+    `&framework=${this.selectedFramework}`+
+    `&language=${this.selectedLanguage}`+
+    `&theme=${this.selectedTheme}`+
+    `&formData=${this.formDataEncoded}`
+
+//need to replace new line chars 
+    let url=document.location.protocol+"//"+ document.location.host+"/"+path.replace(/\n/g, '');
+    navigator.clipboard.writeText(url).then(copyRes=>{
+
+        this._snackBar.open('Form link copied to clipboard',null,{duration:4000});
+      }).catch(err=>{
+      //alert(`Form link copied not copied to clipboard, manually copy it:${url}`);
+      this.dialogOptions.msg=url;
+      this.dialogOptions.toolbar_color="warn";
+      this.dialogOptions.title="Unable to copy form link, please copy the link manually";
+      this.dialogRef=this.dialogRef|| this.dialog.open(this.dialogTemplate,
+        {//disableClose:this.dialogOptions?.disableClose
+        enterAnimationDuration:500,
+        exitAnimationDuration:500
+        }
+        );
+    })
   }
 
 
