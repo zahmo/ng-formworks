@@ -1,8 +1,0 @@
-{
-
-    "stylesheets": ["bootstrap.min.css"],
-    "scripts": ["jquery.slim.min.js",
-        "bootstrap.bundle.min.js"
-    ]
-
-}
