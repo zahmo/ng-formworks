@@ -418,22 +418,37 @@ b64ToUtf8(b64) {
       this.dialogRef=null;
     }
   }
+
+  appendUrlParameters(params) {
+    // Get the current URL
+    const currentUrl = new URL(window.location.href);
+    
+    // Iterate over the params object and append each parameter
+    for (const [key, value] of Object.entries<string>(params)) {
+        currentUrl.searchParams.append(key, value);
+    }
+    
+    return currentUrl;
+}
+
   copyUrlToClipBoard(e){
     let formData=this.jsonFormObject;
     if(this.liveFormData && Object.keys(this.liveFormData).length > 0){
       formData.data=this.liveFormData;
     }
     this.formDataEncoded=this.asBase64Encoded(formData);
-    let path= `?set=${this.selectedSet}`+
-    `&example=${this.selectedExample}`+
-    `&framework=${this.selectedFramework}`+
-    `&language=${this.selectedLanguage}`+
-    `&theme=${this.selectedTheme}`+
-    `&formData=${this.formDataEncoded}`
 
 //need to replace new line chars 
-    let url=document.location.protocol+"//"+ document.location.host+"/"+path.replace(/\n/g, '');
-    navigator.clipboard.writeText(url).then(copyRes=>{
+    let url=this.appendUrlParameters({
+      set:this.selectedSet,
+      example:this.selectedExample,
+      framework:this.selectedFramework,
+      language:this.selectedLanguage,
+      theme:this.selectedTheme,
+      formData:this.formDataEncoded
+    })
+    //document.location.protocol+"//"+ document.location.host+"/"+path.replace(/\n/g, '');
+    navigator.clipboard.writeText(url.toString()).then(copyRes=>{
 
         this._snackBar.open('Form link copied to clipboard',null,{duration:4000});
       }).catch(err=>{
