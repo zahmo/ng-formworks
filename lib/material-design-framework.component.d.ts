@@ -1,0 +1,35 @@
+import { ChangeDetectorRef, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { FrameworkLibraryService, JsonSchemaFormService } from '@ng-formworks/core';
+import { CssframeworkService } from '@ng-formworks/cssframework';
+import { Subscription } from 'rxjs';
+import * as i0 from "@angular/core";
+export declare class MaterialDesignFrameworkComponent implements OnInit, OnChanges, OnDestroy {
+    private changeDetector;
+    private jsf;
+    jsfFLService: FrameworkLibraryService;
+    cssFWService: CssframeworkService;
+    frameworkInitialized: boolean;
+    inputType: string;
+    options: any;
+    widgetLayoutNode: any;
+    widgetOptions: any;
+    formControl: any;
+    parentArray: any;
+    isOrderable: boolean;
+    dynamicTitle: string;
+    layoutNode: any;
+    layoutIndex: number[];
+    dataIndex: number[];
+    theme: string;
+    frameworkThemeSubs: Subscription;
+    constructor(changeDetector: ChangeDetectorRef, jsf: JsonSchemaFormService, jsfFLService: FrameworkLibraryService, cssFWService: CssframeworkService);
+    ngOnDestroy(): void;
+    get showRemoveButton(): boolean;
+    ngOnInit(): void;
+    ngOnChanges(): void;
+    initializeFramework(): void;
+    updateTitle(): void;
+    removeItem(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<MaterialDesignFrameworkComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MaterialDesignFrameworkComponent, "material-design-framework", never, { "layoutNode": { "alias": "layoutNode"; "required": false; }; "layoutIndex": { "alias": "layoutIndex"; "required": false; }; "dataIndex": { "alias": "dataIndex"; "required": false; }; }, {}, never, never, false, never>;
+}
