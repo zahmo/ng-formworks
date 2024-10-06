@@ -40,7 +40,7 @@
         "lodash-es": "~4.17.21",
         "@ng-formworks/core": "~18.0.0",
         "@ng-formworks/cssframework": "~18.0.0",
-        "tslib": "^2.0.0"
+        "tslib": "^2.7.0"
     },
     "peerDependencies": {
         "@angular/material": ">=18.0.0",
