@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.12 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.13 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -6075,7 +6075,7 @@ details.collapse summary::-webkit-details-marker {
   border-bottom-width: calc(0px * var(--tw-divide-y-reverse));
 }
 
-:is([dir="rtl"] .stats > :not([hidden]) ~ :not([hidden])) {
+[dir="rtl"] .stats > *:not([hidden]) ~ *:not([hidden]) {
   --tw-divide-x-reverse: 1;
 }
 
@@ -8208,6 +8208,7 @@ html:has(.drawer-open.drawer-open) {
 
 .join.join-horizontal > :where(*:not(:first-child)):is(.btn) {
   margin-inline-start: calc(var(--border-btn) * -1);
+  margin-top: 0px;
 }
 
 .menu-horizontal > li:not(.menu-title) > details > ul {
