@@ -56,6 +56,7 @@
         "prestart": "npm run build:libs",
         "start": "ng serve",
         "start:demo-only": "ng serve",
+        "start:no-prebundle": "ng serve --prebundle=false",
         "build:core": "ng build @ng-formworks/core --configuration production",
         "postbuild:core": "cp README.md dist/@ng-formworks/core/ &&  cp LICENSE  dist/@ng-formworks/core/",
         "build:cssfw": "ng build @ng-formworks/cssframework --configuration production",
