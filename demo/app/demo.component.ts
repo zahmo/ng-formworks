@@ -380,7 +380,10 @@ b64ToUtf8(b64) {
         // parse as JavaScript instead to include functions
         const newFormObject: any = null;
         /* tslint:disable */
-        eval('newFormObject = ' + newFormString);
+        //commented out to use indirect eval
+        //see https://esbuild.github.io/link/direct-eval
+        //eval('newFormObject = ' + newFormString);
+        (0, eval)('newFormObject = ' + newFormString)
         /* tslint:enable */
         this.jsonFormObject = newFormObject;
         this.jsonFormValid = true;
