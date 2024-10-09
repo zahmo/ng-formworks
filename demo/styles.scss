@@ -1,11 +1,9 @@
 // * { border: 1px solid red !important; }
 @use '@angular/material' as mat;
 @include mat.core();
-$demo-app-primary: mat.m2-define-palette(mat.$m2-blue-palette);
-$demo-app-accent: mat.m2-define-palette(mat.$m2-amber-palette, A200, A100, A400);
-$demo-app-warn: mat.m2-define-palette(mat.$m2-red-palette);
-$demo-app-theme: mat.m2-define-light-theme($demo-app-primary, $demo-app-accent, $demo-app-warn);
-@include mat.all-component-themes($demo-app-theme);
+//use M3 theming
+$demo-app-theme:mat.define-theme(( color: ( theme-type: light, primary: mat.$azure-palette, tertiary: mat.$blue-palette), density: ( scale: 0)));
+$demo-button-theme:mat.define-theme(( color: ( theme-type: light, primary: mat.$orange-palette, tertiary: mat.$yellow-palette), density: ( scale: 0)));
 $font-family: 'Roboto',
 'Noto',
 'Helvetica Neue',
@@ -31,10 +29,13 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    @include mat.all-component-themes($demo-app-theme);
+    @include mat.button-theme($demo-button-theme);
+    --mat-toolbar-container-background-color: #{mat.get-theme-color($demo-app-theme, primary, 80)};
 }
 
 .demo-page-header {
-    background-color: mat.m2-get-color-from-palette($demo-app-primary, lighter);
+    background-color: mat.get-theme-color($demo-app-theme, surface);
     margin-bottom: 12px;
     .header-content {
         font-family: $font-family;
@@ -98,29 +99,9 @@ body {
     width: 100%;
 }
 
-
-/*
-// Define a dark theme
-$dark-theme: mat.define-dark-theme(( color: ( primary: mat.define-palette(mat.$pink-palette), accent: mat.define-palette(mat.$blue-grey-palette), ), // Only include `typography` and `density` in the default dark theme.
-typography: mat.define-typography-config(), density: 0, ));
-// Apply the dark theme by default
-.dark-theme {
-    @include mat.core-theme($dark-theme);
-    @include mat.button-theme($dark-theme);
-}
-
-// Define a light theme
-$light-theme: mat.define-light-theme(( color: ( primary: mat.define-palette(mat.$indigo-palette), accent: mat.define-palette(mat.$pink-palette), ), ));
-.light-theme {
-    @include mat.core-theme($light-theme);
-    @include mat.button-theme($light-theme);
-}
-*/
-
 .demo-theme {
-    @include mat.core-theme($demo-app-theme);
-    //@include mat.all-component-themes($demo-app-theme);
-    @include mat.button-color($demo-app-theme);
+    @include mat.all-component-themes($demo-app-theme);
+    @include mat.button-theme($demo-button-theme);
 }
 
 @import '../projects/ng-formworks-material/src/lib/material-design-themes.scss';
