@@ -64,8 +64,26 @@ $pink-bluegrey-theme: mat.m2-define-dark-theme(( color: ( primary: $pink-bluegre
     @include mat.button-color($pink-bluegrey-theme);
 }
 
+$azure-blue-theme: mat.define-theme(( color: ( theme-type: light, primary: mat.$azure-palette, tertiary: mat.$blue-palette), density: ( scale: 0)));
+.azure-blue {
+    @include mat.all-component-themes($azure-blue-theme);
+}
+
+$rose-red-theme: mat.define-theme(( color: ( theme-type: light, primary: mat.$rose-palette, tertiary: mat.$red-palette), density: ( scale: 0, )));
+.rose-red {
+    @include mat.all-component-themes($rose-red-theme);
+}
+
+$cyan-orange-theme: mat.define-theme(( color: ( theme-type: dark, primary: mat.$cyan-palette, tertiary: mat.$orange-palette), density: ( scale: 0, )));
+.cyan-orange {
+    @include mat.all-component-themes($cyan-orange-theme);
+}
+
+$magenta-violet-theme: mat.define-theme(( color: ( theme-type: dark, primary: mat.$magenta-palette, tertiary: mat.$violet-palette), density: ( scale: 0, )));
+.magenta-violet {
+    @include mat.all-component-themes($magenta-violet-theme);
+}
+
 .material_default {
-    @include mat.core-color($indigo-pink-theme);
-    @include mat.all-component-colors($indigo-pink-theme);
-    @include mat.button-color($indigo-pink-theme);
+    @include mat.all-component-themes($azure-blue-theme);
 }
