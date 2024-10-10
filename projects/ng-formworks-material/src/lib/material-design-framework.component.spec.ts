@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
-    JsonSchemaFormModule,
-    JsonSchemaFormService,
-    WidgetLibraryModule
+  JsonSchemaFormModule,
+  JsonSchemaFormService,
+  WidgetLibraryModule
 } from '@ng-formworks/core';
 import { MaterialDesignFrameworkComponent } from './material-design-framework.component';
 
-describe('FwBootstrap4Component', () => {
+describe('MaterialDesignFrameworkComponent', () => {
   let component: MaterialDesignFrameworkComponent;
   let fixture: ComponentFixture<MaterialDesignFrameworkComponent>;
 
@@ -19,7 +20,7 @@ describe('FwBootstrap4Component', () => {
         WidgetLibraryModule,
       ],
       declarations: [MaterialDesignFrameworkComponent],
-      providers: [JsonSchemaFormService]
+      providers: [JsonSchemaFormService,HttpClient,HttpHandler]
     })
       .compileComponents();
   }));
