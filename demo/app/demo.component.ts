@@ -28,15 +28,7 @@ import { Examples } from './example-schemas.model';
   styles:[
     `.flex-spacer {
       flex: 1 1 auto;
-    }`,
-    `
-    .wraptext{
-        display: inline-block; /* Ensures the span behaves like a block element in terms of wrapping */
-        word-wrap: break-word; /* For older browsers */
-        overflow-wrap: break-word; /* For modern browsers */
-        white-space: break-spaces
-    }
-    `
+    }`
   ]
 })
 export class DemoComponent implements OnInit,AfterViewInit {

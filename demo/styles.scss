@@ -105,23 +105,25 @@ body {
 }
 
 
-/*
-// Define a dark theme
-$dark-theme: mat.define-dark-theme(( color: ( primary: mat.define-palette(mat.$pink-palette), accent: mat.define-palette(mat.$blue-grey-palette), ), // Only include `typography` and `density` in the default dark theme.
-typography: mat.define-typography-config(), density: 0, ));
-// Apply the dark theme by default
-.dark-theme {
-    @include mat.core-theme($dark-theme);
-    @include mat.button-theme($dark-theme);
+/* Media query to hide text on smaller displays */
+
+.wraptext {
+    display: inline-block;
+    /* Ensures the span behaves like a block element in terms of wrapping */
+    word-wrap: break-word;
+    /* For older browsers */
+    overflow-wrap: break-word;
+    /* For modern browsers */
+    white-space: break-spaces
 }
 
-// Define a light theme
-$light-theme: mat.define-light-theme(( color: ( primary: mat.define-palette(mat.$indigo-palette), accent: mat.define-palette(mat.$pink-palette), ), ));
-.light-theme {
-    @include mat.core-theme($light-theme);
-    @include mat.button-theme($light-theme);
+@media (max-width: 600px) {
+    /* Adjust the width as needed */
+    .demo-sm-hide {
+        display: none;
+        /* Hide the text */
+    }
 }
-*/
 
 .demo-theme {
     @include mat.core-theme($demo-app-theme);
