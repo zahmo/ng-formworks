@@ -99,6 +99,27 @@ body {
     width: 100%;
 }
 
+
+/* Media query to hide text on smaller displays */
+
+.wraptext {
+    display: inline-block;
+    /* Ensures the span behaves like a block element in terms of wrapping */
+    word-wrap: break-word;
+    /* For older browsers */
+    overflow-wrap: break-word;
+    /* For modern browsers */
+    white-space: break-spaces
+}
+
+@media (max-width: 600px) {
+    /* Adjust the width as needed */
+    .demo-sm-hide {
+        display: none;
+        /* Hide the text */
+    }
+}
+
 .demo-theme {
     @include mat.all-component-themes($demo-app-theme);
     @include mat.button-theme($demo-button-theme);
