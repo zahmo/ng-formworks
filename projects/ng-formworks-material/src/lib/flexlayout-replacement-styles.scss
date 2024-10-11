@@ -57,6 +57,12 @@ https://github.com/angular/flex-layout/issues/1433#issue-1508899434
     flex: none;
 }
 
+[fxlayout_lt-sm="column"] {
+    @media screen and (max-width: 599px) {
+        flex-direction: column;
+    }
+}
+
 @media only screen and (min-width: 960px) {
     [fxFlex-gt-sm="50"] {
         flex: 1 1 50% !important;
