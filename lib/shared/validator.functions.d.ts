@@ -126,7 +126,7 @@ export declare function isEmpty(value: any): boolean;
  * //   value - the value to check
  * // { boolean } - true if string, false if not
  */
-export declare function isString(value: any): boolean;
+export declare function isString(value: any): value is string;
 /**
  * 'isNumber' utility function
  *
