@@ -1,11 +1,9 @@
 // * { border: 1px solid red !important; }
 @use '@angular/material' as mat;
 @include mat.core();
-$demo-app-primary: mat.define-palette(mat.$blue-palette);
-$demo-app-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
-$demo-app-warn: mat.define-palette(mat.$red-palette);
-$demo-app-theme: mat.define-light-theme($demo-app-primary, $demo-app-accent, $demo-app-warn);
-@include mat.all-component-themes($demo-app-theme);
+//use M3 theming
+$demo-app-theme:mat.define-theme(( color: ( theme-type: light, primary: mat.$azure-palette, tertiary: mat.$blue-palette), density: ( scale: 0)));
+$demo-button-theme:mat.define-theme(( color: ( theme-type: light, primary: mat.$orange-palette, tertiary: mat.$yellow-palette), density: ( scale: 0)));
 $font-family: 'Roboto',
 'Noto',
 'Helvetica Neue',
@@ -31,10 +29,13 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    @include mat.all-component-themes($demo-app-theme);
+    @include mat.button-theme($demo-button-theme);
+    --mat-toolbar-container-background-color: #{mat.get-theme-color($demo-app-theme, primary, 80)};
 }
 
 .demo-page-header {
-    background-color: mat.get-color-from-palette($demo-app-primary, lighter);
+    background-color: mat.get-theme-color($demo-app-theme, surface);
     margin-bottom: 12px;
     .header-content {
         font-family: $font-family;
@@ -99,28 +100,29 @@ body {
 }
 
 
-/*
-// Define a dark theme
-$dark-theme: mat.define-dark-theme(( color: ( primary: mat.define-palette(mat.$pink-palette), accent: mat.define-palette(mat.$blue-grey-palette), ), // Only include `typography` and `density` in the default dark theme.
-typography: mat.define-typography-config(), density: 0, ));
-// Apply the dark theme by default
-.dark-theme {
-    @include mat.core-theme($dark-theme);
-    @include mat.button-theme($dark-theme);
+/* Media query to hide text on smaller displays */
+
+.wraptext {
+    display: inline-block;
+    /* Ensures the span behaves like a block element in terms of wrapping */
+    word-wrap: break-word;
+    /* For older browsers */
+    overflow-wrap: break-word;
+    /* For modern browsers */
+    white-space: break-spaces
 }
 
-// Define a light theme
-$light-theme: mat.define-light-theme(( color: ( primary: mat.define-palette(mat.$indigo-palette), accent: mat.define-palette(mat.$pink-palette), ), ));
-.light-theme {
-    @include mat.core-theme($light-theme);
-    @include mat.button-theme($light-theme);
+@media (max-width: 600px) {
+    /* Adjust the width as needed */
+    .demo-sm-hide {
+        display: none;
+        /* Hide the text */
+    }
 }
-*/
 
 .demo-theme {
-    @include mat.core-theme($demo-app-theme);
-    //@include mat.all-component-themes($demo-app-theme);
-    @include mat.button-color($demo-app-theme);
+    @include mat.all-component-themes($demo-app-theme);
+    @include mat.button-theme($demo-button-theme);
 }
 
 @import '../projects/ng-formworks-material/src/lib/material-design-themes.scss';

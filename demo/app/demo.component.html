@@ -1,10 +1,10 @@
 <div class="demo-page-header">
     <mat-toolbar class="mat-elevation-z4 mat-medium" color="primary">
-        <span class="wraptext">Angular JSON Schema Form — Demonstration Playground</span>
+        <span class="wraptext">ng-formworks — Demo & Playground</span>
         <span class="flex-spacer"></span>
 
         <button mat-raised-button color="primary" (click)="copyUrlToClipBoard($event)">
-            <span class="menu-label wraptext">Share form URL</span>
+            <span class="menu-label wraptext demo-sm-hide">Share form URL</span>
             <mat-icon>share</mat-icon> 
         </button>
 
@@ -61,7 +61,7 @@
         </mat-menu>
     </div>
 </div>
-<div fxLayout="row" fxLayoutAlign="space-around start" fxLayout.lt-sm="column" fxLayoutAlign.lt-sm="flex-start center">
+<div fxLayout="row" fxLayoutAlign="space-around start" fxLayout_lt-sm="column" fxLayoutAlign.lt-sm="flex-start center">
 
     <mat-card appearance="outlined" fxFlex="0 0 calc(50% - 12px)">
         <h4 class="default-cursor" (click)="toggleVisible('options')">

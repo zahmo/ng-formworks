@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
-    JsonSchemaFormModule,
-    JsonSchemaFormService,
-    WidgetLibraryModule
+  JsonSchemaFormModule,
+  JsonSchemaFormService,
+  WidgetLibraryModule
 } from '@ng-formworks/core';
 import { Bootstrap4FrameworkComponent } from './bootstrap4-framework.component';
 
-describe('FwBootstrap4Component', () => {
+describe('Bootstrap4FrameworkComponent', () => {
   let component: Bootstrap4FrameworkComponent;
   let fixture: ComponentFixture<Bootstrap4FrameworkComponent>;
 

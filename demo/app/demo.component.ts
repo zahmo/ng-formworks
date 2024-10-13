@@ -28,15 +28,7 @@ import { Examples } from './example-schemas.model';
   styles:[
     `.flex-spacer {
       flex: 1 1 auto;
-    }`,
-    `
-    .wraptext{
-        display: inline-block; /* Ensures the span behaves like a block element in terms of wrapping */
-        word-wrap: break-word; /* For older browsers */
-        overflow-wrap: break-word; /* For modern browsers */
-        white-space: break-spaces
-    }
-    `
+    }`
   ]
 })
 export class DemoComponent implements OnInit,AfterViewInit {
@@ -380,7 +372,10 @@ b64ToUtf8(b64) {
         // parse as JavaScript instead to include functions
         const newFormObject: any = null;
         /* tslint:disable */
-        eval('newFormObject = ' + newFormString);
+        //commented out to use indirect eval
+        //see https://esbuild.github.io/link/direct-eval
+        //eval('newFormObject = ' + newFormString);
+        (0, eval)('newFormObject = ' + newFormString)
         /* tslint:enable */
         this.jsonFormObject = newFormObject;
         this.jsonFormValid = true;
@@ -419,13 +414,13 @@ b64ToUtf8(b64) {
     }
   }
 
-  appendUrlParameters(params) {
+appendUrlParameters(params) {
     // Get the current URL
     const currentUrl = new URL(window.location.href);
     
-    // Iterate over the params object and append each parameter
+    // Iterate over the params object and set each parameter
     for (const [key, value] of Object.entries<string>(params)) {
-        currentUrl.searchParams.append(key, value);
+        currentUrl.searchParams.set(key, value);
     }
     
     return currentUrl;

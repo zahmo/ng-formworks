@@ -1,6 +1,6 @@
 {
     "name": "@ng-formworks/material",
-    "version": "17.3.0",
+    "version": "18.0.0",
     "description": "Angular ng-formworks - JSON Schema Form builder using Angular Material UI",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "keywords": [
@@ -12,9 +12,11 @@
         "Angular 16",
         "Angular17",
         "Angular 17",
+        "Angular 18",
         "ng15",
         "ng16",
         "ng17",
+        "ng18",
         "JSON Schema",
         "form",
         "forms",
@@ -38,12 +40,12 @@
     "private": false,
     "dependencies": {
         "lodash-es": "~4.17.21",
-        "@ng-formworks/core": "~17.3.0",
-        "@ng-formworks/cssframework": "~17.3.0",
-        "tslib": "^2.0.0"
+        "@ng-formworks/core": "~18.0.0",
+        "@ng-formworks/cssframework": "~18.0.0",
+        "tslib": "^2.7.0"
     },
     "peerDependencies": {
-        "@angular/material": ">=17.0.0",
-        "@angular/cdk": ">=17.0.0"
+        "@angular/material": ">=18.0.0",
+        "@angular/cdk": ">=18.0.0"
     }
 }

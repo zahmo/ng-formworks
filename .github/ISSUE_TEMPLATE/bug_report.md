@@ -7,8 +7,24 @@ assignees: ''
 
 ---
 
+**Before logging an issue, make sure that you have updated ng-formworks to the latest patch level for the corresponding version of Angular that you are using, then test again to see if the issue persists**
+
 **Describe the bug**
-which template:
+which version of ng-formworks:
+
+* [ ] 15.x.x
+* [ ] 16.x.x
+* [ ] 17.x.x
+* [ ] 18.x.x
+
+which version of Angular:
+
+* [ ] 15
+* [ ] 16
+* [ ] 17
+* [ ] 18
+
+which framework:
 
 * [ ] MaterialDesignFrameworkModule — Material Design
 * [ ] Bootstrap3FrameworkModule — Bootstrap 3
@@ -24,6 +40,35 @@ A clear and concise description of what the bug is.
 Steps to reproduce the behavior:
 
 1. ...
+
+
+**Share the form input (if applicable)**
+1. Navigate to the appropriate demo page corresponding to the version
+of ng-formworks that you are using.
+
+    | ng-formworks | 
+    |--|
+    | [version 15.x.x][demo_ver_15] | 
+    | [version 16.x.x][demo_ver_16] |  
+    | [version 17.x.x][demo_ver_17] | 
+    | [version 18.x.x][demo_ver_18] | 
+
+2. From the Dropdowns section 'Selected Framework and Options',
+    - Select the Framework related to your issue
+    - then select the theme(if applicable)
+    - check/uncheck any other options(if applicable)
+
+3. If applicable change the Current example.
+
+4. Enter the Form (if part of the issue) into the 'Input JSON Schema and Form Layout' field,
+making sure that the JSON data is correctly closed. If all is correct there should be no 'SyntaxError' or similar messages displaying and the 'Generated Form' section
+should output a form.
+
+5. Populate the Generated Form (if applicable to the issue)
+
+6. Click the 'Share form URL' button, this should copy the URL of the form to your clipboard (you may have to give the browser permission depending on your OS/Browser).
+
+6. Paste the link in this message.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
@@ -57,3 +102,9 @@ Add any other context about the problem here.
 
 **Possible Implementation**
 <!--- Not obligatory, but suggest an idea for implementing addition or change -->
+
+
+[demo_ver_15]:https://zahmo.github.io/ng-formworks/15
+[demo_ver_16]:https://zahmo.github.io/ng-formworks/16
+[demo_ver_17]:https://zahmo.github.io/ng-formworks/17
+[demo_ver_18]:https://zahmo.github.io/ng-formworks/18
