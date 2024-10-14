@@ -46,13 +46,11 @@ Steps to reproduce the behavior:
 1. Navigate to the appropriate demo page corresponding to the version
 of ng-formworks that you are using.
 
-    | ng-formworks | 
-    |--|
-    | [version 15.x.x][demo_ver_15] | 
-    | [version 16.x.x][demo_ver_16] |  
-    | [version 17.x.x][demo_ver_17] | 
-    | [version 18.x.x][demo_ver_18] | 
-
+    - version 15: https://zahmo.github.io/ng-formworks/15
+    - version 16: https://zahmo.github.io/ng-formworks/16
+    - version 17: https://zahmo.github.io/ng-formworks/17
+    - version 18: https://zahmo.github.io/ng-formworks/18
+    
 2. From the Dropdowns section 'Selected Framework and Options',
     - Select the Framework related to your issue
     - then select the theme(if applicable)
@@ -102,9 +100,3 @@ Add any other context about the problem here.
 
 **Possible Implementation**
 <!--- Not obligatory, but suggest an idea for implementing addition or change -->
-
-
-[demo_ver_15]:https://zahmo.github.io/ng-formworks/15
-[demo_ver_16]:https://zahmo.github.io/ng-formworks/16
-[demo_ver_17]:https://zahmo.github.io/ng-formworks/17
-[demo_ver_18]:https://zahmo.github.io/ng-formworks/18
