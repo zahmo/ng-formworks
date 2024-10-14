@@ -42,22 +42,22 @@ A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, an
 
 ## Packages
 
-* [`@ng-formworks/core`][gh_core_project] [![npm version][npm_core_badge]][npm_core_ver][![npm RC version][npm_core_badge_alpha]][npm_core_ver_alpha]
+* [`@ng-formworks/core`][gh_core_project] [![npm version][npm_core_badge]][npm_core_ver]
 
-* [`@ng-formworks/cssframework`][gh_cssframework_project] [![npm version][npm_cssframework_badge]][npm_cssframework_ver][![npm RC version][npm_cssframework_badge_alpha]][npm_cssframework_ver_alpha]
+* [`@ng-formworks/cssframework`][gh_cssframework_project] [![npm version][npm_cssframework_badge]][npm_cssframework_ver]
 
-* [`@ng-formworks/bootstrap3`][gh_bootstrap3_project] [![npm version][npm_bootstrap3_badge]][npm_bootstrap3_ver][![npm RC version][npm_bootstrap3_badge_alpha]][npm_bootstrap3_ver_alpha]
+* [`@ng-formworks/bootstrap3`][gh_bootstrap3_project] [![npm version][npm_bootstrap3_badge]][npm_bootstrap3_ver]
 
-* [`@ng-formworks/bootstrap4`][gh_bootstrap4_project] [![npm version][npm_bootstrap4_badge]][npm_bootstrap4_ver][![npm RC version][npm_bootstrap4_badge_alpha]][npm_bootstrap4_ver_alpha]
-
-
-* [`@ng-formworks/bootstrap5`][gh_bootstrap5_project] [![npm version][npm_bootstrap5_badge]][npm_bootstrap5_ver][![npm RC version][npm_bootstrap5_badge_alpha]][npm_bootstrap5_ver_alpha]
+* [`@ng-formworks/bootstrap4`][gh_bootstrap4_project] [![npm version][npm_bootstrap4_badge]][npm_bootstrap4_ver]
 
 
-* [`@ng-formworks/daisyui`][gh_daisyui_project] [![npm version][npm_daisyui_badge]][npm_daisyui_ver][![npm RC version][npm_daisyui_badge_alpha]][npm_daisyui_ver_alpha]
+* [`@ng-formworks/bootstrap5`][gh_bootstrap5_project] [![npm version][npm_bootstrap5_badge]][npm_bootstrap5_ver]
 
 
-* [`@ng-formworks/material`][gh_material_project] [![npm version][npm_material_badge]][npm_material_ver][![npm RC version][npm_material_badge_alpha]][npm_material_ver_alpha]
+* [`@ng-formworks/daisyui`][gh_daisyui_project] [![npm version][npm_daisyui_badge]][npm_daisyui_ver]
+
+
+* [`@ng-formworks/material`][gh_material_project] [![npm version][npm_material_badge]][npm_material_ver]
 
 ## Check out the live demo and play with the examples
 

@@ -16,7 +16,7 @@ module.exports = function(config) {
             clearContext: false, // leave Jasmine Spec Runner output visible in browser
         },
         coverageReporter: {
-            dir: require('path').join(__dirname, '../../coverage/ngformworks-bootstrap3'),
+            dir: require('path').join(__dirname, '../../coverage/ngformworks-bootstrap5'),
             reporters: [{
                     type: 'html',
                 },
@@ -33,7 +33,6 @@ module.exports = function(config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['Chrome'],
         singleRun: false,
         browsers: ['Chrome', 'ChromeHeadlessCI'],
         customLaunchers: {

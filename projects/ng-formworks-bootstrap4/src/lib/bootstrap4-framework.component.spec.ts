@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   JsonSchemaFormModule,
   JsonSchemaFormService,
   WidgetLibraryModule
 } from '@ng-formworks/core';
+import { CssFrameworkComponent } from '@ng-formworks/cssframework';
 import { Bootstrap4FrameworkComponent } from './bootstrap4-framework.component';
 
 describe('Bootstrap4FrameworkComponent', () => {
@@ -18,8 +20,8 @@ describe('Bootstrap4FrameworkComponent', () => {
         CommonModule,
         WidgetLibraryModule,
       ],
-      declarations: [Bootstrap4FrameworkComponent],
-      providers: [JsonSchemaFormService]
+      declarations: [Bootstrap4FrameworkComponent,CssFrameworkComponent],
+      providers: [JsonSchemaFormService, HttpClient,HttpHandler]
     })
       .compileComponents();
   }));
