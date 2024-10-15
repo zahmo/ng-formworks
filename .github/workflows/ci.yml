@@ -39,4 +39,4 @@ jobs:
         npm run test:daisyui -- --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI
         npm run test:material -- --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI
     - name: Publish code coverage
-      run: npm run publish:coverage
+      run: ./node_modules/.bin/codecov -t ${{ secrets.CODECOV_TOKEN }}
