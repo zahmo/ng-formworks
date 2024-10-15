@@ -1,3 +1,4 @@
+#NB has been disabled for now, change branches: [ main] to enable
 #workflow creates a dist branch for each library, based on its package version
 #should create the following 2 dist branches per lib project
 #for example the material library project with package version x.x.x will create branches: 
@@ -8,7 +9,7 @@ name: CreateDist
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main-disabled ]
 
 jobs:
   deploy:
