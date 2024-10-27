@@ -71,6 +71,10 @@ Where `schema` is a valid JSON schema object, and `onSubmit` calls a function to
 The possible values for this framework are:
 
 * `material_default` for the default theme.
+* `azure-blue` for the azure & blue theme.
+* `rose-red` for the rose & red theme.
+* `cyan-orange` for the cyan & orange theme.
+* `magenta-violet` for the magenta & violet theme.   
 * `indigo-pink` for the indigo & pink theme.
 * `purple-green` for the purple & green theme.
 * `deeppurple-amber` for the deep purple & amber theme.
