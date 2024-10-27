@@ -1,38 +1,41 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import Ajv, { ErrorObject, Options } from 'ajv';
+//import Ajv, { ErrorObject, Options } from 'ajv';
+import Ajv2019, { ErrorObject, Options } from 'ajv/dist/2019';
+
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
+import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
 import { Subject, Subscription } from 'rxjs';
 import {
-    deValidationMessages,
-    enValidationMessages,
-    esValidationMessages,
-    frValidationMessages,
-    itValidationMessages,
-    ptValidationMessages,
-    zhValidationMessages
+  deValidationMessages,
+  enValidationMessages,
+  esValidationMessages,
+  frValidationMessages,
+  itValidationMessages,
+  ptValidationMessages,
+  zhValidationMessages
 } from './locale';
 import {
-    JsonPointer,
-    buildFormGroup,
-    buildFormGroupTemplate,
-    buildLayout,
-    buildSchemaFromData,
-    buildSchemaFromLayout,
-    fixTitle,
-    forEach,
-    formatFormData,
-    getControl,
-    getLayoutNode,
-    hasOwn,
-    hasValue,
-    isArray,
-    isDefined,
-    isEmpty,
-    isObject,
-    removeRecursiveReferences,
-    toTitleCase
+  JsonPointer,
+  buildFormGroup,
+  buildFormGroupTemplate,
+  buildLayout,
+  buildSchemaFromData,
+  buildSchemaFromLayout,
+  fixTitle,
+  forEach,
+  formatFormData,
+  getControl,
+  getLayoutNode,
+  hasOwn,
+  hasValue,
+  isArray,
+  isDefined,
+  isEmpty,
+  isObject,
+  removeRecursiveReferences,
+  toTitleCase
 } from './shared';
 
 import _isEqual from 'lodash/isEqual';
@@ -65,7 +68,7 @@ export class JsonSchemaFormService implements OnDestroy {
     strict:false
   
   };
-  ajv:any = new Ajv(this.ajvOptions); // AJV: Another JSON Schema Validator
+  ajv:any = new Ajv2019(this.ajvOptions); // AJV: Another JSON Schema Validator
   
   validateFormData: any = null; // Compiled AJV function to validate active form's schema
 
@@ -152,6 +155,7 @@ export class JsonSchemaFormService implements OnDestroy {
   constructor() {
     this.setLanguage(this.language);
     this.ajv.addMetaSchema(jsonDraft6);
+    this.ajv.addMetaSchema(jsonDraft7);
   }
   ngOnDestroy(): void {
     this.fcValueChangesSubs?.unsubscribe();
