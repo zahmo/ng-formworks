@@ -31,13 +31,16 @@ A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, an
 
 ## Versions
 
+### NB the version of ng-formworks to be installed, should correspond to the Angular version being used.
 
-| angular | ng-formworks |
-|--|--|
-| 15.x.x |15.x.x|
-| 16.x.x |16.x.x|
-| 17.x.x |17.x.x|
-| 18.x.x |18.x.x|
+Below is a table of the corresponding ng-formworks versions that's needed for the Angular version installed. It also lists the installation command if choosing to use the Material Design Framework, but installing other frameworks should have a similar command, have a look at their READMES for specific details.
+
+| Angular | ng-formworks |  installation (for Material Design)
+|--|--|--|
+| 18.x.x |18.x.x|```npm  install @ng-formworks/core@^18.0.0 @ng-formworks/cssframework@^18.0.0 @ng-formworks/material@^18.0.0```|
+| 17.x.x |17.x.x|```npm  install @ng-formworks/core@^17.0.0 @ng-formworks/cssframework@^17.0.0 @ng-formworks/material@^17.0.0```|
+| 16.x.x |16.x.x|```npm  install @ng-formworks/core@^16.0.0 @ng-formworks/cssframework@^16.0.0 @ng-formworks/material@^16.0.0```|
+| 15.x.x |15.x.x|```npm  install @ng-formworks/core@^15.0.0 @ng-formworks/cssframework@^15.0.0 @ng-formworks/material@^15.0.0```|
 
 
 ## Packages
@@ -92,12 +95,12 @@ For example if you'd like to try the material design based framework, [install @
 
 
  ```shell
-npm  install @ng-formworks/core@latest @ng-formworks/cssframework@latest @ng-formworks/material@latest 
+npm  install @ng-formworks/core @ng-formworks/cssframework @ng-formworks/material
 ```  
 
 With YARN, run the following:
 ```shell
-yarn  add  @ng-formworks/core@latest @ng-formworks/cssframework@latest @ng-formworks/material@latest 
+yarn  add  @ng-formworks/core @ng-formworks/cssframework @ng-formworks/material
 ```  
 
 include the themes scss in your applications sass file(typically "styles.scss" under "src" folder -see angular docs for more details) 
@@ -690,7 +693,7 @@ currently the following built-in themes are available(per framework):
 * Bootstrap 3:"bootstrap3_default"
 * Bootstrap 4:"bootstrap4_default"
 * Bootstrap 5:"bootstrap5_default" | "light" | "dark"
-* Material design:"material_default" | "indigo-pink" | "purple-green" | "deeppurple-amber" | "pink-bluegrey"
+* Material design:"material_default" | "azure-blue" | "rose-red" | "cyan-orange" | "magenta-violet"  | "indigo-pink" | "purple-green" | "deeppurple-amber" | "pink-bluegrey"
 * DaisyUi: "daisyui_default" | "light" | "dark" | "cupcake" | "cmyk" | "pastel" |"daisyui_leaf"
 
 | Framework Values | Theme values |
@@ -700,6 +703,10 @@ currently the following built-in themes are available(per framework):
 | "bootstrap-5" | "light" |
 | | "dark" |
 | "material-design" | "material_default" |
+| | "azure-blue" |
+| | "rose-red" |
+| | "cyan-orange" |
+| | "magenta-violet" |
 | | "indigo-pink" |
 | | "purple-green" |
 | | "deeppurple-amber" |

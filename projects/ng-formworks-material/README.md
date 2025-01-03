@@ -6,15 +6,16 @@ This module is a dependency of the [ng-formworks project][npm_core_ver] and is m
 
 If you are unfamiliar with with the ng-formworks project, it is highly recommended to 
 first have a look at the [@ng-formworks pages][npm_core_ver] for examples, demos, options and documentation.
+Before installing also have a look at the Angular/ng-formworks [version compatibility table][npm_core_ver#versions]
 
 ```shell
-npm install @ng-formworks/core@latest @ng-formworks/cssframework@latest @ng-formworks/material@latest
+npm install @ng-formworks/core @ng-formworks/cssframework @ng-formworks/material
 ```
 
 With YARN, run the following:
 
 ```shell
-yarn add @ng-formworks/core@latest @ng-formworks/cssframework@latest @ng-formworks/material@latest
+yarn add @ng-formworks/core @ng-formworks/cssframework @ng-formworks/material
 ```
 
 include the themes scss in your applications sass file(typically "styles.scss" under "src" folder -see angular docs for more details) 
@@ -71,6 +72,10 @@ Where `schema` is a valid JSON schema object, and `onSubmit` calls a function to
 The possible values for this framework are:
 
 * `material_default` for the default theme.
+* `azure-blue` for the azure & blue theme.
+* `rose-red` for the rose & red theme.
+* `cyan-orange` for the cyan & orange theme.
+* `magenta-violet` for the magenta & violet theme.   
 * `indigo-pink` for the indigo & pink theme.
 * `purple-green` for the purple & green theme.
 * `deeppurple-amber` for the deep purple & amber theme.
@@ -131,3 +136,4 @@ Run `ng build @ng-formworks/material` to build the project. The build artifacts 
 Run `ng test @ng-formworks/material` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 [npm_core_ver]:https://www.npmjs.com/package/@ng-formworks/core
+[npm_core_ver#versions]:https://www.npmjs.com/package/@ng-formworks/core#versions
