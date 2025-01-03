@@ -5,15 +5,16 @@ This module is a dependency of the [ng-formworks project][npm_core_ver] and is m
 
 If you are unfamiliar with with the ng-formworks project, it is highly recommended to 
 first have a look at the [@ng-formworks pages][npm_core_ver] for examples, demos, options and documentation.
+Before installing also have a look at the Angular/ng-formworks [version compatibility table][npm_core_ver#versions]
 
 ```shell
-npm install @ng-formworks/core@latest @ng-formworks/cssframework@latest @ng-formworks/bootstrap4@latest
+npm install @ng-formworks/core @ng-formworks/cssframework @ng-formworks/bootstrap4
 ```
 
 With YARN, run the following:
 
 ```shell
-yarn add @ng-formworks/core@latest @ng-formworks/cssframework@latest @ng-formworks/bootstrap4@latest
+yarn add @ng-formworks/core @ng-formworks/cssframework @ng-formworks/bootstrap4
 ```
 
 Then import `Bootstrap4FrameworkModule` in your main application module if you want to use `bootstrap4` UI, like this:
@@ -231,3 +232,4 @@ Run `ng build @ng-formworks/bootstrap4` to build the project. The build artifact
 Run `ng test @ng-formworks/bootstrap4` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 [npm_core_ver]:https://www.npmjs.com/package/@ng-formworks/core
+[npm_core_ver#versions]:https://www.npmjs.com/package/@ng-formworks/core#versions
