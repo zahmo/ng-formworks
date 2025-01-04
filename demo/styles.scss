@@ -1,6 +1,7 @@
 // * { border: 1px solid red !important; }
 @use '@angular/material' as mat;
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 //use M3 theming
 $demo-app-theme:mat.define-theme(( color: ( theme-type: light, primary: mat.$azure-palette, tertiary: mat.$blue-palette), density: ( scale: 0)));
 $demo-button-theme:mat.define-theme(( color: ( theme-type: light, primary: mat.$orange-palette, tertiary: mat.$yellow-palette), density: ( scale: 0)));
