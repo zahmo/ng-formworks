@@ -4,9 +4,9 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-radios-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-radios-widget',
+    template: `
     <div>
       <div *ngIf="options?.title">
         <label
@@ -47,13 +47,14 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
       <mat-error *ngIf="options?.showErrors && options?.errorMessage"
         [innerHTML]="options?.errorMessage"></mat-error>
     </div>`,
-  styles: [`
+    styles: [`
     /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
     mat-radio-group { display: inline-flex; }
     /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
     mat-radio-button { margin: 2px; }
     mat-error { font-size: 75%; }
-  `]
+  `],
+    standalone: false
 })
 export class MaterialRadiosComponent implements OnInit {
   formControl: AbstractControl;

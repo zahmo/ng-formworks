@@ -3,9 +3,9 @@ import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'flex-layout-section-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'flex-layout-section-widget',
+    template: `
     <div *ngIf="containerType === 'div'"
       [class]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
@@ -135,12 +135,13 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <mat-error *ngIf="options?.showErrors && options?.errorMessage"
         [innerHTML]="options?.errorMessage"></mat-error>
     </mat-expansion-panel>`,
-  styles: [`
+    styles: [`
     fieldset { border: 0; margin: 0; padding: 0; }
     .legend { font-weight: bold; }
     .expandable > .legend:before { content: '▶'; padding-right: .3em; }
     .expanded > .legend:before { content: '▼'; padding-right: .2em; }
   `],
+    standalone: false
 })
 export class FlexLayoutSectionComponent implements OnInit {
   formControl: AbstractControl;

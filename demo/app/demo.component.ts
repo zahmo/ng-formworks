@@ -10,26 +10,27 @@ import { Framework, FrameworkLibraryService, JsonPointer } from '@ng-formworks/c
 import { Examples } from './example-schemas.model';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'demo',
-  templateUrl: 'demo.component.html',
-  animations: [
-    trigger('expandSection', [
-      state('in', style({ height: '*' })),
-      transition(':enter', [
-        style({ height: 0 }), animate(100),
-      ]),
-      transition(':leave', [
-        style({ height: '*' }),
-        animate(100, style({ height: 0 })),
-      ]),
-    ]),
-  ],
-  styles:[
-    `.flex-spacer {
+    // tslint:disable-next-line:component-selector
+    selector: 'demo',
+    templateUrl: 'demo.component.html',
+    animations: [
+        trigger('expandSection', [
+            state('in', style({ height: '*' })),
+            transition(':enter', [
+                style({ height: 0 }), animate(100),
+            ]),
+            transition(':leave', [
+                style({ height: '*' }),
+                animate(100, style({ height: 0 })),
+            ]),
+        ]),
+    ],
+    styles: [
+        `.flex-spacer {
       flex: 1 1 auto;
     }`
-  ]
+    ],
+    standalone: false
 })
 export class DemoComponent implements OnInit,AfterViewInit {
   examples: any = Examples;

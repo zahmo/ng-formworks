@@ -13,9 +13,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 *
 */
 @Component({
-// tslint:disable-next-line:component-selector
-selector: 'daisyui-framework-prefixed',
-template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'daisyui-framework-prefixed',
+    template: `
 <div>
   <css-framework [layoutNode]="layoutNode" 
   [layoutIndex]="layoutIndex" 
@@ -24,8 +24,9 @@ template: `
   </css-framework>
 </div>
 `,
-styleUrls: ['./daisyui-framework.prefixed.component.scss'],
-encapsulation:ViewEncapsulation.None
+    styleUrls: ['./daisyui-framework.prefixed.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class DaisyUIFrameworkComponentPrefixed implements OnInit, OnChanges {
 

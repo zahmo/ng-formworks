@@ -73,13 +73,14 @@ export const JSON_SCHEMA_FORM_VALUE_ACCESSOR: any = {
  *  - brace, Browserified Ace editor       http://thlorenz.github.io/brace
  */
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'json-schema-form',
-  templateUrl: './json-schema-form.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  // Adding 'JsonSchemaFormService' here, instead of in the module,
-  // creates a separate instance of the service for each component
-  providers:  [ JsonSchemaFormService, JSON_SCHEMA_FORM_VALUE_ACCESSOR ],
+    // tslint:disable-next-line:component-selector
+    selector: 'json-schema-form',
+    templateUrl: './json-schema-form.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    // Adding 'JsonSchemaFormService' here, instead of in the module,
+    // creates a separate instance of the service for each component
+    providers: [JsonSchemaFormService, JSON_SCHEMA_FORM_VALUE_ACCESSOR],
+    standalone: false
 })
 export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges, OnInit,OnDestroy {
   // TODO: quickfix to avoid subscribing twice to the same emitters

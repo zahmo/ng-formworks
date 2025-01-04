@@ -5,9 +5,10 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 // TODO: Add this control
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-stepper-widget',
-  template: ``,
+    // tslint:disable-next-line:component-selector
+    selector: 'material-stepper-widget',
+    template: ``,
+    standalone: false
 })
 export class MaterialStepperComponent implements OnInit {
   formControl: AbstractControl;

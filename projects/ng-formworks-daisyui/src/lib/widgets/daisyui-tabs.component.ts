@@ -4,9 +4,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'tabs-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'tabs-widget',
+    template: `
     <div
       [class]="options?.labelHtmlClass || ''">
       <a *ngFor="let item of layoutNode?.items; let i = index"
@@ -43,7 +43,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [layoutNode]="layoutItem"></select-framework-widget>
 
     </div>`,
-  styles: [` a { cursor: pointer; } `],
+    styles: [` a { cursor: pointer; } `],
+    standalone: false
 })
 export class DaisyUITabsComponent implements OnInit {
   options: any;

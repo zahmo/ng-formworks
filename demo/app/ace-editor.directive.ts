@@ -6,8 +6,9 @@ import 'brace/theme/sqlserver';
 
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
-  selector: '[ace-editor]'
+    // tslint:disable-next-line:directive-selector
+    selector: '[ace-editor]',
+    standalone: false
 })
 export class AceEditorDirective {
   _options: any = {};

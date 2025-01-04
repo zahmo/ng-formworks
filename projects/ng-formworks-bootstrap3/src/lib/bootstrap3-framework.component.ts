@@ -5,9 +5,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
  * Bootstrap 3 framework for Angular JSON Schema Form.
  */
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'bootstrap-3-framework',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'bootstrap-3-framework',
+    template: `
   <div>
     <css-framework [layoutNode]="layoutNode" 
     [layoutIndex]="layoutIndex" 
@@ -15,8 +15,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     </css-framework>
   </div>
   `,
-  styleUrls: ['./bootstrap3-framework.component.scss'],
-  encapsulation:ViewEncapsulation.None
+    styleUrls: ['./bootstrap3-framework.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class Bootstrap3FrameworkComponent implements OnInit, OnChanges  {
   frameworkInitialized = false;

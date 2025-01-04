@@ -6,11 +6,11 @@ import { Subscription } from 'rxjs';
 import { cssFrameworkCfgMaterialDesign } from './material-design-cssframework';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-design-framework',
-  templateUrl: './material-design-framework.component.html',
-  styleUrls: ['./material-design-framework.component.scss'],
-  //changeDetection:ChangeDetectionStrategy.OnPush
+    // tslint:disable-next-line:component-selector
+    selector: 'material-design-framework',
+    templateUrl: './material-design-framework.component.html',
+    styleUrls: ['./material-design-framework.component.scss'],
+    standalone: false
 })
 export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDestroy {
   frameworkInitialized = false;

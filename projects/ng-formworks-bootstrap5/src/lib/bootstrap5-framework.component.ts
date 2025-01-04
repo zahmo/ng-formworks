@@ -13,9 +13,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
  *
  */
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'bootstrap-5-framework',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'bootstrap-5-framework',
+    template: `
   <div>
     <css-framework [layoutNode]="layoutNode" 
     [layoutIndex]="layoutIndex" 
@@ -23,8 +23,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     </css-framework>
   </div>
   `,
-  styleUrls: ['./bootstrap5-framework.component.scss'],
-  encapsulation:ViewEncapsulation.None
+    styleUrls: ['./bootstrap5-framework.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class Bootstrap5FrameworkComponent implements OnInit, OnChanges {
   frameworkInitialized = false;
