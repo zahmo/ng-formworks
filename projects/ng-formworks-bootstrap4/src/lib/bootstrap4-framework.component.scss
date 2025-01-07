@@ -1,3 +1,4 @@
+@use "sass:meta";
 :host ::ng-deep {
     .list-group-item .form-control-feedback {
         top: 40px;
@@ -25,4 +26,4 @@
     }
 }
 
-@import './bootstrap4-cssframework.scss';
+@include meta.load-css('bootstrap4-cssframework.scss');
