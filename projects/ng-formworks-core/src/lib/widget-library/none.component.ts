@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
     standalone: false
 })
 export class NoneComponent {
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 }

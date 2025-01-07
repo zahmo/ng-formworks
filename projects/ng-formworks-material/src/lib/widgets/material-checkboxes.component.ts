@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService, TitleMapItem, buildTitleMap } from '@ng-formworks/core';
 
@@ -61,18 +61,19 @@ export class MaterialCheckboxesComponent implements OnInit {
   horizontalList = false;
   formArray: AbstractControl;
   checkboxList: TitleMapItem[] = [];
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   constructor(
     private jsf: JsonSchemaFormService
   ) { }
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
-    this.horizontalList = this.layoutNode.type === 'checkboxes-inline' ||
-      this.layoutNode.type === 'checkboxbuttons';
+    this.options = this.layoutNode().options || {};
+    const layoutNode = this.layoutNode();
+    this.horizontalList = layoutNode.type === 'checkboxes-inline' ||
+      layoutNode.type === 'checkboxbuttons';
     this.jsf.initializeControl(this);
     this.checkboxList = buildTitleMap(
       this.options.titleMap || this.options.enumNames, this.options.enum, true

@@ -1,10 +1,10 @@
 import {
   ChangeDetectorRef,
   Component,
-  Input,
   OnChanges,
   OnInit,
-  ViewEncapsulation
+  ViewEncapsulation,
+  input
 } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
@@ -17,9 +17,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     selector: 'daisyui-framework',
     template: `
 <div>
-  <css-framework [layoutNode]="layoutNode" 
-  [layoutIndex]="layoutIndex" 
-  [dataIndex]="dataIndex"
+  <css-framework [layoutNode]="layoutNode()" 
+  [layoutIndex]="layoutIndex()" 
+  [dataIndex]="dataIndex()"
   >
   </css-framework>
 </div>
@@ -40,9 +40,9 @@ debugOutput: any = '';
 debug: any = '';
 parentArray: any = null;
 isOrderable = false;
-@Input() layoutNode: any;
-@Input() layoutIndex: number[];
-@Input() dataIndex: number[];
+readonly layoutNode = input<any>(undefined);
+readonly layoutIndex = input<number[]>(undefined);
+readonly dataIndex = input<number[]>(undefined);
 
 
 

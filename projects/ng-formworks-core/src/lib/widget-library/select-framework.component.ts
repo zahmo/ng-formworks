@@ -1,6 +1,7 @@
 import {
-  Component, ComponentFactoryResolver, ComponentRef, Input,
-  OnChanges, OnInit, ViewChild, ViewContainerRef
+  Component, ComponentFactoryResolver, ComponentRef,
+  OnChanges, OnInit, ViewChild, ViewContainerRef,
+  input
 } from '@angular/core';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -13,9 +14,9 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
 })
 export class SelectFrameworkComponent implements OnChanges, OnInit {
   newComponent: ComponentRef<any> = null;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
   @ViewChild('widgetContainer', {
       read: ViewContainerRef,
       static: true })

@@ -1,10 +1,10 @@
 import {
   ChangeDetectorRef,
   Component,
-  Input,
   OnChanges,
   OnInit,
-  ViewEncapsulation
+  ViewEncapsulation,
+  input
 } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
@@ -17,9 +17,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     selector: 'bootstrap-5-framework',
     template: `
   <div>
-    <css-framework [layoutNode]="layoutNode" 
-    [layoutIndex]="layoutIndex" 
-    [dataIndex]="dataIndex">
+    <css-framework [layoutNode]="layoutNode()" 
+    [layoutIndex]="layoutIndex()" 
+    [dataIndex]="dataIndex()">
     </css-framework>
   </div>
   `,
@@ -37,9 +37,9 @@ export class Bootstrap5FrameworkComponent implements OnInit, OnChanges {
   debug: any = '';
   parentArray: any = null;
   isOrderable = false;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
   
   
   constructor(

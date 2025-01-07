@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { Component, Inject, OnInit, Optional, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -17,11 +17,11 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <input matInput *ngIf="boundControl"
         [formControl]="formControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.max]="options?.maximum"
         [attr.min]="options?.minimum"
         [attr.step]="options?.multipleOf || options?.step || 'any'"
-        [id]="'control' + layoutNode?._id"
+        [id]="'control' + layoutNode()?._id"
         [name]="controlName"
         [placeholder]="options?.notitle ? options?.placeholder : options?.title"
         [readonly]="options?.readonly ? 'readonly' : null"
@@ -30,12 +30,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [type]="'number'"
         (blur)="options.showErrors = true">
       <input matInput *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.max]="options?.maximum"
         [attr.min]="options?.minimum"
         [attr.step]="options?.multipleOf || options?.step || 'any'"
         [disabled]="controlDisabled"
-        [id]="'control' + layoutNode?._id"
+        [id]="'control' + layoutNode()?._id"
         [name]="controlName"
         [placeholder]="options?.notitle ? options?.placeholder : options?.title"
         [readonly]="options?.readonly ? 'readonly' : null"
@@ -47,7 +47,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (blur)="options.showErrors = true">
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
-      <mat-hint *ngIf="layoutNode?.type === 'range'" align="start"
+      <mat-hint *ngIf="layoutNode()?.type === 'range'" align="start"
         [innerHTML]="controlValue"></mat-hint>
       <mat-hint *ngIf="options?.description && (!options?.showErrors || !options?.errorMessage)"
         align="end" [innerHTML]="options?.description"></mat-hint>
@@ -72,9 +72,9 @@ export class MaterialNumberComponent implements OnInit {
   allowDecimal = true;
   allowExponents = false;
   lastValidNumber = '';
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   constructor(
     @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) @Optional() public matFormFieldDefaultOptions,
@@ -82,9 +82,9 @@ export class MaterialNumberComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this);
-    if (this.layoutNode.dataType === 'integer') { this.allowDecimal = false; }
+    if (this.layoutNode().dataType === 'integer') { this.allowDecimal = false; }
     if (!this.options.notitle && !this.options.description && this.options.placeholder) {
       this.options.description = this.options.placeholder;
     }

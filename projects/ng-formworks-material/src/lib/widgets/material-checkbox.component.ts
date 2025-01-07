@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
@@ -10,7 +10,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [formControl]="formControl"
       align="left"
       [color]="options?.color || 'primary'"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       labelPosition="after"
       [name]="controlName"
       (blur)="options.showErrors = true">
@@ -23,7 +23,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       align="left"
       [color]="options?.color || 'primary'"
       [disabled]="controlDisabled || options?.readonly"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       labelPosition="after"
       [name]="controlName"
       [checked]="isChecked"
@@ -38,7 +38,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [formControl]="formControl"
       align="left"
       [color]="options?.color || 'primary'"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       labelPosition="after"
       [name]="controlName"
       (blur)="options.showErrors = true">
@@ -51,7 +51,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       align="left"
       [color]="options?.color || 'primary'"
       [disabled]="controlDisabled || options?.readonly"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       labelPosition="after"
       [name]="controlName"
       [checked]="isChecked"
@@ -80,23 +80,24 @@ export class MaterialCheckboxComponent implements OnInit {
   trueValue: any = true;
   falseValue: any = false;
   showSlideToggle = false;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   constructor(
     private jsf: JsonSchemaFormService
   ) { }
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this, !this.options.readonly);
     if (this.controlValue === null || this.controlValue === undefined) {
       this.controlValue = false;
       this.jsf.updateValue(this, this.falseValue);
     }
-    if (this.layoutNode.type === 'slide-toggle' ||
-      this.layoutNode.format === 'slide-toggle'
+    const layoutNode = this.layoutNode();
+    if (layoutNode.type === 'slide-toggle' ||
+      layoutNode.format === 'slide-toggle'
     ) {
       this.showSlideToggle = true;
     }

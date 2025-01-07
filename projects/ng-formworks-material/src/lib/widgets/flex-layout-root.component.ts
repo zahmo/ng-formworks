@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
@@ -6,8 +6,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     // tslint:disable-next-line:component-selector
     selector: 'flex-layout-root-widget',
     template: `
-    <div *ngFor="let layoutNode of layout; let i = index"
-      [class.form-flex-item]="isFlexItem"
+    <div *ngFor="let layoutNode of layout(); let i = index"
+      [class.form-flex-item]="isFlexItem()"
       [style.flex-grow]="getFlexAttribute(layoutNode, 'flex-grow')"
       [style.flex-shrink]="getFlexAttribute(layoutNode, 'flex-shrink')"
       [style.flex-basis]="getFlexAttribute(layoutNode, 'flex-basis')"
@@ -18,18 +18,18 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [attr.fxFlexOffset]="layoutNode?.options?.fxFlexOffset"
       [attr.fxFlexAlign]="layoutNode?.options?.fxFlexAlign">
       <select-framework-widget *ngIf="showWidget(layoutNode)"
-        [dataIndex]="layoutNode?.arrayItem ? (dataIndex || []).concat(i) : (dataIndex || [])"
-        [layoutIndex]="(layoutIndex || []).concat(i)"
+        [dataIndex]="layoutNode?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
+        [layoutIndex]="(layoutIndex() || []).concat(i)"
         [layoutNode]="layoutNode"></select-framework-widget>
     <div>`,
     changeDetection: ChangeDetectionStrategy.Default,
     standalone: false
 })
 export class FlexLayoutRootComponent {
-  @Input() dataIndex: number[];
-  @Input() layoutIndex: number[];
-  @Input() layout: any[];
-  @Input() isFlexItem = false;
+  readonly dataIndex = input<number[]>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly layout = input<any[]>(undefined);
+  readonly isFlexItem = input(false);
 
   constructor(
     private jsf: JsonSchemaFormService
@@ -48,6 +48,6 @@ export class FlexLayoutRootComponent {
   }
 
   showWidget(layoutNode: any): boolean {
-    return this.jsf.evaluateCondition(layoutNode, this.dataIndex);
+    return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
   }
 }
