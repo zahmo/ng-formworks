@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -126,7 +126,8 @@ export class DemoComponent implements OnInit,AfterViewInit {
     private router: Router,
     private jsfFLService:FrameworkLibraryService,
     public dialog: MatDialog,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private changeDetector:ChangeDetectorRef
   ) { 
 
 
@@ -162,7 +163,11 @@ b64ToUtf8(b64) {
   const jsonString = JSON.stringify(jsonData);
 
   // Encode the JSON string to a Base64 string
-  const base64String = btoa(unescape(encodeURIComponent(jsonString)));
+  const base64String = 
+  //btoa(unescape(encodeURIComponent(jsonString)));
+  btoa(encodeURIComponent(jsonString)
+  .replace(/%([0-9A-F]{2})/g,(match,p1)=>{return String.fromCharCode(parseInt('0x'+p1))})
+  );
 
   // Encode the Base64 string to be URI-safe
   const uriSafeBase64String = base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -258,7 +263,7 @@ b64ToUtf8(b64) {
           }else{
             this.selectedTheme=tlist[0]?.name||"no-theme"
           }
-          
+          //this.changeDetector.detectChanges();
         },0)
         
        
