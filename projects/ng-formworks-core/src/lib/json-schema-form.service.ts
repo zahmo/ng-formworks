@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 //import Ajv, { ErrorObject, Options } from 'ajv';
 import Ajv2019, { ErrorObject, Options } from 'ajv/dist/2019';
@@ -40,6 +40,18 @@ import {
 
 import _isEqual from 'lodash/isEqual';
 
+
+export type WidgetContext={
+  formControl?:AbstractControl;
+  layoutNode?: Signal<any>;
+  layoutIndex?: Signal<number[]>;
+  dataIndex?: Signal<number[]>;
+  options?:any;
+  controlValue?:any;
+  boundControl?:boolean;
+  controlName?:string;
+  controlDisabled?:boolean
+}
 
 export interface TitleMapItem {
   name?: string;
@@ -476,8 +488,24 @@ export class JsonSchemaFormService implements OnDestroy {
     childNode: any = null,
     index: number = null
   ): string {
-    const parentNode = parentCtx.layoutNode;
-    const parentValues: any = this.getFormControlValue(parentCtx);
+    //for legacy compatibility, parentCtx.layoutNode could either be a value
+    //or have been converted to use Signals
+    let parentCtxAsSignals:any={
+      layoutNode:()=>{
+        if(isObject(parentCtx.layoutNode)){
+          return parentCtx.layoutNode
+        }
+        return parentCtx.layoutNode();
+      },
+      dataIndex:()=>{
+        if(isObject(parentCtx.dataIndex)){
+          return parentCtx.dataIndex
+        }
+        return parentCtx.dataIndex();
+      }
+    }
+    const parentNode = parentCtxAsSignals.layoutNode();
+    const parentValues: any = this.getFormControlValue(parentCtxAsSignals);
     const isArrayItem =
       (parentNode.type || '').slice(-5) === 'array' && isArray(parentValues);
     const text = JsonPointer.getFirst(
@@ -505,14 +533,14 @@ export class JsonSchemaFormService implements OnDestroy {
     return this.parseText(text, childValue, parentValues, index);
   }
 
-  setItemTitle(ctx: any) {
-    return !ctx.options.title && /^(\d+|-)$/.test(ctx.layoutNode.name)
+  setItemTitle(ctx: WidgetContext) {
+    return !ctx.options.title && /^(\d+|-)$/.test(ctx.layoutNode().name)
       ? null
       : this.parseText(
-        ctx.options.title || toTitleCase(ctx.layoutNode.name),
-        this.getFormControlValue(this),
-        (this.getFormControlGroup(this) || <any>{}).value,
-        ctx.dataIndex[ctx.dataIndex.length - 1]
+        ctx.options.title || toTitleCase(ctx.layoutNode().name),
+        this.getFormControlValue(ctx),
+        (this.getFormControlGroup(ctx) || <any>{}).value,
+        ctx.dataIndex()[ctx.dataIndex().length - 1]
       );
   }
 
@@ -554,13 +582,13 @@ export class JsonSchemaFormService implements OnDestroy {
     return result;
   }
 
-  initializeControl(ctx: any, bind = true): boolean {
+  initializeControl(ctx: WidgetContext, bind = true): boolean {
     if (!isObject(ctx)) {
       return false;
     }
     if (isEmpty(ctx.options)) {
-      ctx.options = !isEmpty((ctx.layoutNode || {}).options)
-        ? ctx.layoutNode.options
+      ctx.options = !isEmpty((ctx.layoutNode() || {}).options)
+        ? ctx.layoutNode().options
         : cloneDeep(this.formOptions);
     }
     ctx.formControl = this.getFormControl(ctx);
@@ -602,8 +630,8 @@ export class JsonSchemaFormService implements OnDestroy {
         if (!_isEqual(ctx.controlValue, value)) { ctx.controlValue = value }
       });
     } else {
-      ctx.controlName = ctx.layoutNode.name;
-      ctx.controlValue = ctx.layoutNode.value || null;
+      ctx.controlName = ctx.layoutNode().name;
+      ctx.controlValue = ctx.layoutNode().value || null;
       const dataPointer = this.getDataPointer(ctx);
       if (bind && dataPointer) {
         console.error(
@@ -674,14 +702,14 @@ export class JsonSchemaFormService implements OnDestroy {
     );
   }
 
-  updateValue(ctx: any, value: any): void {
+  updateValue(ctx: WidgetContext, value: any): void {
     // Set value of current control
     ctx.controlValue = value;
     if (ctx.boundControl) {
       ctx.formControl.setValue(value);
       ctx.formControl.markAsDirty();
     }
-    ctx.layoutNode.value = value;
+    ctx.layoutNode().value = value;
 
     // Set values of any related controls in copyValueTo array
     if (isArray(ctx.options.copyValueTo)) {
@@ -698,7 +726,7 @@ export class JsonSchemaFormService implements OnDestroy {
     }
   }
 
-  updateArrayCheckboxList(ctx: any, checkboxList: TitleMapItem[]): void {
+  updateArrayCheckboxList(ctx: WidgetContext, checkboxList: TitleMapItem[]): void {
     const formArray = <UntypedFormArray>this.getFormControl(ctx);
 
     // Remove all existing items
@@ -708,7 +736,7 @@ export class JsonSchemaFormService implements OnDestroy {
 
     // Re-add an item for each checked box
     const refPointer = removeRecursiveReferences(
-      ctx.layoutNode.dataPointer + '/-',
+      ctx.layoutNode().dataPointer + '/-',
       this.dataRecursiveRefMap,
       this.arrayMap
     );
@@ -724,22 +752,22 @@ export class JsonSchemaFormService implements OnDestroy {
     formArray.markAsDirty();
   }
 
-  getFormControl(ctx: any): AbstractControl {
+  getFormControl(ctx: WidgetContext): AbstractControl {
     if (
-      !ctx.layoutNode ||
-      !isDefined(ctx.layoutNode.dataPointer) ||
-      ctx.layoutNode.type === '$ref'
+      !ctx || !ctx.layoutNode ||
+      !isDefined(ctx.layoutNode().dataPointer) ||
+      ctx.layoutNode().type === '$ref'
     ) {
       return null;
     }
     return getControl(this.formGroup, this.getDataPointer(ctx));
   }
 
-  getFormControlValue(ctx: any): AbstractControl {
-    if (
-      !ctx.layoutNode ||
-      !isDefined(ctx.layoutNode.dataPointer) ||
-      ctx.layoutNode.type === '$ref'
+  getFormControlValue(ctx: WidgetContext): AbstractControl {
+
+    if (!ctx || !ctx.layoutNode || 
+      !isDefined(ctx.layoutNode().dataPointer) ||
+      ctx.layoutNode().type === '$ref'
     ) {
       return null;
     }
@@ -747,59 +775,59 @@ export class JsonSchemaFormService implements OnDestroy {
     return control ? control.value : null;
   }
 
-  getFormControlGroup(ctx: any): UntypedFormArray | UntypedFormGroup {
-    if (!ctx.layoutNode || !isDefined(ctx.layoutNode.dataPointer)) {
+  getFormControlGroup(ctx: WidgetContext): UntypedFormArray | UntypedFormGroup {
+    if (!ctx || !ctx.layoutNode || !isDefined(ctx.layoutNode().dataPointer)) {
       return null;
     }
     return getControl(this.formGroup, this.getDataPointer(ctx), true);
   }
 
-  getFormControlName(ctx: any): string {
+  getFormControlName(ctx: WidgetContext): string {
     if (
-      !ctx.layoutNode ||
-      !isDefined(ctx.layoutNode.dataPointer) ||
-      !hasValue(ctx.dataIndex)
+      !ctx || !ctx.layoutNode ||
+      !isDefined(ctx.layoutNode().dataPointer) ||
+      !hasValue(ctx.dataIndex())
     ) {
       return null;
     }
     return JsonPointer.toKey(this.getDataPointer(ctx));
   }
 
-  getLayoutArray(ctx: any): any[] {
+  getLayoutArray(ctx: WidgetContext): any[] {
     return JsonPointer.get(this.layout, this.getLayoutPointer(ctx), 0, -1);
   }
 
-  getParentNode(ctx: any): any {
+  getParentNode(ctx: WidgetContext): any {
     return JsonPointer.get(this.layout, this.getLayoutPointer(ctx), 0, -2);
   }
 
-  getDataPointer(ctx: any): string {
+  getDataPointer(ctx: WidgetContext): string {
     if (
-      !ctx.layoutNode ||
-      !isDefined(ctx.layoutNode.dataPointer) ||
-      !hasValue(ctx.dataIndex)
+      !ctx || !ctx.layoutNode ||
+      !isDefined(ctx.layoutNode().dataPointer) ||
+      !hasValue(ctx.dataIndex())
     ) {
       return null;
     }
     return JsonPointer.toIndexedPointer(
-      ctx.layoutNode.dataPointer,
-      ctx.dataIndex,
+      ctx.layoutNode().dataPointer,
+      ctx.dataIndex(),
       this.arrayMap
     );
   }
 
-  getLayoutPointer(ctx: any): string {
-    if (!hasValue(ctx.layoutIndex)) {
+  getLayoutPointer(ctx: WidgetContext): string {
+    if (!hasValue(ctx.layoutIndex())) {
       return null;
     }
-    return '/' + ctx.layoutIndex.join('/items/');
+    return '/' + ctx.layoutIndex().join('/items/');
   }
 
-  isControlBound(ctx: any): boolean {
+  isControlBound(ctx: WidgetContext): boolean {
     if (
-      !ctx.layoutNode ||
-      !isDefined(ctx.layoutNode.dataPointer) ||
-      !hasValue(ctx.dataIndex)
+      !ctx || !ctx.layoutNode ||
+      !isDefined(ctx.layoutNode().dataPointer) ||
+      !hasValue(ctx.dataIndex())
     ) {
       return false;
     }
@@ -808,23 +836,23 @@ export class JsonSchemaFormService implements OnDestroy {
     return controlGroup ? hasOwn(controlGroup.controls, name) : false;
   }
 
-  addItem(ctx: any, name?: string): boolean {
+  addItem(ctx: WidgetContext, name?: string): boolean {
     if (
-      !ctx.layoutNode ||
-      !isDefined(ctx.layoutNode.$ref) ||
-      !hasValue(ctx.dataIndex) ||
-      !hasValue(ctx.layoutIndex)
+      !ctx || !ctx.layoutNode ||
+      !isDefined(ctx.layoutNode().$ref) ||
+      !hasValue(ctx.dataIndex()) ||
+      !hasValue(ctx.layoutIndex())
     ) {
       return false;
     }
 
     // Create a new Angular form control from a template in templateRefLibrary
     const newFormGroup = buildFormGroup(
-      this.templateRefLibrary[ctx.layoutNode.$ref]
+      this.templateRefLibrary[ctx.layoutNode().$ref]
     );
 
     // Add the new form control to the parent formArray or formGroup
-    if (ctx.layoutNode.arrayItem) {
+    if (ctx.layoutNode().arrayItem) {
       // Add new array item to formArray
       (<UntypedFormArray>this.getFormControlGroup(ctx)).push(newFormGroup);
     } else {
@@ -836,10 +864,10 @@ export class JsonSchemaFormService implements OnDestroy {
     }
 
     // Copy a new layoutNode from layoutRefLibrary
-    const newLayoutNode = getLayoutNode(ctx.layoutNode, this);
-    newLayoutNode.arrayItem = ctx.layoutNode.arrayItem;
-    if (ctx.layoutNode.arrayItemType) {
-      newLayoutNode.arrayItemType = ctx.layoutNode.arrayItemType;
+    const newLayoutNode = getLayoutNode(ctx.layoutNode(), this);
+    newLayoutNode.arrayItem = ctx.layoutNode().arrayItem;
+    if (ctx.layoutNode().arrayItemType) {
+      newLayoutNode.arrayItemType = ctx.layoutNode().arrayItemType;
     } else {
       delete newLayoutNode.arrayItemType;
     }
@@ -855,12 +883,12 @@ export class JsonSchemaFormService implements OnDestroy {
     return true;
   }
 
-  moveArrayItem(ctx: any, oldIndex: number, newIndex: number): boolean {
+  moveArrayItem(ctx: WidgetContext, oldIndex: number, newIndex: number): boolean {
     if (
-      !ctx.layoutNode ||
-      !isDefined(ctx.layoutNode.dataPointer) ||
-      !hasValue(ctx.dataIndex) ||
-      !hasValue(ctx.layoutIndex) ||
+      !ctx || !ctx.layoutNode ||
+      !isDefined(ctx.layoutNode().dataPointer) ||
+      !hasValue(ctx.dataIndex()) ||
+      !hasValue(ctx.layoutIndex()) ||
       !isDefined(oldIndex) ||
       !isDefined(newIndex) ||
       oldIndex === newIndex
@@ -881,21 +909,21 @@ export class JsonSchemaFormService implements OnDestroy {
     return true;
   }
 
-  removeItem(ctx: any): boolean {
+  removeItem(ctx: WidgetContext): boolean {
     if (
-      !ctx.layoutNode ||
-      !isDefined(ctx.layoutNode.dataPointer) ||
-      !hasValue(ctx.dataIndex) ||
-      !hasValue(ctx.layoutIndex)
+      !ctx || !ctx.layoutNode ||
+      !isDefined(ctx.layoutNode().dataPointer) ||
+      !hasValue(ctx.dataIndex()) ||
+      !hasValue(ctx.layoutIndex())
     ) {
       return false;
     }
 
     // Remove the Angular form control from the parent formArray or formGroup
-    if (ctx.layoutNode.arrayItem) {
+    if (ctx.layoutNode().arrayItem) {
       // Remove array item from formArray
       (<UntypedFormArray>this.getFormControlGroup(ctx)).removeAt(
-        ctx.dataIndex[ctx.dataIndex.length - 1]
+        ctx.dataIndex()[ctx.dataIndex().length - 1]
       );
     } else {
       // Remove $ref item from formGroup
