@@ -1,4 +1,4 @@
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, signal } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 @Component({
@@ -51,9 +51,9 @@ export class MaterialTabsComponent implements OnInit {
     const layoutNode = this.layoutNode();
     if (layoutNode.items[index].type === '$ref') {
       this.jsf.addItem({
-        layoutNode: layoutNode.items[index],
-        layoutIndex: this.layoutIndex().concat(index),
-        dataIndex: this.dataIndex().concat(index)
+        layoutNode: signal(layoutNode.items[index]),
+        layoutIndex: signal(this.layoutIndex().concat(index)),
+        dataIndex: signal(this.dataIndex().concat(index))
       });
       this.updateControl();
     }

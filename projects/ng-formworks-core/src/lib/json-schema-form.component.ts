@@ -6,13 +6,13 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  forwardRef,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
+  forwardRef,
   input
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -182,6 +182,16 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
     this.validationErrorChangesSubs=null;
   }
 
+
+  private getInputValue(inputKey:string){
+    //TODO review if the value is meant to be a function and not a signal,
+    //it might inadvertently be called!
+    if(typeof this[inputKey]=="function"){
+      return this[inputKey]();
+    }
+    return this[inputKey];
+  }
+
   private resetScriptsAndStyleSheets() {
     document.querySelectorAll('.ajsf').forEach(element => element.remove());
   }
@@ -311,7 +321,7 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
       // Update previous inputs
       Object.keys(this.previousInputs)
         .filter(input => this.previousInputs[input] !== this[input])
-        .forEach(input => this.previousInputs[input] = this[input]);
+        .forEach(input => this.previousInputs[input] = this.getInputValue(input));
     }
   }
 
