@@ -76,16 +76,16 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field>
-                <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="loadSelectedLanguage()" name="language" placeholder="Language">
-                    <mat-option *ngFor="let language of languageList" [value]="language">
-                        {{languages[language]}}
+                <mat-select [(ngModel)]="selectedTheme" name="theme" placeholder="Theme">
+                    <mat-option *ngFor="let theme of themeList" [value]="theme.name">
+                        {{theme.text}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field>
-                <mat-select [(ngModel)]="selectedTheme" name="theme" placeholder="Theme">
-                    <mat-option *ngFor="let theme of themeList" [value]="theme.name">
-                        {{theme.text}}
+                <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="loadSelectedLanguage()" name="language" placeholder="Language">
+                    <mat-option *ngFor="let language of languageList" [value]="language">
+                        {{languages[language]}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
