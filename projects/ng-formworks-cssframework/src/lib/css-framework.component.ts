@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, input, signal } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, addClasses, inArray } from '@ng-formworks/core';
 import _, { cloneDeep, map } from 'lodash';
 import { Subscription } from 'rxjs';
@@ -26,7 +26,7 @@ export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
 
-  readonly widgetStyles = input<css_fw.widgetstyles>(undefined);
+  readonly widgetStyles = signal<css_fw.widgetstyles>(undefined);
 
 
 
@@ -120,7 +120,8 @@ frameworkThemeSubs:Subscription;
     
     let activeFramework:any=this.jsfFLService.activeFramework;
     let fwcfg=activeFramework.config||{};
-    this.widgetStyles = Object.assign(this.defaultStyling,fwcfg.widgetstyles);
+    
+    this.widgetStyles.set(Object.assign(this.defaultStyling,fwcfg.widgetstyles));
     let defaultTheme=this.widgetStyles().__themes__[0];
     let defaultThemeName=cssFWService.activeRequestedTheme||defaultTheme.name;
     this.theme=this.options?.theme|| defaultThemeName;

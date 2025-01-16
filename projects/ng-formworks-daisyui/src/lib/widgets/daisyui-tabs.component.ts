@@ -1,4 +1,4 @@
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, signal } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
@@ -70,9 +70,9 @@ export class DaisyUITabsComponent implements OnInit {
     if (layoutNode.items[index].type === '$ref') {
       this.itemCount = layoutNode.items.length;
       this.jsf.addItem({
-        layoutNode: layoutNode.items[index],
-        layoutIndex: this.layoutIndex().concat(index),
-        dataIndex: this.dataIndex().concat(index)
+        layoutNode: signal(layoutNode.items[index]),
+        layoutIndex: signal(this.layoutIndex().concat(index)),
+        dataIndex: signal(this.dataIndex().concat(index))
       });
       this.updateControl();
     }
