@@ -182,8 +182,8 @@ b64ToUtf8(b64) {
       .replace(/_/g, '/')
       .concat('='.repeat((4 - base64DataEncoded.length % 4) % 4)); // Add padding if necessary
 
-  // Decode the Base64 string to a JSON string
-  const jsonString = decodeURIComponent(escape(atob(base64String)));
+  // Decode the Base64 string to a URI-encoded JSON string
+  const jsonString = decodeURIComponent(atob(base64String));
 
   // Parse the JSON string to a JSON object
   let jsonData;
