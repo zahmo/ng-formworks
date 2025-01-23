@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { Component, ElementRef, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -15,7 +15,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <mat-label *ngIf="!options?.notitle">{{options?.title}}</mat-label>
       <span matPrefix *ngIf="options?.prefix || options?.fieldAddonLeft"
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
-      <input matInput *ngIf="boundControl"
+      <input #input matInput *ngIf="boundControl"
         [formControl]="formControl"
         [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
         [attr.list]="'control' + layoutNode?._id + 'Autocomplete'"
@@ -55,6 +55,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         <mat-option *ngFor="let word of options?.typeahead?.source"
           [value]="word">{{word}}</mat-option>
       </mat-autocomplete>
+        <button *ngIf="layoutNode()?.type=='datetime-local'" (click)="input?.nativeElement?.showPicker()" mat-icon-button matIconSuffix>
+          <mat-icon>calendar_today</mat-icon>
+        </button>
     </mat-form-field>
     <mat-error *ngIf="options?.showErrors && options?.errorMessage"
       [innerHTML]="options?.errorMessage"></mat-error>`,
@@ -62,6 +65,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     mat-error { font-size: 75%; margin-top: -1rem; margin-bottom: 0.5rem; }
     ::ng-deep json-schema-form mat-form-field .mat-mdc-form-field-wrapper .mat-form-field-flex
       .mat-form-field-infix { width: initial; }
+      input {width:100%;}
+      /*width of 120% for type 'datetime-local' to hide firefox picker*/ 
+      input[type='datetime-local'] {width:120%;}
   `],
 })
 export class MaterialInputComponent implements OnInit {
@@ -76,6 +82,9 @@ export class MaterialInputComponent implements OnInit {
   @Input() layoutIndex: number[];
   @Input() dataIndex: number[];
 
+  
+  @ViewChild('input', {})
+  input: ElementRef;
 
   constructor(
     @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) @Optional() public matFormFieldDefaultOptions,
