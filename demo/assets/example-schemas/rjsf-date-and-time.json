@@ -4,8 +4,7 @@
         "type": "object",
         "properties": {
             "datetime": {
-                "type": "string",
-                "format": "datetime-local"
+                "type": "string"
             },
             "date": {
                 "type": "string",
