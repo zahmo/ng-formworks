@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, input } from '@angular/core';
+import { Component, OnDestroy, OnInit, input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService, hasOwn } from '@ng-formworks/core';
 import { Subscription } from 'rxjs';
@@ -25,6 +25,8 @@ import { Subscription } from 'rxjs';
     styles: [` button { margin-top: 10px; } `],
 })
 export class MaterialButtonComponent implements OnInit,OnDestroy {
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
@@ -36,9 +38,6 @@ export class MaterialButtonComponent implements OnInit,OnDestroy {
   readonly dataIndex = input<number[]>(undefined);
 
   isValidChangesSubs:Subscription;
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
 
   ngOnDestroy(): void {
     this.isValidChangesSubs?.unsubscribe();

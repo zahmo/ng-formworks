@@ -1,4 +1,4 @@
-import { Component, OnInit, input, signal } from '@angular/core';
+import { Component, OnInit, input, signal, inject } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
@@ -46,6 +46,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
   styles: [` a { cursor: pointer; } `],
 })
 export class DaisyUITabsComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   options: any;
   itemCount: number;
   selectedItem = 0;
@@ -53,10 +55,6 @@ export class DaisyUITabsComponent implements OnInit {
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};

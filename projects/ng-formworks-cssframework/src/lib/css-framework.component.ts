@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, input, signal, inject } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, addClasses, inArray } from '@ng-formworks/core';
 import _, { cloneDeep, map } from 'lodash';
 import { Subscription } from 'rxjs';
@@ -12,6 +12,11 @@ import { CssframeworkService } from './css-framework.service';
   encapsulation: ViewEncapsulation.None
 })
 export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
+  changeDetector = inject(ChangeDetectorRef);
+  jsf = inject(JsonSchemaFormService);
+  jsfFLService = inject(FrameworkLibraryService);
+  cssFWService = inject(CssframeworkService);
+
   frameworkInitialized = false;
   widgetOptions: any; // Options passed to child widget
   widgetLayoutNode: any; // layoutNode passed to child widget
@@ -108,14 +113,11 @@ defaultStyling:css_fw.widgetstyles={
 
 theme:string
 frameworkThemeSubs:Subscription;
-  constructor(
-    public changeDetector: ChangeDetectorRef,
-    public jsf: JsonSchemaFormService,
-    public jsfFLService:FrameworkLibraryService,
-    public cssFWService:CssframeworkService
-    /*@Inject(CSS_FRAMEWORK_CFG ) fwcfg: css_fw.frameworkcfg*/
+  constructor() fwcfg: css_fw.frameworkcfg*/
 
   ) {
+    const cssFWService = this.cssFWService;
+
     
     let activeFramework:any=this.jsfFLService.activeFramework;
     let fwcfg=activeFramework.config||{};
