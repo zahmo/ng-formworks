@@ -1,11 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnChanges,
-  OnInit,
-  ViewEncapsulation,
-  input
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnInit, ViewEncapsulation, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 /**
@@ -29,6 +22,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     standalone: false
 })
 export class DaisyUIFrameworkComponentPrefixed implements OnInit, OnChanges {
+changeDetector = inject(ChangeDetectorRef);
+jsf = inject(JsonSchemaFormService);
+
 
 
 frameworkInitialized = false;
@@ -43,15 +39,6 @@ isOrderable = false;
 readonly layoutNode = input<any>(undefined);
 readonly layoutIndex = input<number[]>(undefined);
 readonly dataIndex = input<number[]>(undefined);
-
-
-
-constructor(
-  public changeDetector: ChangeDetectorRef,
-  public jsf: JsonSchemaFormService
-) {
-  
-}
 
 
 

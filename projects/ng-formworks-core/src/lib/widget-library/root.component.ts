@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -49,16 +49,14 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     standalone: false
 })
 export class RootComponent {
+  private jsf = inject(JsonSchemaFormService);
+
   options: any;
   readonly dataIndex = input<number[]>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly layout = input<any[]>(undefined);
   readonly isOrderable = input<boolean>(undefined);
   readonly isFlexItem = input(false);
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
 
   isDraggable(node: any): boolean {
     return node.arrayItem && node.type !== '$ref' &&

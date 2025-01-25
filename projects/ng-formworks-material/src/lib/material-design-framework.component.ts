@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, input, inject } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, isDefined } from '@ng-formworks/core';
 import { CssframeworkService } from '@ng-formworks/cssframework';
 import cloneDeep from 'lodash/cloneDeep';
@@ -13,6 +13,11 @@ import { cssFrameworkCfgMaterialDesign } from './material-design-cssframework';
     standalone: false
 })
 export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDestroy {
+  private changeDetector = inject(ChangeDetectorRef);
+  private jsf = inject(JsonSchemaFormService);
+  jsfFLService = inject(FrameworkLibraryService);
+  cssFWService = inject(CssframeworkService);
+
   frameworkInitialized = false;
   inputType: string;
   options: any; // Options used in this framework
@@ -28,12 +33,9 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
 
   theme:string="material-default-theme";
   frameworkThemeSubs:Subscription;
-  constructor(
-    private changeDetector: ChangeDetectorRef,
-    private jsf: JsonSchemaFormService,
-    public jsfFLService:FrameworkLibraryService,
-    public cssFWService:CssframeworkService
-  ) {
+  constructor() {
+    const cssFWService = this.cssFWService;
+
     let activeFramework:any=this.jsfFLService.activeFramework;
     let fwcfg=activeFramework.config||{};
     let defaultTheme=cssFrameworkCfgMaterialDesign.widgetstyles?.__themes__[0];

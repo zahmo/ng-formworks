@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -33,6 +33,14 @@ import { Examples } from './example-schemas.model';
     standalone: false
 })
 export class DemoComponent implements OnInit,AfterViewInit {
+  private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private jsfFLService = inject(FrameworkLibraryService);
+  dialog = inject(MatDialog);
+  private _snackBar = inject(MatSnackBar);
+  private changeDetector = inject(ChangeDetectorRef);
+
   examples: any = Examples;
   languageList: any = ['de', 'en', 'es', 'fr', 'it', 'pt', 'zh'];
   languages: any = {
@@ -112,19 +120,6 @@ export class DemoComponent implements OnInit,AfterViewInit {
 
   @ViewChild('dialogTemplate', { read: TemplateRef }) 
   dialogTemplate:TemplateRef<any>;
-
-  constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute,
-    private router: Router,
-    private jsfFLService:FrameworkLibraryService,
-    public dialog: MatDialog,
-    private _snackBar: MatSnackBar,
-    private changeDetector:ChangeDetectorRef
-  ) { 
-
-
-  }
   ngAfterViewInit(): void {
 
   }
