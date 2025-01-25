@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, Optional, ViewChild, input } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -69,6 +69,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
   `],
 })
 export class MaterialInputComponent implements OnInit {
+  matFormFieldDefaultOptions = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   controlValue: string;
@@ -83,12 +86,6 @@ export class MaterialInputComponent implements OnInit {
   
   @ViewChild('input', {})
   input: ElementRef;
-
-  constructor(
-    @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) @Optional() public matFormFieldDefaultOptions,
-    private jsf: JsonSchemaFormService
-  ) {
-  }
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
@@ -25,14 +25,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class FlexLayoutRootComponent {
+  private jsf = inject(JsonSchemaFormService);
+
   readonly dataIndex = input<number[]>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly layout = input<any[]>(undefined);
   readonly isFlexItem = input(false);
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
 
   removeItem(item) {
     this.jsf.removeItem(item);

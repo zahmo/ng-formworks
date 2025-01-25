@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
@@ -18,6 +18,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class MaterialAddReferenceComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   options: any;
   itemCount: number;
   previousLayoutIndex: number[];
@@ -25,10 +27,6 @@ export class MaterialAddReferenceComponent implements OnInit {
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};

@@ -1,20 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  SimpleChanges,
-  forwardRef,
-  input
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, forwardRef, input, inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -83,6 +70,11 @@ export const JSON_SCHEMA_FORM_VALUE_ACCESSOR: any = {
   providers:  [ JsonSchemaFormService, JSON_SCHEMA_FORM_VALUE_ACCESSOR ],
 })
 export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges, OnInit,OnDestroy {
+  private changeDetector = inject(ChangeDetectorRef);
+  private frameworkLibrary = inject(FrameworkLibraryService);
+  private widgetLibrary = inject(WidgetLibraryService);
+  jsf = inject(JsonSchemaFormService);
+
   // TODO: quickfix to avoid subscribing twice to the same emitters
   private unsubscribeOnActivateForm$ = new Subject<void>();
 
@@ -164,13 +156,6 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
   statusChangesSubs:Subscription;
   isValidChangesSubs:Subscription;
   validationErrorChangesSubs:Subscription;
-
-  constructor(
-    private changeDetector: ChangeDetectorRef,
-    private frameworkLibrary: FrameworkLibraryService,
-    private widgetLibrary: WidgetLibraryService,
-    public jsf: JsonSchemaFormService,
-  ) { }
   ngOnDestroy(): void {
     this.dataChangesSubs?.unsubscribe();
     this.statusChangesSubs?.unsubscribe();

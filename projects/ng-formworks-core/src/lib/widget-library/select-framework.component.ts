@@ -1,8 +1,4 @@
-import {
-  Component, ComponentFactoryResolver, ComponentRef,
-  OnChanges, OnInit, ViewChild, ViewContainerRef,
-  input
-} from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, OnChanges, OnInit, ViewChild, ViewContainerRef, input, inject } from '@angular/core';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
@@ -12,6 +8,9 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   template: `<div #widgetContainer></div>`,
 })
 export class SelectFrameworkComponent implements OnChanges, OnInit {
+  private componentFactory = inject(ComponentFactoryResolver);
+  private jsf = inject(JsonSchemaFormService);
+
   newComponent: ComponentRef<any> = null;
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
@@ -20,11 +19,6 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
       read: ViewContainerRef,
       static: true })
     widgetContainer: ViewContainerRef;
-
-  constructor(
-    private componentFactory: ComponentFactoryResolver,
-    private jsf: JsonSchemaFormService
-  ) { }
 
   ngOnInit() {
     this.updateComponent();
