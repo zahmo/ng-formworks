@@ -16,8 +16,8 @@ export class Bootstrap5Framework extends CssFramework {
   constructor(){
     const cssFWService = inject(CssframeworkService);
 
-    super(cssFrameworkCfgBootstrap5,cssFWService);
-  
+    //super(cssFrameworkCfgBootstrap5,cssFWService);
+    super(cssFrameworkCfgBootstrap5);
     this.cssFWService = cssFWService;
   }
 }
