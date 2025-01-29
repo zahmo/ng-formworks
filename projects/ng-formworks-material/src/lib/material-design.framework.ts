@@ -79,7 +79,8 @@ export class MaterialDesignFramework extends CssFramework {
   constructor(){
     const cssFWService = inject(CssframeworkService);
 
-    super(cssFrameworkCfgMaterialDesign,cssFWService);
+    //super(cssFrameworkCfgMaterialDesign,cssFWService);
+    super(cssFrameworkCfgMaterialDesign);
     this.cssFWService = cssFWService;
 
     this.widgets=this._widgets
