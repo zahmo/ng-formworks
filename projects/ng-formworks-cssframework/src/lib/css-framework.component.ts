@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, input, signal, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, inject, input, signal } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, addClasses, inArray } from '@ng-formworks/core';
 import _, { cloneDeep, map } from 'lodash';
 import { Subscription } from 'rxjs';
@@ -113,9 +113,7 @@ defaultStyling:css_fw.widgetstyles={
 
 theme:string
 frameworkThemeSubs:Subscription;
-  constructor() fwcfg: css_fw.frameworkcfg*/
-
-  ) {
+  constructor(){
     const cssFWService = this.cssFWService;
 
     

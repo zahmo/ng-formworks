@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { Observable, Subject, lastValueFrom } from 'rxjs';
 import { hasOwn } from '../shared/utility.functions';
 import { WidgetLibraryService } from '../widget-library/widget-library.service';
@@ -17,7 +17,7 @@ import { Framework } from './framework';
   providedIn: 'root',
 })
 export class FrameworkLibraryService {
-  private frameworks = inject(Framework);
+  //private frameworks = inject(Framework);
   private widgetLibrary = inject<WidgetLibraryService>(WidgetLibraryService);
   private http = inject(HttpClient);
 
@@ -32,7 +32,7 @@ export class FrameworkLibraryService {
   private activeFrameworkNameSubject: Subject<string>;
   private activeFrameworkName:string;
 
-  constructor() {
+  constructor(@Inject(Framework) private frameworks: any[],) {
     this.frameworks.forEach(framework =>
       this.frameworkLibrary[framework.name] = framework
     );
