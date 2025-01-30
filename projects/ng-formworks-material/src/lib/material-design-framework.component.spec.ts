@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   JsonSchemaFormModule,
@@ -11,6 +12,7 @@ import { MaterialDesignFrameworkComponent } from './material-design-framework.co
 describe('MaterialDesignFrameworkComponent', () => {
   let component: MaterialDesignFrameworkComponent;
   let fixture: ComponentFixture<MaterialDesignFrameworkComponent>;
+  let componentRef:ComponentRef<MaterialDesignFrameworkComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -28,9 +30,10 @@ describe('MaterialDesignFrameworkComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MaterialDesignFrameworkComponent);
     component = fixture.componentInstance;
-    component.layoutNode = { options: {} };
-    component.layoutIndex = [];
-    component.dataIndex = [];
+    componentRef=fixture.componentRef;
+    componentRef.setInput('layoutNode',{ options: {} });
+    componentRef.setInput('layoutIndex',[]);
+    componentRef.setInput('dataIndex',[]);
     fixture.detectChanges();
   });
 
