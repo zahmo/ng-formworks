@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Directive, ElementRef, Input, inject, output } from '@angular/core';
 import ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/sqlserver';
@@ -20,7 +20,7 @@ export class AceEditorDirective {
   _autoUpdateContent = true;
   editor: any;
   oldText: any;
-  @Output('textChanged') textChanged = new EventEmitter();
+  readonly textChanged = output({ alias: 'textChanged' });
 
   constructor() {
     const elementRef = inject(ElementRef);
