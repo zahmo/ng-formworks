@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   JsonSchemaFormModule,
@@ -12,6 +13,7 @@ import { Bootstrap4FrameworkComponent } from './bootstrap4-framework.component';
 describe('Bootstrap4FrameworkComponent', () => {
   let component: Bootstrap4FrameworkComponent;
   let fixture: ComponentFixture<Bootstrap4FrameworkComponent>;
+  let componentRef:ComponentRef<Bootstrap4FrameworkComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -29,9 +31,10 @@ describe('Bootstrap4FrameworkComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Bootstrap4FrameworkComponent);
     component = fixture.componentInstance;
-    component.layoutNode = { options: {} };
-    component.layoutIndex = [];
-    component.dataIndex = [];
+    componentRef=fixture.componentRef;
+    componentRef.setInput('layoutNode',{ options: {} });
+    componentRef.setInput('layoutIndex',[]);
+    componentRef.setInput('dataIndex',[]);
     fixture.detectChanges();
   });
 
