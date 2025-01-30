@@ -1,6 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep';
-import filter from 'lodash/filter';
-import map from 'lodash/map';
 import {
   AbstractControl,
   UntypedFormArray,
@@ -8,9 +5,15 @@ import {
   UntypedFormGroup,
   ValidatorFn
 } from '@angular/forms';
-import { forEach, hasOwn } from './utility.functions';
+import cloneDeep from 'lodash/cloneDeep';
+import filter from 'lodash/filter';
+import map from 'lodash/map';
 import { getControlValidators, removeRecursiveReferences } from './json-schema.functions';
+import { JsonValidators } from './json.validators';
+import { JsonPointer, Pointer } from './jsonpointer.functions';
+import { forEach, hasOwn } from './utility.functions';
 import {
+  SchemaPrimitiveType,
   hasValue,
   inArray,
   isArray,
@@ -19,12 +22,9 @@ import {
   isEmpty,
   isObject,
   isPrimitive,
-  SchemaPrimitiveType,
   toJavaScriptType,
   toSchemaType
 } from './validator.functions';
-import { JsonPointer, Pointer } from './jsonpointer.functions';
-import { JsonValidators } from './json.validators';
 
 
 
@@ -431,6 +431,9 @@ export function formatFormData(
 
         // Finish incomplete 'date-time' entries
         if (dataMap.get(genericPointer).get('schemaFormat') === 'date-time') {
+
+          /* commented out-should use same format as datetime-local input
+          for initial data to bind back to the input
           // "2000-03-14T01:59:26.535" -> "2000-03-14T01:59:26.535Z" (add "Z")
           if (/^\d\d\d\d-[0-1]\d-[0-3]\d[t\s][0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?$/i.test(value)) {
             JsonPointer.set(formattedData, dataPointer, `${value}Z`);
@@ -441,6 +444,8 @@ export function formatFormData(
           } else if (fixErrors && /^\d\d\d\d-[0-1]\d-[0-3]\d$/i.test(value)) {
             JsonPointer.set(formattedData, dataPointer, `${value}:00:00:00Z`);
           }
+          */
+          JsonPointer.set(formattedData, dataPointer, `${value}`);
         }
       } else if (typeof value !== 'object' || isDate(value) ||
         (value === null && returnEmptyFields)
