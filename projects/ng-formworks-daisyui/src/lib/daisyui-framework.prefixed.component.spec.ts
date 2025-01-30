@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   JsonSchemaFormModule,
@@ -7,11 +8,12 @@ import {
   WidgetLibraryModule
 } from '@ng-formworks/core';
 import { CssFrameworkComponent } from '@ng-formworks/cssframework';
-import { DaisyUIFrameworkComponent } from './daisyui-framework.component';
+import { DaisyUIFrameworkComponentPrefixed } from './daisyui-framework.prefixed.component';
 
-describe('DaisyUIFrameworkComponent', () => {
-  let component: DaisyUIFrameworkComponent;
-  let fixture: ComponentFixture<DaisyUIFrameworkComponent>;
+describe('DaisyUIFrameworkComponentPrefixed', () => {
+  let component: DaisyUIFrameworkComponentPrefixed;
+  let fixture: ComponentFixture<DaisyUIFrameworkComponentPrefixed>;
+  let componentRef:ComponentRef<DaisyUIFrameworkComponentPrefixed>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -20,7 +22,7 @@ describe('DaisyUIFrameworkComponent', () => {
         CommonModule,
         WidgetLibraryModule
       ],
-      declarations: [DaisyUIFrameworkComponent,CssFrameworkComponent],
+      declarations: [DaisyUIFrameworkComponentPrefixed,CssFrameworkComponent],
       providers: [JsonSchemaFormService, HttpClient,HttpHandler]
     })
       .compileComponents();
@@ -28,9 +30,9 @@ describe('DaisyUIFrameworkComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DaisyUIFrameworkComponent]
+      declarations: [DaisyUIFrameworkComponentPrefixed]
     });
-    fixture = TestBed.createComponent(DaisyUIFrameworkComponent);
+    fixture = TestBed.createComponent(DaisyUIFrameworkComponentPrefixed);
    component = fixture.componentInstance;
    componentRef=fixture.componentRef;
    componentRef.setInput('layoutNode',{ options: {} });

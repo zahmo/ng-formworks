@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   JsonSchemaFormModule,
@@ -10,6 +11,7 @@ import { Bootstrap5FrameworkComponent } from './bootstrap5-framework.component';
 describe('Bootstrap5Component', () => {
   let component: Bootstrap5FrameworkComponent;
   let fixture: ComponentFixture<Bootstrap5FrameworkComponent>;
+  let componentRef:ComponentRef<Bootstrap5FrameworkComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -27,10 +29,10 @@ describe('Bootstrap5Component', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Bootstrap5FrameworkComponent);
     component = fixture.componentInstance;
-    component.layoutNode = { options: {} };
-    component.layoutIndex = [];
-    component.dataIndex = [];
-    fixture.detectChanges();
+    componentRef=fixture.componentRef;
+    componentRef.setInput('layoutNode',{ options: {} });
+    componentRef.setInput('layoutIndex',[]);
+    componentRef.setInput('dataIndex',[]);
   });
 
   it('should create', () => {
