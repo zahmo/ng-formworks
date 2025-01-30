@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, forwardRef, input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, forwardRef, input, inject, output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -132,21 +132,21 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
   }
 
   // Outputs
-  @Output() onChanges = new EventEmitter<any>(); // Live unvalidated internal form data
-  @Output() onSubmit = new EventEmitter<any>(); // Complete validated form data
-  @Output() isValid = new EventEmitter<boolean>(); // Is current data valid?
-  @Output() validationErrors = new EventEmitter<any>(); // Validation errors (if any)
-  @Output() formSchema = new EventEmitter<any>(); // Final schema used to create form
-  @Output() formLayout = new EventEmitter<any>(); // Final layout used to create form
+  readonly onChanges = output<any>(); // Live unvalidated internal form data
+  readonly onSubmit = output<any>(); // Complete validated form data
+  readonly isValid = output<boolean>(); // Is current data valid?
+  readonly validationErrors = output<any>(); // Validation errors (if any)
+  readonly formSchema = output<any>(); // Final schema used to create form
+  readonly formLayout = output<any>(); // Final layout used to create form
 
   // Outputs for possible 2-way data binding
   // Only the one input providing the initial form data will be bound.
   // If there is no inital data, input '{}' to activate 2-way data binding.
   // There is no 2-way binding if inital data is combined inside the 'form' input.
-  @Output() dataChange = new EventEmitter<any>();
-  @Output() modelChange = new EventEmitter<any>();
-  @Output() formDataChange = new EventEmitter<any>();
-  @Output() ngModelChange = new EventEmitter<any>();
+  readonly dataChange = output<any>();
+  readonly modelChange = output<any>();
+  readonly formDataChange = output<any>();
+  readonly ngModelChange = output<any>();
 
   onChange: Function;
   onTouched: Function;
