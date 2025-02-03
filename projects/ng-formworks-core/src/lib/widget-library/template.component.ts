@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, OnChanges, OnInit, ViewChild, ViewContainerRef, input, inject } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, OnChanges, OnInit, ViewContainerRef, input, inject, viewChild } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -15,8 +15,7 @@ export class TemplateComponent implements OnInit, OnChanges {
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
-  @ViewChild('widgetContainer', { read: ViewContainerRef , static: true})
-    widgetContainer: ViewContainerRef;
+  readonly widgetContainer = viewChild('widgetContainer', { read: ViewContainerRef });
 
   ngOnInit() {
     this.updateComponent();
@@ -28,8 +27,9 @@ export class TemplateComponent implements OnInit, OnChanges {
 
   updateComponent() {
     const layoutNode = this.layoutNode();
-    if (this.widgetContainer && !this.newComponent && layoutNode.options.template) {
-      this.newComponent = this.widgetContainer.createComponent(
+    const widgetContainer = this.widgetContainer();
+    if (widgetContainer && !this.newComponent && layoutNode.options.template) {
+      this.newComponent = widgetContainer.createComponent(
         this.componentFactory.resolveComponentFactory(layoutNode.options.template)
       );
     }
