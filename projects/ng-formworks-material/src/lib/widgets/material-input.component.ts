@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, input, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, input, inject, viewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -53,7 +53,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         <mat-option *ngFor="let word of options?.typeahead?.source"
           [value]="word">{{word}}</mat-option>
       </mat-autocomplete>
-        <button *ngIf="layoutNode()?.type=='datetime-local'" (click)="input?.nativeElement?.showPicker()" mat-icon-button matIconSuffix>
+        <button *ngIf="layoutNode()?.type=='datetime-local'" (click)="input()?.nativeElement?.showPicker()" mat-icon-button matIconSuffix>
           <mat-icon>calendar_today</mat-icon>
         </button>
     </mat-form-field>
@@ -85,8 +85,7 @@ export class MaterialInputComponent implements OnInit {
   readonly dataIndex = input<number[]>(undefined);
 
   
-  @ViewChild('input', {})
-  input: ElementRef;
+  readonly input = viewChild<ElementRef>('input');
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};
