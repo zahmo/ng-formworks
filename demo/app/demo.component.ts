@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, inject, viewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -114,11 +114,10 @@ export class DemoComponent implements OnInit,AfterViewInit {
     toolbar_color:'primary'
   }
 
-  @ViewChild(MatMenuTrigger, { static: true }) menuTrigger: MatMenuTrigger;
+  readonly menuTrigger = viewChild(MatMenuTrigger);
 
 
-  @ViewChild('dialogTemplate', { read: TemplateRef }) 
-  dialogTemplate:TemplateRef<any>;
+  readonly dialogTemplate = viewChild('dialogTemplate', { read: TemplateRef });
   ngAfterViewInit(): void {
 
   }
@@ -310,7 +309,8 @@ b64ToUtf8(b64) {
     selectedExample: string = this.selectedExample,
     selectedExampleName: string = this.selectedExampleName
   ) {
-    if (this.menuTrigger.menuOpen) { this.menuTrigger.closeMenu(); }
+    const menuTrigger = this.menuTrigger();
+    if (menuTrigger.menuOpen) { menuTrigger.closeMenu(); }
     if (selectedExample !== this.selectedExample) {
       this.formActive = false;
       this.selectedSet = selectedSet;
@@ -451,7 +451,7 @@ appendUrlParameters(params) {
       this.dialogOptions.msg=url;
       this.dialogOptions.toolbar_color="warn";
       this.dialogOptions.title="Unable to copy form link, please copy the link manually";
-      this.dialogRef=this.dialogRef|| this.dialog.open(this.dialogTemplate,
+      this.dialogRef=this.dialogRef|| this.dialog.open(this.dialogTemplate(),
         {//disableClose:this.dialogOptions?.disableClose
         enterAnimationDuration:500,
         exitAnimationDuration:500
