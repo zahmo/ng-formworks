@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
@@ -22,21 +22,21 @@ export class MaterialAddReferenceComponent implements OnInit {
   itemCount: number;
   previousLayoutIndex: number[];
   previousDataIndex: number[];
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   constructor(
     private jsf: JsonSchemaFormService
   ) { }
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
   }
 
   get showAddButton(): boolean {
-    return !this.layoutNode.arrayItem ||
-      this.layoutIndex[this.layoutIndex.length - 1] < this.options.maxItems;
+    return !this.layoutNode().arrayItem ||
+      this.layoutIndex()[this.layoutIndex().length - 1] < this.options.maxItems;
   }
 
   addItem(event) {
@@ -46,11 +46,11 @@ export class MaterialAddReferenceComponent implements OnInit {
 
   get buttonText(): string {
     const parent: any = {
-      dataIndex: this.dataIndex.slice(0, -1),
-      layoutIndex: this.layoutIndex.slice(0, -1),
+      dataIndex: this.dataIndex().slice(0, -1),
+      layoutIndex: this.layoutIndex().slice(0, -1),
       layoutNode: this.jsf.getParentNode(this),
     };
     return parent.layoutNode.add ||
-      this.jsf.setArrayItemTitle(parent, this.layoutNode, this.itemCount);
+      this.jsf.setArrayItemTitle(parent, this.layoutNode(), this.itemCount);
   }
 }

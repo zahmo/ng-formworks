@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
 
@@ -10,27 +10,27 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
     <div>
       <div *ngIf="options?.title">
         <label
-          [attr.for]="'control' + layoutNode?._id"
+          [attr.for]="'control' + layoutNode()?._id"
           [class]="options?.labelHtmlClass || ''"
           [style.display]="options?.notitle ? 'none' : ''"
           [innerHTML]="options?.title"></label>
       </div>
       <mat-radio-group *ngIf="boundControl"
         [formControl]="formControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.required]="options?.required"
         [style.flex-direction]="flexDirection"
         [name]="controlName"
         (blur)="options.showErrors = true">
         <mat-radio-button *ngFor="let radioItem of radiosList"
-          [id]="'control' + layoutNode?._id + '/' + radioItem?.name"
+          [id]="'control' + layoutNode()?._id + '/' + radioItem?.name"
           [value]="radioItem?.value">
           <span [innerHTML]="radioItem?.name"></span>
         </mat-radio-button>
       </mat-radio-group>
       <mat-radio-group *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.required]="options?.required"
         [style.flex-direction]="flexDirection"
@@ -38,7 +38,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
         [name]="controlName"
         [value]="controlValue">
         <mat-radio-button *ngFor="let radioItem of radiosList"
-          [id]="'control' + layoutNode?._id + '/' + radioItem?.name"
+          [id]="'control' + layoutNode()?._id + '/' + radioItem?.name"
           [value]="radioItem?.value"
           (click)="updateValue(radioItem?.value)">
           <span [innerHTML]="radioItem?.name"></span>
@@ -64,17 +64,17 @@ export class MaterialRadiosComponent implements OnInit {
   options: any;
   flexDirection = 'column';
   radiosList: any[] = [];
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   constructor(
     private jsf: JsonSchemaFormService
   ) { }
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
-    if (this.layoutNode.type === 'radios-inline') {
+    this.options = this.layoutNode().options || {};
+    if (this.layoutNode().type === 'radios-inline') {
       this.flexDirection = 'row';
     }
     this.radiosList = buildTitleMap(

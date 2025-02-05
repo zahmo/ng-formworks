@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, input } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, addClasses, inArray } from '@ng-formworks/core';
 import _, { cloneDeep, map } from 'lodash';
 import { Subscription } from 'rxjs';
@@ -21,11 +21,11 @@ export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
   debug: any = '';
   parentArray: any = null;
   isOrderable = false;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
-  @Input() widgetStyles: css_fw.widgetstyles;
+  readonly widgetStyles = input<css_fw.widgetstyles>(undefined);
 
 
 
@@ -34,9 +34,9 @@ export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
   //TODO-move to ng-formworks/core utility.functions.ts
   applyCssClasses(type, widgetOptions, styleOptions) {
     //console.log("applyCssClasses for type:"+type);
-    let cssClasses = this.widgetStyles[type];
+    let cssClasses = this.widgetStyles()[type];
     if (!cssClasses || _.isEmpty(cssClasses) ) {
-      cssClasses = this.widgetStyles.default;
+      cssClasses = this.widgetStyles().default;
     }
     Object.keys(cssClasses).forEach(catName => {
       let classList = cssClasses[catName];
@@ -120,7 +120,7 @@ frameworkThemeSubs:Subscription;
     let activeFramework:any=this.jsfFLService.activeFramework;
     let fwcfg=activeFramework.config||{};
     this.widgetStyles = Object.assign(this.defaultStyling,fwcfg.widgetstyles);
-    let defaultTheme=this.widgetStyles.__themes__[0];
+    let defaultTheme=this.widgetStyles().__themes__[0];
     let defaultThemeName=cssFWService.activeRequestedTheme||defaultTheme.name;
     this.theme=this.options?.theme|| defaultThemeName;
     this.frameworkThemeSubs=cssFWService.frameworkTheme$.subscribe(newTheme=>{
@@ -136,31 +136,33 @@ frameworkThemeSubs:Subscription;
 
 
   get showRemoveButton(): boolean {
+    const layoutNode = this.layoutNode();
     if (!this.options.removable || this.options.readonly ||
-      this.layoutNode.type === '$ref'
+      layoutNode.type === '$ref'
     ) {
       return false;
     }
-    if (this.layoutNode.recursiveReference) {
+    if (layoutNode.recursiveReference) {
       return true;
     }
-    if (!this.layoutNode.arrayItem || !this.parentArray) {
+    if (!layoutNode.arrayItem || !this.parentArray) {
       return false;
     }
     // If array length <= minItems, don't allow removing any items
     return this.parentArray.items.length - 1 <= this.parentArray.options.minItems ? false :
       // For removable list items, allow removing any item
-      this.layoutNode.arrayItemType === 'list' ? true :
+      layoutNode.arrayItemType === 'list' ? true :
         // For removable tuple items, only allow removing last item in list
-        this.layoutIndex[this.layoutIndex.length - 1] === this.parentArray.items.length - 2;
+        this.layoutIndex()[this.layoutIndex().length - 1] === this.parentArray.items.length - 2;
   }
 
   ngOnInit() {
     this.initializeFramework();
-    if (this.layoutNode.arrayItem && this.layoutNode.type !== '$ref') {
+    const layoutNode = this.layoutNode();
+    if (layoutNode.arrayItem && layoutNode.type !== '$ref') {
       this.parentArray = this.jsf.getParentNode(this);
       if (this.parentArray) {
-        this.isOrderable = this.layoutNode.arrayItemType === 'list' &&
+        this.isOrderable = layoutNode.arrayItemType === 'list' &&
           !this.options.readonly && this.parentArray.options.orderable;
       }
     }
@@ -173,16 +175,17 @@ frameworkThemeSubs:Subscription;
   }
 
   initializeFramework() {
-    if (this.layoutNode) {
-      this.options = cloneDeep(this.layoutNode.options);
+    const layoutNode = this.layoutNode();
+    if (layoutNode) {
+      this.options = cloneDeep(layoutNode.options);
       this.widgetLayoutNode = {
-        ...this.layoutNode,
-        options: cloneDeep(this.layoutNode.options)
+        ...layoutNode,
+        options: cloneDeep(layoutNode.options)
       };
       this.widgetOptions = this.widgetLayoutNode.options;
       this.formControl = this.jsf.getFormControl(this);
 
-      this.options.isInputWidget = inArray(this.layoutNode.type, [
+      this.options.isInputWidget = inArray(layoutNode.type, [
         'button', 'checkbox', 'checkboxes-inline', 'checkboxes', 'color',
         'date', 'datetime-local', 'datetime', 'email', 'file', 'hidden',
         'image', 'integer', 'month', 'number', 'password', 'radio',
@@ -193,15 +196,15 @@ frameworkThemeSubs:Subscription;
       this.options.title = this.setTitle();
 
       this.options.htmlClass =
-        addClasses(this.options.htmlClass, 'schema-form-' + this.layoutNode.type);
+        addClasses(this.options.htmlClass, 'schema-form-' + layoutNode.type);
 
       
-      if (this.layoutNode.type === 'array') {
-        this.options.htmlClass = addClasses(this.options.htmlClass, this.widgetStyles.__array__.htmlClass);
-      } else if (this.layoutNode.arrayItem && this.layoutNode.type !== '$ref') {
-        this.options.htmlClass = addClasses(this.options.htmlClass, this.widgetStyles.__array_item_nonref__.htmlClass);
+      if (layoutNode.type === 'array') {
+        this.options.htmlClass = addClasses(this.options.htmlClass, this.widgetStyles().__array__.htmlClass);
+      } else if (layoutNode.arrayItem && layoutNode.type !== '$ref') {
+        this.options.htmlClass = addClasses(this.options.htmlClass, this.widgetStyles().__array_item_nonref__.htmlClass);
       } else {
-        this.options.htmlClass = addClasses(this.options.htmlClass, this.widgetStyles.__form_group__.htmlClass);
+        this.options.htmlClass = addClasses(this.options.htmlClass, this.widgetStyles().__form_group__.htmlClass);
       }
       
 
@@ -225,27 +228,27 @@ addClasses(this.options.htmlClass, this.widgetStyles.array.htmlClass):
           
       this.widgetOptions.htmlClass = '';
       this.options.labelHtmlClass =
-        addClasses(this.options.labelHtmlClass, this.widgetStyles.__control_label__.labelHtmlClass);
+        addClasses(this.options.labelHtmlClass, this.widgetStyles().__control_label__.labelHtmlClass);
       this.widgetOptions.activeClass =
-        addClasses(this.widgetOptions.activeClass, this.widgetStyles.__active__.activeClass);
+        addClasses(this.widgetOptions.activeClass, this.widgetStyles().__active__.activeClass);
       this.options.fieldAddonLeft =
         this.options.fieldAddonLeft || this.options.prepend;
       this.options.fieldAddonRight =
         this.options.fieldAddonRight || this.options.append;
 
       // Add asterisk to titles if required
-      if (this.options.title && this.layoutNode.type !== 'tab' &&
+      if (this.options.title && layoutNode.type !== 'tab' &&
         !this.options.notitle && this.options.required &&
         !this.options.title.includes('*')
       ) {
-        let required_asterisk_class=this.widgetStyles.__required_asterisk__||'text-danger'
+        let required_asterisk_class=this.widgetStyles().__required_asterisk__||'text-danger'
         this.options.title += ` <strong class="${required_asterisk_class}">*</strong>`;
       }
-      if (this.layoutNode.type == 'optionfieldset') {
+      if (layoutNode.type == 'optionfieldset') {
         this.options.messageLocation = 'top';
       }
       // Set miscelaneous styles and settings for each control type
-      this.applyCssClasses(this.layoutNode.type, this.widgetOptions, this.options.style);
+      this.applyCssClasses(layoutNode.type, this.widgetOptions, this.options.style);
       if (this.formControl) {
         this.updateHelpBlock(this.formControl.status);
         this.formControl.statusChanges.subscribe(status => this.updateHelpBlock(status));
@@ -269,7 +272,7 @@ addClasses(this.options.htmlClass, this.widgetStyles.array.htmlClass):
   }
 
   setTitle(): string {
-    switch (this.layoutNode.type) {
+    switch (this.layoutNode().type) {
       case 'button':
       case 'checkbox':
       case 'section':
