@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -13,16 +13,16 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
 export class MessageComponent implements OnInit {
   options: any;
   message: string = null;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   constructor(
     private jsf: JsonSchemaFormService
   ) { }
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.message = this.options.help || this.options.helpvalue ||
       this.options.msg || this.options.message;
   }

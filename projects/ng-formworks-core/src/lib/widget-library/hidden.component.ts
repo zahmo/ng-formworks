@@ -1,5 +1,5 @@
 import { AbstractControl } from '@angular/forms';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -9,13 +9,13 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   template: `
     <input *ngIf="boundControl"
       [formControl]="formControl"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       [name]="controlName"
       type="hidden">
     <input *ngIf="!boundControl"
       [disabled]="controlDisabled"
       [name]="controlName"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       type="hidden"
       [value]="controlValue">`,
 })
@@ -25,9 +25,9 @@ export class HiddenComponent implements OnInit {
   controlValue: any;
   controlDisabled = false;
   boundControl = false;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   constructor(
     private jsf: JsonSchemaFormService

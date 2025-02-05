@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { Component, Inject, OnInit, Optional, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/core';
@@ -18,9 +18,9 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <mat-select *ngIf="boundControl"
         [formControl]="formControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.name]="controlName"
-        [id]="'control' + layoutNode?._id"
+        [id]="'control' + layoutNode()?._id"
         [multiple]="options?.multiple"
         [placeholder]="options?.notitle ? options?.placeholder : options?.title"
         [required]="options?.required"
@@ -41,10 +41,10 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
         </ng-template>
       </mat-select>
       <mat-select *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.name]="controlName"
         [disabled]="controlDisabled || options?.readonly"
-        [id]="'control' + layoutNode?._id"
+        [id]="'control' + layoutNode()?._id"
         [multiple]="options?.multiple"
         [placeholder]="options?.notitle ? options?.placeholder : options?.title"
         [required]="options?.required"
@@ -90,9 +90,9 @@ export class MaterialSelectComponent implements OnInit {
   options: any;
   selectList: any[] = [];
   isArray = isArray;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   constructor(
     @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) @Optional() public matFormFieldDefaultOptions,
@@ -100,7 +100,7 @@ export class MaterialSelectComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.selectList = buildTitleMap(
       this.options.titleMap || this.options.enumNames,
       this.options.enum, !!this.options.required, !!this.options.flatList
