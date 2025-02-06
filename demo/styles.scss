@@ -1,4 +1,3 @@
-@use "sass:meta";
 // * { border: 1px solid red !important; }
 @use '@angular/material' as mat;
 @include mat.core();
@@ -32,11 +31,6 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
-    @include mat.all-component-themes($demo-app-theme);
-    @include mat.button-theme($demo-button-theme);
-    & {
-        --mat-toolbar-container-background-color: #{mat.get-theme-color($demo-app-theme, primary, 80)};
-    }
 }
 
 .demo-page-header {
@@ -129,5 +123,5 @@ $light-theme: mat.define-light-theme(( color: ( primary: mat.define-palette(mat.
     @include mat.button-color($demo-app-theme);
 }
 
-@include meta.load-css('../projects/ng-formworks-material/src/lib/material-design-themes.scss');
-@include meta.load-css('../projects/ng-formworks-material/src/lib/flexlayout-replacement-styles.scss');
+@import '../projects/ng-formworks-material/src/lib/material-design-themes.scss';
+@import '../projects/ng-formworks-material/src/lib/flexlayout-replacement-styles.scss';
