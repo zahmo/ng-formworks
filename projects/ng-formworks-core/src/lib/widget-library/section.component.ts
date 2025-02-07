@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -69,7 +69,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     </fieldset>`,
   styles: [`
     .legend { font-weight: bold; }
-    .expandable > legend:before, .expandable > label:before  { content: '▶'; padding-right: .3em; }
+    .expandable > legend:before, .expandable > label:before  { content: '▶'; padding-right: .3em; font-family:auto }
     .expanded > legend:before, .expanded > label:before  { content: '▼'; padding-right: .2em; }
   `],
 })
