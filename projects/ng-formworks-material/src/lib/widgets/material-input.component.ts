@@ -55,7 +55,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         <mat-option *ngFor="let word of options?.typeahead?.source"
           [value]="word">{{word}}</mat-option>
       </mat-autocomplete>
-        <button *ngIf="layoutNode()?.type=='datetime-local'" (click)="input?.nativeElement?.showPicker()" mat-icon-button matIconSuffix>
+        <button *ngIf="layoutNode?.type=='datetime-local'" (click)="input?.nativeElement?.showPicker()" mat-icon-button matIconSuffix>
           <mat-icon>calendar_today</mat-icon>
         </button>
     </mat-form-field>
