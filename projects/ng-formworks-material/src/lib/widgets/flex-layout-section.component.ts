@@ -138,7 +138,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
   styles: [`
     fieldset { border: 0; margin: 0; padding: 0; }
     .legend { font-weight: bold; }
-    .expandable > .legend:before { content: '▶'; padding-right: .3em; }
+    .expandable > .legend:before { content: '▶'; padding-right: .3em; font-family:auto }
     .expanded > .legend:before { content: '▼'; padding-right: .2em; }
   `],
 })
