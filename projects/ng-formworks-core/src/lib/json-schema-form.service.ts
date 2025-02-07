@@ -510,10 +510,11 @@ export class JsonSchemaFormService implements OnDestroy {
       ? null
       : this.parseText(
         ctx.options.title || toTitleCase(ctx.layoutNode.name),
-        this.getFormControlValue(this),
-        (this.getFormControlGroup(this) || <any>{}).value,
+        this.getFormControlValue(ctx),
+        (this.getFormControlGroup(ctx) || <any>{}).value,
         ctx.dataIndex[ctx.dataIndex.length - 1]
       );
+  
   }
 
   evaluateCondition(layoutNode: any, dataIndex: number[]): boolean {
