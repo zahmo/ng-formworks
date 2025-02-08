@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'section-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'section-widget',
+    template: `
     <div *ngIf="containerType === 'div'"
       [class]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
@@ -16,9 +16,9 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [innerHTML]="sectionTitle"
         (click)="toggleExpanded()"></label>
       <root-widget *ngIf="expanded"
-        [dataIndex]="dataIndex"
-        [layout]="layoutNode.items"
-        [layoutIndex]="layoutIndex"
+        [dataIndex]="dataIndex()"
+        [layout]="layoutNode().items"
+        [layoutIndex]="layoutIndex()"
         [isFlexItem]="getFlexAttribute('is-flex')"
         [isOrderable]="options?.orderable"
         [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
@@ -47,9 +47,9 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [innerHTML]="options?.description"></p>
       </div>
       <root-widget *ngIf="expanded"
-        [dataIndex]="dataIndex"
-        [layout]="layoutNode.items"
-        [layoutIndex]="layoutIndex"
+        [dataIndex]="dataIndex()"
+        [layout]="layoutNode().items"
+        [layoutIndex]="layoutIndex()"
         [isFlexItem]="getFlexAttribute('is-flex')"
         [isOrderable]="options?.orderable"
         [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
@@ -67,23 +67,22 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [innerHTML]="options?.description"></p>
       </div>
     </fieldset>`,
-  styles: [`
+    styles: [`
     .legend { font-weight: bold; }
-    .expandable > legend:before, .expandable > label:before  { content: '▶'; padding-right: .3em; }
+    .expandable > legend:before, .expandable > label:before  { content: '▶'; padding-right: .3em; font-family:auto }
     .expanded > legend:before, .expanded > label:before  { content: '▼'; padding-right: .2em; }
   `],
+    standalone: false
 })
 export class SectionComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   options: any;
   expanded = true;
   containerType: string;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   get sectionTitle() {
     return this.options.notitle ? null : this.jsf.setItemTitle(this);
@@ -91,10 +90,10 @@ export class SectionComponent implements OnInit {
 
   ngOnInit() {
     this.jsf.initializeControl(this);
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.expanded = typeof this.options.expanded === 'boolean' ?
       this.options.expanded : !this.options.expandable;
-    switch (this.layoutNode.type) {
+    switch (this.layoutNode().type) {
       case 'fieldset': case 'array': case 'tab': case 'advancedfieldset':
       case 'authfieldset': case 'optionfieldset': case 'selectfieldset':
         this.containerType = 'fieldset';
@@ -113,7 +112,7 @@ export class SectionComponent implements OnInit {
   // (child attributes are set in root.component)
   getFlexAttribute(attribute: string) {
     const flexActive: boolean =
-      this.layoutNode.type === 'flex' ||
+      this.layoutNode().type === 'flex' ||
       !!this.options.displayFlex ||
       this.options.display === 'flex';
     if (attribute !== 'flex' && !flexActive) { return null; }

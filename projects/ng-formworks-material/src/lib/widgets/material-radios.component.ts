@@ -1,36 +1,36 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-radios-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-radios-widget',
+    template: `
     <div>
       <div *ngIf="options?.title">
         <label
-          [attr.for]="'control' + layoutNode?._id"
+          [attr.for]="'control' + layoutNode()?._id"
           [class]="options?.labelHtmlClass || ''"
           [style.display]="options?.notitle ? 'none' : ''"
           [innerHTML]="options?.title"></label>
       </div>
       <mat-radio-group *ngIf="boundControl"
         [formControl]="formControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.required]="options?.required"
         [style.flex-direction]="flexDirection"
         [name]="controlName"
         (blur)="options.showErrors = true">
         <mat-radio-button *ngFor="let radioItem of radiosList"
-          [id]="'control' + layoutNode?._id + '/' + radioItem?.name"
+          [id]="'control' + layoutNode()?._id + '/' + radioItem?.name"
           [value]="radioItem?.value">
           <span [innerHTML]="radioItem?.name"></span>
         </mat-radio-button>
       </mat-radio-group>
       <mat-radio-group *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.required]="options?.required"
         [style.flex-direction]="flexDirection"
@@ -38,7 +38,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
         [name]="controlName"
         [value]="controlValue">
         <mat-radio-button *ngFor="let radioItem of radiosList"
-          [id]="'control' + layoutNode?._id + '/' + radioItem?.name"
+          [id]="'control' + layoutNode()?._id + '/' + radioItem?.name"
           [value]="radioItem?.value"
           (click)="updateValue(radioItem?.value)">
           <span [innerHTML]="radioItem?.name"></span>
@@ -47,15 +47,18 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
       <mat-error *ngIf="options?.showErrors && options?.errorMessage"
         [innerHTML]="options?.errorMessage"></mat-error>
     </div>`,
-  styles: [`
+    styles: [`
     /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
     mat-radio-group { display: inline-flex; }
     /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
     mat-radio-button { margin: 2px; }
     mat-error { font-size: 75%; }
-  `]
+  `],
+    standalone: false
 })
 export class MaterialRadiosComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
@@ -64,17 +67,13 @@ export class MaterialRadiosComponent implements OnInit {
   options: any;
   flexDirection = 'column';
   radiosList: any[] = [];
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
-    if (this.layoutNode.type === 'radios-inline') {
+    this.options = this.layoutNode().options || {};
+    if (this.layoutNode().type === 'radios-inline') {
       this.flexDirection = 'row';
     }
     this.radiosList = buildTitleMap(

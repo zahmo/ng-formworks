@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { Framework } from '@ng-formworks/core';
 import { CssFrameworkComponent } from './css-framework.component';
 import { CSS_FRAMEWORK_CFG, css_fw } from './css-framework.defs';
@@ -8,11 +8,16 @@ import { CssframeworkService } from './css-framework.service';
 
 @Injectable()
 export class CssFramework extends Framework {
+  cssFWService = inject(CssframeworkService);
+
   name = 'css';
 
   framework:any = CssFrameworkComponent;
   config:css_fw.frameworkcfg
-  constructor(@Inject(CSS_FRAMEWORK_CFG ) cfg:css_fw.frameworkcfg,public cssFWService:CssframeworkService){
+  constructor(@Inject(CSS_FRAMEWORK_CFG ) cfg:css_fw.frameworkcfg){
+        //reverted to use @Inject for other child classes
+        //const cfg = inject<css_fw.frameworkcfg>(CSS_FRAMEWORK_CFG);
+
         super();
         
         this.name=cfg.name;

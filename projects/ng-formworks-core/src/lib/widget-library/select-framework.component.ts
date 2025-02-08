@@ -1,29 +1,22 @@
-import {
-  Component, ComponentFactoryResolver, ComponentRef, Input,
-  OnChanges, OnInit, ViewChild, ViewContainerRef
-} from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, OnChanges, OnInit, ViewContainerRef, input, inject, viewChild } from '@angular/core';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'select-framework-widget',
-  template: `<div #widgetContainer></div>`,
+    // tslint:disable-next-line:component-selector
+    selector: 'select-framework-widget',
+    template: `<div #widgetContainer></div>`,
+    standalone: false
 })
 export class SelectFrameworkComponent implements OnChanges, OnInit {
-  newComponent: ComponentRef<any> = null;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-  @ViewChild('widgetContainer', {
-      read: ViewContainerRef,
-      static: true })
-    widgetContainer: ViewContainerRef;
+  private componentFactory = inject(ComponentFactoryResolver);
+  private jsf = inject(JsonSchemaFormService);
 
-  constructor(
-    private componentFactory: ComponentFactoryResolver,
-    private jsf: JsonSchemaFormService
-  ) { }
+  newComponent: ComponentRef<any> = null;
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
+  readonly widgetContainer = viewChild('widgetContainer', { read: ViewContainerRef });
 
   ngOnInit() {
     this.updateComponent();
@@ -34,8 +27,9 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
   }
 
   updateComponent() {
-    if (this.widgetContainer && !this.newComponent && this.jsf.framework) {
-      this.newComponent = this.widgetContainer.createComponent(
+    const widgetContainer = this.widgetContainer();
+    if (widgetContainer && !this.newComponent && this.jsf.framework) {
+      this.newComponent = widgetContainer.createComponent(
         this.componentFactory.resolveComponentFactory(this.jsf.framework)
       );
       //TODO fix all deprecated calls and test 

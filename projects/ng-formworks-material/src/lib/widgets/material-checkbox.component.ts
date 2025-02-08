@@ -1,16 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-checkbox-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-checkbox-widget',
+    template: `
     <mat-checkbox *ngIf="boundControl && !showSlideToggle"
       [formControl]="formControl"
       align="left"
       [color]="options?.color || 'primary'"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       labelPosition="after"
       [name]="controlName"
       (blur)="options.showErrors = true">
@@ -23,7 +23,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       align="left"
       [color]="options?.color || 'primary'"
       [disabled]="controlDisabled || options?.readonly"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       labelPosition="after"
       [name]="controlName"
       [checked]="isChecked"
@@ -38,7 +38,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [formControl]="formControl"
       align="left"
       [color]="options?.color || 'primary'"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       labelPosition="after"
       [name]="controlName"
       (blur)="options.showErrors = true">
@@ -51,7 +51,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       align="left"
       [color]="options?.color || 'primary'"
       [disabled]="controlDisabled || options?.readonly"
-      [id]="'control' + layoutNode?._id"
+      [id]="'control' + layoutNode()?._id"
       labelPosition="after"
       [name]="controlName"
       [checked]="isChecked"
@@ -64,12 +64,15 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     </mat-slide-toggle>
     <mat-error *ngIf="options?.showErrors && options?.errorMessage"
       [innerHTML]="options?.errorMessage"></mat-error>`,
-  styles: [`
+    styles: [`
     .checkbox-name { white-space: nowrap; }
     mat-error { font-size: 75%; }
   `],
+    standalone: false
 })
 export class MaterialCheckboxComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
@@ -79,23 +82,20 @@ export class MaterialCheckboxComponent implements OnInit {
   trueValue: any = true;
   falseValue: any = false;
   showSlideToggle = false;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this, !this.options.readonly);
     if (this.controlValue === null || this.controlValue === undefined) {
       this.controlValue = false;
       this.jsf.updateValue(this, this.falseValue);
     }
-    if (this.layoutNode.type === 'slide-toggle' ||
-      this.layoutNode.format === 'slide-toggle'
+    const layoutNode = this.layoutNode();
+    if (layoutNode.type === 'slide-toggle' ||
+      layoutNode.format === 'slide-toggle'
     ) {
       this.showSlideToggle = true;
     }

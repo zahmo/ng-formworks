@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CssFramework, CssframeworkService } from '@ng-formworks/cssframework';
 import { cssFrameworkCfgMaterialDesign } from './material-design-cssframework';
 import {
@@ -30,6 +30,8 @@ import {
 
 @Injectable()
 export class MaterialDesignFramework extends CssFramework {
+  cssFWService: CssframeworkService;
+
   name = 'material-design';
 
   framework = MaterialDesignFrameworkComponent;
@@ -74,8 +76,13 @@ export class MaterialDesignFramework extends CssFramework {
     'wizard': 'stepper',
   };
 
-  constructor(public cssFWService:CssframeworkService){
-    super(cssFrameworkCfgMaterialDesign,cssFWService);
+  constructor(){
+    const cssFWService = inject(CssframeworkService);
+
+    //super(cssFrameworkCfgMaterialDesign,cssFWService);
+    super(cssFrameworkCfgMaterialDesign);
+    this.cssFWService = cssFWService;
+
     this.widgets=this._widgets
   }
 

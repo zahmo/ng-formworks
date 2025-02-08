@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'flex-layout-section-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'flex-layout-section-widget',
+    template: `
     <div *ngIf="containerType === 'div'"
       [class]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
@@ -15,9 +15,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [innerHTML]="sectionTitle"
         (click)="toggleExpanded()"></label>
       <flex-layout-root-widget *ngIf="expanded"
-        [layout]="layoutNode.items"
-        [dataIndex]="dataIndex"
-        [layoutIndex]="layoutIndex"
+        [layout]="layoutNode().items"
+        [dataIndex]="dataIndex()"
+        [layoutIndex]="layoutIndex()"
         [isFlexItem]="getFlexAttribute('is-flex')"
         [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
         [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
@@ -45,9 +45,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [innerHTML]="sectionTitle"
         (click)="toggleExpanded()"></legend>
       <flex-layout-root-widget *ngIf="expanded"
-        [layout]="layoutNode.items"
-        [dataIndex]="dataIndex"
-        [layoutIndex]="layoutIndex"
+        [layout]="layoutNode().items"
+        [dataIndex]="dataIndex()"
+        [layoutIndex]="layoutIndex()"
         [isFlexItem]="getFlexAttribute('is-flex')"
         [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
         [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
@@ -78,9 +78,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <mat-card-content *ngIf="expanded">
         <fieldset [disabled]="options?.readonly">
           <flex-layout-root-widget *ngIf="expanded"
-            [layout]="layoutNode.items"
-            [dataIndex]="dataIndex"
-            [layoutIndex]="layoutIndex"
+            [layout]="layoutNode().items"
+            [dataIndex]="dataIndex()"
+            [layoutIndex]="layoutIndex()"
             [isFlexItem]="getFlexAttribute('is-flex')"
             [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
             [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
@@ -115,9 +115,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       </mat-expansion-panel-header>
       <fieldset [disabled]="options?.readonly">
         <flex-layout-root-widget *ngIf="expanded"
-          [layout]="layoutNode.items"
-          [dataIndex]="dataIndex"
-          [layoutIndex]="layoutIndex"
+          [layout]="layoutNode().items"
+          [dataIndex]="dataIndex()"
+          [layoutIndex]="layoutIndex()"
           [isFlexItem]="getFlexAttribute('is-flex')"
           [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
           [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
@@ -135,14 +135,17 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <mat-error *ngIf="options?.showErrors && options?.errorMessage"
         [innerHTML]="options?.errorMessage"></mat-error>
     </mat-expansion-panel>`,
-  styles: [`
+    styles: [`
     fieldset { border: 0; margin: 0; padding: 0; }
     .legend { font-weight: bold; }
-    .expandable > .legend:before { content: '▶'; padding-right: .3em; }
+    .expandable > .legend:before { content: '▶'; padding-right: .3em; font-family:auto }
     .expanded > .legend:before { content: '▼'; padding-right: .2em; }
   `],
+    standalone: false
 })
 export class FlexLayoutSectionComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
@@ -151,13 +154,9 @@ export class FlexLayoutSectionComponent implements OnInit {
   options: any;
   expanded = true;
   containerType = 'div';
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   get sectionTitle() {
     return this.options.notitle ? null : this.jsf.setItemTitle(this);
@@ -165,10 +164,10 @@ export class FlexLayoutSectionComponent implements OnInit {
 
   ngOnInit() {
     this.jsf.initializeControl(this);
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.expanded = typeof this.options.expanded === 'boolean' ?
       this.options.expanded : !this.options.expandable;
-    switch (this.layoutNode.type) {
+    switch (this.layoutNode().type) {
       case 'section': case 'array': case 'fieldset': case 'advancedfieldset':
       case 'authfieldset': case 'optionfieldset': case 'selectfieldset':
         this.containerType = 'fieldset';
@@ -192,7 +191,7 @@ export class FlexLayoutSectionComponent implements OnInit {
   // (child attributes are set in flex-layout-root.component)
   getFlexAttribute(attribute: string) {
     const flexActive: boolean =
-      this.layoutNode.type === 'flex' ||
+      this.layoutNode().type === 'flex' ||
       !!this.options.displayFlex ||
       this.options.display === 'flex';
     // if (attribute !== 'flex' && !flexActive) { return null; }

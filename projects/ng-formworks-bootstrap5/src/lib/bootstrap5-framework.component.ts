@@ -1,11 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  ViewEncapsulation
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnInit, ViewEncapsulation, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 /**
@@ -13,20 +6,24 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
  *
  */
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'bootstrap-5-framework',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'bootstrap-5-framework',
+    template: `
   <div>
-    <css-framework [layoutNode]="layoutNode" 
-    [layoutIndex]="layoutIndex" 
-    [dataIndex]="dataIndex">
+    <css-framework [layoutNode]="layoutNode()" 
+    [layoutIndex]="layoutIndex()" 
+    [dataIndex]="dataIndex()">
     </css-framework>
   </div>
   `,
-  styleUrls: ['./bootstrap5-framework.component.scss'],
-  encapsulation:ViewEncapsulation.None
+    styleUrls: ['./bootstrap5-framework.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class Bootstrap5FrameworkComponent implements OnInit, OnChanges {
+  changeDetector = inject(ChangeDetectorRef);
+  jsf = inject(JsonSchemaFormService);
+
   frameworkInitialized = false;
   widgetOptions: any; // Options passed to child widget
   widgetLayoutNode: any; // layoutNode passed to child widget
@@ -36,16 +33,9 @@ export class Bootstrap5FrameworkComponent implements OnInit, OnChanges {
   debug: any = '';
   parentArray: any = null;
   isOrderable = false;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-  
-  
-  constructor(
-    public changeDetector: ChangeDetectorRef,
-    public jsf: JsonSchemaFormService
-  ) {
-  }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
   
   
   

@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'flex-layout-root-widget',
-  template: `
-    <div *ngFor="let layoutNode of layout; let i = index"
-      [class.form-flex-item]="isFlexItem"
+    // tslint:disable-next-line:component-selector
+    selector: 'flex-layout-root-widget',
+    template: `
+    <div *ngFor="let layoutNode of layout(); let i = index"
+      [class.form-flex-item]="isFlexItem()"
       [style.flex-grow]="getFlexAttribute(layoutNode, 'flex-grow')"
       [style.flex-shrink]="getFlexAttribute(layoutNode, 'flex-shrink')"
       [style.flex-basis]="getFlexAttribute(layoutNode, 'flex-basis')"
@@ -18,21 +18,20 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [attr.fxFlexOffset]="layoutNode?.options?.fxFlexOffset"
       [attr.fxFlexAlign]="layoutNode?.options?.fxFlexAlign">
       <select-framework-widget *ngIf="showWidget(layoutNode)"
-        [dataIndex]="layoutNode?.arrayItem ? (dataIndex || []).concat(i) : (dataIndex || [])"
-        [layoutIndex]="(layoutIndex || []).concat(i)"
+        [dataIndex]="layoutNode?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
+        [layoutIndex]="(layoutIndex() || []).concat(i)"
         [layoutNode]="layoutNode"></select-framework-widget>
     <div>`,
-  changeDetection: ChangeDetectionStrategy.Default,
+    changeDetection: ChangeDetectionStrategy.Default,
+    standalone: false
 })
 export class FlexLayoutRootComponent {
-  @Input() dataIndex: number[];
-  @Input() layoutIndex: number[];
-  @Input() layout: any[];
-  @Input() isFlexItem = false;
+  private jsf = inject(JsonSchemaFormService);
 
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly dataIndex = input<number[]>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly layout = input<any[]>(undefined);
+  readonly isFlexItem = input(false);
 
   removeItem(item) {
     this.jsf.removeItem(item);
@@ -47,6 +46,6 @@ export class FlexLayoutRootComponent {
   }
 
   showWidget(layoutNode: any): boolean {
-    return this.jsf.evaluateCondition(layoutNode, this.dataIndex);
+    return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
   }
 }

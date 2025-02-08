@@ -1,12 +1,12 @@
-import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-select-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-select-widget',
+    template: `
     <mat-form-field
       [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
       [class]="options?.htmlClass || ''"
@@ -18,9 +18,9 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <mat-select *ngIf="boundControl"
         [formControl]="formControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.name]="controlName"
-        [id]="'control' + layoutNode?._id"
+        [id]="'control' + layoutNode()?._id"
         [multiple]="options?.multiple"
         [placeholder]="options?.notitle ? options?.placeholder : options?.title"
         [required]="options?.required"
@@ -41,10 +41,10 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
         </ng-template>
       </mat-select>
       <mat-select *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.name]="controlName"
         [disabled]="controlDisabled || options?.readonly"
-        [id]="'control' + layoutNode?._id"
+        [id]="'control' + layoutNode()?._id"
         [multiple]="options?.multiple"
         [placeholder]="options?.notitle ? options?.placeholder : options?.title"
         [required]="options?.required"
@@ -75,13 +75,17 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
     </mat-form-field>
     <mat-error *ngIf="options?.showErrors && options?.errorMessage"
       [innerHTML]="options?.errorMessage"></mat-error>`,
-  styles: [`
+    styles: [`
     mat-error { font-size: 75%; margin-top: -1rem; margin-bottom: 0.5rem; }
     ::ng-deep json-schema-form mat-form-field .mat-mdc-form-field-wrapper .mat-form-field-flex
       .mat-form-field-infix { width: initial; }
   `],
+    standalone: false
 })
 export class MaterialSelectComponent implements OnInit {
+  matFormFieldDefaultOptions = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
@@ -90,17 +94,12 @@ export class MaterialSelectComponent implements OnInit {
   options: any;
   selectList: any[] = [];
   isArray = isArray;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) @Optional() public matFormFieldDefaultOptions,
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.selectList = buildTitleMap(
       this.options.titleMap || this.options.enumNames,
       this.options.enum, !!this.options.required, !!this.options.flatList

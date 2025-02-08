@@ -1,22 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-button-group-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-button-group-widget',
+    template: `
     <div>
       <div *ngIf="options?.title">
         <label
-          [attr.for]="'control' + layoutNode?._id"
+          [attr.for]="'control' + layoutNode()?._id"
           [class]="options?.labelHtmlClass || ''"
           [style.display]="options?.notitle ? 'none' : ''"
           [innerHTML]="options?.title"></label>
       </div>
       <mat-button-toggle-group
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.required]="options?.required"
         [disabled]="controlDisabled || options?.readonly"
@@ -24,7 +24,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
         [value]="controlValue"
         [vertical]="!!options.vertical">
         <mat-button-toggle *ngFor="let radioItem of radiosList"
-          [id]="'control' + layoutNode?._id + '/' + radioItem?.name"
+          [id]="'control' + layoutNode()?._id + '/' + radioItem?.name"
           [value]="radioItem?.value"
           (click)="updateValue(radioItem?.value)">
           <span [innerHTML]="radioItem?.name"></span>
@@ -34,8 +34,11 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
         [innerHTML]="options?.errorMessage"></mat-error>
     </div>`,
     styles: [` mat-error { font-size: 75%; } `],
+    standalone: false
 })
 export class MaterialButtonGroupComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
@@ -44,16 +47,12 @@ export class MaterialButtonGroupComponent implements OnInit {
   options: any;
   radiosList: any[] = [];
   vertical = false;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.radiosList = buildTitleMap(
       this.options.titleMap || this.options.enumNames,
       this.options.enum, true

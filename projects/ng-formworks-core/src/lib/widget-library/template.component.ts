@@ -1,33 +1,22 @@
-import {
-  Component,
-  ComponentFactoryResolver,
-  ComponentRef,
-  Input,
-  OnChanges,
-  OnInit,
-  ViewChild,
-  ViewContainerRef
-  } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, OnChanges, OnInit, ViewContainerRef, input, inject, viewChild } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'template-widget',
-  template: `<div #widgetContainer></div>`,
+    // tslint:disable-next-line:component-selector
+    selector: 'template-widget',
+    template: `<div #widgetContainer></div>`,
+    standalone: false
 })
 export class TemplateComponent implements OnInit, OnChanges {
-  newComponent: ComponentRef<any> = null;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-  @ViewChild('widgetContainer', { read: ViewContainerRef , static: true})
-    widgetContainer: ViewContainerRef;
+  private componentFactory = inject(ComponentFactoryResolver);
+  private jsf = inject(JsonSchemaFormService);
 
-  constructor(
-    private componentFactory: ComponentFactoryResolver,
-    private jsf: JsonSchemaFormService
-  ) { }
+  newComponent: ComponentRef<any> = null;
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
+  readonly widgetContainer = viewChild('widgetContainer', { read: ViewContainerRef });
 
   ngOnInit() {
     this.updateComponent();
@@ -38,9 +27,11 @@ export class TemplateComponent implements OnInit, OnChanges {
   }
 
   updateComponent() {
-    if (this.widgetContainer && !this.newComponent && this.layoutNode.options.template) {
-      this.newComponent = this.widgetContainer.createComponent(
-        this.componentFactory.resolveComponentFactory(this.layoutNode.options.template)
+    const layoutNode = this.layoutNode();
+    const widgetContainer = this.widgetContainer();
+    if (widgetContainer && !this.newComponent && layoutNode.options.template) {
+      this.newComponent = widgetContainer.createComponent(
+        this.componentFactory.resolveComponentFactory(layoutNode.options.template)
       );
     }
     if (this.newComponent) {

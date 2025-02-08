@@ -1,6 +1,6 @@
 {
     "name": "@ng-formworks/bootstrap5",
-    "version": "18.4.0",
+    "version": "19.5.1",
     "description": "Angular ng-formworks - JSON Schema Form builder using Bootstrap 5 UI",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "keywords": [
@@ -13,10 +13,12 @@
         "Angular17",
         "Angular 17",
         "Angular 18",
+        "Angular 19",
         "ng15",
         "ng16",
         "ng17",
         "ng18",
+        "ng19",
         "JSON Schema",
         "form",
         "forms",
@@ -42,8 +44,8 @@
     "private": false,
     "dependencies": {
         "lodash-es": "~4.17.21",
-        "@ng-formworks/core": "~18.4.0",
-        "@ng-formworks/cssframework": "~18.4.0",
+        "@ng-formworks/core": "~19.5.1",
+        "@ng-formworks/cssframework": "~19.5.1",
         "tslib": "^2.7.0"
     },
     "peerDependencies": {

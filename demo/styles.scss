@@ -1,6 +1,8 @@
+@use "sass:meta";
 // * { border: 1px solid red !important; }
 @use '@angular/material' as mat;
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 //use M3 theming
 $demo-app-theme:mat.define-theme(( color: ( theme-type: light, primary: mat.$azure-palette, tertiary: mat.$blue-palette), density: ( scale: 0)));
 $demo-button-theme:mat.define-theme(( color: ( theme-type: light, primary: mat.$orange-palette, tertiary: mat.$yellow-palette), density: ( scale: 0)));
@@ -31,7 +33,9 @@ body {
     padding: 0;
     @include mat.all-component-themes($demo-app-theme);
     @include mat.button-theme($demo-button-theme);
-    --mat-toolbar-container-background-color: #{mat.get-theme-color($demo-app-theme, primary, 80)};
+    & {
+        --mat-toolbar-container-background-color: #{mat.get-theme-color($demo-app-theme, primary, 80)};
+    }
 }
 
 .demo-page-header {
@@ -125,5 +129,5 @@ body {
     @include mat.button-theme($demo-button-theme);
 }
 
-@import '../projects/ng-formworks-material/src/lib/material-design-themes.scss';
-@import '../projects/ng-formworks-material/src/lib/flexlayout-replacement-styles.scss';
+@include meta.load-css('../projects/ng-formworks-material/src/lib/material-design-themes.scss');
+@include meta.load-css('../projects/ng-formworks-material/src/lib/flexlayout-replacement-styles.scss');

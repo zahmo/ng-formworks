@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -6,46 +6,46 @@ import { hasOwn } from '../shared/utility.functions';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'submit-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'submit-widget',
+    template: `
     <div
       [class]="options?.htmlClass || ''">
       <input
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.required]="options?.required"
         [class]="options?.fieldHtmlClass || ''"
         [disabled]="controlDisabled"
-        [id]="'control' + layoutNode?._id"
+        [id]="'control' + layoutNode()?._id"
         [name]="controlName"
-        [type]="layoutNode?.type"
+        [type]="layoutNode()?.type"
         [value]="controlValue"
         (click)="updateValue($event)">
     </div>`,
+    standalone: false
 })
 export class SubmitComponent implements OnInit,OnDestroy {
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
   controlDisabled = false;
   boundControl = false;
   options: any;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   isValidChangesSubs:Subscription;
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
   ngOnDestroy(): void {
     this.isValidChangesSubs?.unsubscribe();
     this.isValidChangesSubs=null;
   }
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this);
     if (hasOwn(this.options, 'disabled')) {
       this.controlDisabled = this.options.disabled;

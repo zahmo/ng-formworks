@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, inject, viewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -10,28 +10,37 @@ import { Framework, FrameworkLibraryService, JsonPointer } from '@ng-formworks/c
 import { Examples } from './example-schemas.model';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'demo',
-  templateUrl: 'demo.component.html',
-  animations: [
-    trigger('expandSection', [
-      state('in', style({ height: '*' })),
-      transition(':enter', [
-        style({ height: 0 }), animate(100),
-      ]),
-      transition(':leave', [
-        style({ height: '*' }),
-        animate(100, style({ height: 0 })),
-      ]),
-    ]),
-  ],
-  styles:[
-    `.flex-spacer {
+    // tslint:disable-next-line:component-selector
+    selector: 'demo',
+    templateUrl: 'demo.component.html',
+    animations: [
+        trigger('expandSection', [
+            state('in', style({ height: '*' })),
+            transition(':enter', [
+                style({ height: 0 }), animate(100),
+            ]),
+            transition(':leave', [
+                style({ height: '*' }),
+                animate(100, style({ height: 0 })),
+            ]),
+        ]),
+    ],
+    styles: [
+        `.flex-spacer {
       flex: 1 1 auto;
     }`
-  ]
+    ],
+    standalone: false
 })
 export class DemoComponent implements OnInit,AfterViewInit {
+  private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private jsfFLService = inject(FrameworkLibraryService);
+  dialog = inject(MatDialog);
+  private _snackBar = inject(MatSnackBar);
+  private changeDetector = inject(ChangeDetectorRef);
+
   examples: any = Examples;
   languageList: any = ['de', 'en', 'es', 'fr', 'it', 'pt', 'zh'];
   languages: any = {
@@ -106,23 +115,10 @@ export class DemoComponent implements OnInit,AfterViewInit {
     toolbar_color:'primary'
   }
 
-  @ViewChild(MatMenuTrigger, { static: true }) menuTrigger: MatMenuTrigger;
+  readonly menuTrigger = viewChild(MatMenuTrigger);
 
 
-  @ViewChild('dialogTemplate', { read: TemplateRef }) 
-  dialogTemplate:TemplateRef<any>;
-
-  constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute,
-    private router: Router,
-    private jsfFLService:FrameworkLibraryService,
-    public dialog: MatDialog,
-    private _snackBar: MatSnackBar
-  ) { 
-
-
-  }
+  readonly dialogTemplate = viewChild('dialogTemplate', { read: TemplateRef });
   ngAfterViewInit(): void {
 
   }
@@ -154,7 +150,11 @@ b64ToUtf8(b64) {
   const jsonString = JSON.stringify(jsonData);
 
   // Encode the JSON string to a Base64 string
-  const base64String = btoa(unescape(encodeURIComponent(jsonString)));
+  const base64String = 
+  //btoa(unescape(encodeURIComponent(jsonString)));
+  btoa(encodeURIComponent(jsonString)
+  .replace(/%([0-9A-F]{2})/g,(match,p1)=>{return String.fromCharCode(parseInt('0x'+p1))})
+  );
 
   // Encode the Base64 string to be URI-safe
   const uriSafeBase64String = base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -169,8 +169,8 @@ b64ToUtf8(b64) {
       .replace(/_/g, '/')
       .concat('='.repeat((4 - base64DataEncoded.length % 4) % 4)); // Add padding if necessary
 
-  // Decode the Base64 string to a JSON string
-  const jsonString = decodeURIComponent(escape(atob(base64String)));
+  // Decode the Base64 string to a URI-encoded JSON string
+  const jsonString = decodeURIComponent(atob(base64String));
 
   // Parse the JSON string to a JSON object
   let jsonData;
@@ -250,7 +250,7 @@ b64ToUtf8(b64) {
           }else{
             this.selectedTheme=tlist[0]?.name||"no-theme"
           }
-          
+          //this.changeDetector.detectChanges();
         },0)
         
        
@@ -310,7 +310,8 @@ b64ToUtf8(b64) {
     selectedExample: string = this.selectedExample,
     selectedExampleName: string = this.selectedExampleName
   ) {
-    if (this.menuTrigger.menuOpen) { this.menuTrigger.closeMenu(); }
+    const menuTrigger = this.menuTrigger();
+    if (menuTrigger.menuOpen) { menuTrigger.closeMenu(); }
     if (selectedExample !== this.selectedExample) {
       this.formActive = false;
       this.selectedSet = selectedSet;
@@ -451,7 +452,7 @@ appendUrlParameters(params) {
       this.dialogOptions.msg=url;
       this.dialogOptions.toolbar_color="warn";
       this.dialogOptions.title="Unable to copy form link, please copy the link manually";
-      this.dialogRef=this.dialogRef|| this.dialog.open(this.dialogTemplate,
+      this.dialogRef=this.dialogRef|| this.dialog.open(this.dialogTemplate(),
         {//disableClose:this.dialogOptions?.disableClose
         enterAnimationDuration:500,
         exitAnimationDuration:500

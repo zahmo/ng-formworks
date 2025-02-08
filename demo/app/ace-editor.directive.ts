@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { Directive, ElementRef, Input, inject, output } from '@angular/core';
 import ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/sqlserver';
@@ -6,8 +6,9 @@ import 'brace/theme/sqlserver';
 
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
-  selector: '[ace-editor]'
+    // tslint:disable-next-line:directive-selector
+    selector: '[ace-editor]',
+    standalone: false
 })
 export class AceEditorDirective {
   _options: any = {};
@@ -19,9 +20,11 @@ export class AceEditorDirective {
   _autoUpdateContent = true;
   editor: any;
   oldText: any;
-  @Output('textChanged') textChanged = new EventEmitter();
+  readonly textChanged = output({ alias: 'textChanged' });
 
-  constructor(elementRef: ElementRef) {
+  constructor() {
+    const elementRef = inject(ElementRef);
+
     const el = elementRef.nativeElement;
     this.editor = ace.edit(el);
     this.init();

@@ -1,3 +1,3 @@
 
-    export const environment ={"production":true,"version":"18.4.0","angularVersion":"18.2.7","materialVersion":"18.2.7","cssClassPrefix":true}
+    export const environment ={"production":true,"version":"19.5.1","angularVersion":"19.1.4","materialVersion":"19.1.2","cssClassPrefix":true}
     

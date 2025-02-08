@@ -1,12 +1,12 @@
-import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-datepicker-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-datepicker-widget',
+    template: `
     <mat-form-field [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
                     [class]="options?.htmlClass || ''"
                     [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
@@ -17,10 +17,10 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <input matInput *ngIf="boundControl"
         [formControl]="formControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
-        [attr.list]="'control' + layoutNode?._id + 'Autocomplete'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+        [attr.list]="'control' + layoutNode()?._id + 'Autocomplete'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
-        [id]="'control' + layoutNode?._id"
+        [id]="'control' + layoutNode()?._id"
         [max]="options?.maximum"
         [matDatepicker]="picker"
         [min]="options?.minimum"
@@ -32,11 +32,11 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (blur)="options.showErrors = true"
         >
       <input matInput *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
-        [attr.list]="'control' + layoutNode?._id + 'Autocomplete'"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+        [attr.list]="'control' + layoutNode()?._id + 'Autocomplete'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [disabled]="controlDisabled || options?.readonly"
-        [id]="'control' + layoutNode?._id"
+        [id]="'control' + layoutNode()?._id"
         [max]="options?.maximum"
         [matDatepicker]="picker"
         [min]="options?.minimum"
@@ -56,13 +56,17 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     <mat-datepicker #picker ></mat-datepicker>
     <mat-error *ngIf="options?.showErrors && options?.errorMessage"
       [innerHTML]="options?.errorMessage"></mat-error>`,
-  styles: [`
+    styles: [`
     mat-error { font-size: 75%; margin-top: -1rem; margin-bottom: 0.5rem; }
     ::ng-deep json-schema-form mat-form-field .mat-mdc-form-field-wrapper .mat-form-field-flex
       .mat-form-field-infix { width: initial; }
   `],
+    standalone: false
 })
 export class MaterialDatepickerComponent implements OnInit {
+  matFormFieldDefaultOptions = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   dateValue: any;
@@ -70,17 +74,12 @@ export class MaterialDatepickerComponent implements OnInit {
   boundControl = false;
   options: any;
   autoCompleteList: string[] = [];
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) @Optional() public matFormFieldDefaultOptions,
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this, !this.options.readonly);
     if (!this.options.notitle && !this.options.description && this.options.placeholder) {
       this.options.description = this.options.placeholder;

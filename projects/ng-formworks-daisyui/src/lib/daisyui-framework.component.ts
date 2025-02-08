@@ -1,11 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  ViewEncapsulation
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnInit, ViewEncapsulation, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 /**
@@ -13,21 +6,25 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 *
 */
 @Component({
-// tslint:disable-next-line:component-selector
-selector: 'daisyui-framework',
-template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'daisyui-framework',
+    template: `
 <div>
-  <css-framework [layoutNode]="layoutNode" 
-  [layoutIndex]="layoutIndex" 
-  [dataIndex]="dataIndex"
+  <css-framework [layoutNode]="layoutNode()" 
+  [layoutIndex]="layoutIndex()" 
+  [dataIndex]="dataIndex()"
   >
   </css-framework>
 </div>
 `,
-styleUrls: ['./daisyui-framework.component.scss'],
-encapsulation:ViewEncapsulation.None
+    styleUrls: ['./daisyui-framework.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class DaisyUIFrameworkComponent implements OnInit, OnChanges {
+changeDetector = inject(ChangeDetectorRef);
+jsf = inject(JsonSchemaFormService);
+
 
 
 frameworkInitialized = false;
@@ -39,18 +36,9 @@ debugOutput: any = '';
 debug: any = '';
 parentArray: any = null;
 isOrderable = false;
-@Input() layoutNode: any;
-@Input() layoutIndex: number[];
-@Input() dataIndex: number[];
-
-
-
-constructor(
-  public changeDetector: ChangeDetectorRef,
-  public jsf: JsonSchemaFormService
-) {
-  
-}
+readonly layoutNode = input<any>(undefined);
+readonly layoutIndex = input<number[]>(undefined);
+readonly dataIndex = input<number[]>(undefined);
 
 
 

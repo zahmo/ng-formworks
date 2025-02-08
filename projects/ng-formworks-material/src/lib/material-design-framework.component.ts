@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, input, inject } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, isDefined } from '@ng-formworks/core';
 import { CssframeworkService } from '@ng-formworks/cssframework';
 import cloneDeep from 'lodash/cloneDeep';
@@ -6,13 +6,18 @@ import { Subscription } from 'rxjs';
 import { cssFrameworkCfgMaterialDesign } from './material-design-cssframework';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-design-framework',
-  templateUrl: './material-design-framework.component.html',
-  styleUrls: ['./material-design-framework.component.scss'],
-  //changeDetection:ChangeDetectionStrategy.OnPush
+    // tslint:disable-next-line:component-selector
+    selector: 'material-design-framework',
+    templateUrl: './material-design-framework.component.html',
+    styleUrls: ['./material-design-framework.component.scss'],
+    standalone: false
 })
 export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDestroy {
+  private changeDetector = inject(ChangeDetectorRef);
+  private jsf = inject(JsonSchemaFormService);
+  jsfFLService = inject(FrameworkLibraryService);
+  cssFWService = inject(CssframeworkService);
+
   frameworkInitialized = false;
   inputType: string;
   options: any; // Options used in this framework
@@ -22,18 +27,15 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
   parentArray: any = null;
   isOrderable = false;
   dynamicTitle: string = null;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   theme:string="material-default-theme";
   frameworkThemeSubs:Subscription;
-  constructor(
-    private changeDetector: ChangeDetectorRef,
-    private jsf: JsonSchemaFormService,
-    public jsfFLService:FrameworkLibraryService,
-    public cssFWService:CssframeworkService
-  ) {
+  constructor() {
+    const cssFWService = this.cssFWService;
+
     let activeFramework:any=this.jsfFLService.activeFramework;
     let fwcfg=activeFramework.config||{};
     let defaultTheme=cssFrameworkCfgMaterialDesign.widgetstyles?.__themes__[0];
@@ -51,23 +53,24 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
   }
 
   get showRemoveButton(): boolean {
-    if (!this.layoutNode || !this.widgetOptions.removable ||
-      this.widgetOptions.readonly || this.layoutNode.type === '$ref'
+    const layoutNode = this.layoutNode();
+    if (!layoutNode || !this.widgetOptions.removable ||
+      this.widgetOptions.readonly || layoutNode.type === '$ref'
     ) {
       return false;
     }
-    if (this.layoutNode.recursiveReference) {
+    if (layoutNode.recursiveReference) {
       return true;
     }
-    if (!this.layoutNode.arrayItem || !this.parentArray) {
+    if (!layoutNode.arrayItem || !this.parentArray) {
       return false;
     }
     // If array length <= minItems, don't allow removing any items
     return this.parentArray.items.length - 1 <= this.parentArray.options.minItems ? false :
       // For removable list items, allow removing any item
-      this.layoutNode.arrayItemType === 'list' ? true :
+      layoutNode.arrayItemType === 'list' ? true :
         // For removable tuple items, only allow removing last item in list
-        this.layoutIndex[this.layoutIndex.length - 1] === this.parentArray.items.length - 2;
+        this.layoutIndex()[this.layoutIndex().length - 1] === this.parentArray.items.length - 2;
   }
 
   ngOnInit() {
@@ -84,11 +87,12 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
   }
 
   initializeFramework() {
-    if (this.layoutNode) {
-      this.options = cloneDeep(this.layoutNode.options || {});
+    const layoutNode = this.layoutNode();
+    if (layoutNode) {
+      this.options = cloneDeep(layoutNode.options || {});
       this.widgetLayoutNode = {
-        ...this.layoutNode,
-        options: cloneDeep(this.layoutNode.options || {})
+        ...layoutNode,
+        options: cloneDeep(layoutNode.options || {})
       };
       this.widgetOptions = this.widgetLayoutNode.options;
       this.formControl = this.jsf.getFormControl(this);
@@ -98,25 +102,25 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
         isDefined(this.widgetOptions.maximum) &&
         this.widgetOptions.multipleOf >= 1
       ) {
-        this.layoutNode.type = 'range';
+        layoutNode.type = 'range';
       }
 
       if (
         !['$ref', 'advancedfieldset', 'authfieldset', 'button', 'card',
           'checkbox', 'expansion-panel', 'help', 'message', 'msg', 'section',
-          'submit', 'tabarray', 'tabs'].includes(this.layoutNode.type) &&
+          'submit', 'tabarray', 'tabs'].includes(layoutNode.type) &&
         /{{.+?}}/.test(this.widgetOptions.title || '')
       ) {
         this.dynamicTitle = this.widgetOptions.title;
         this.updateTitle();
       }
 
-      if (this.layoutNode.arrayItem && this.layoutNode.type !== '$ref') {
+      if (layoutNode.arrayItem && layoutNode.type !== '$ref') {
         this.parentArray = this.jsf.getParentNode(this);
         if (this.parentArray) {
           this.isOrderable =
             this.parentArray.type.slice(0, 3) !== 'tab' &&
-            this.layoutNode.arrayItemType === 'list' &&
+            layoutNode.arrayItemType === 'list' &&
             !this.widgetOptions.readonly &&
             this.parentArray.options.orderable;
         }
@@ -133,7 +137,7 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
       this.dynamicTitle,
       this.jsf.getFormControlValue(this),
       this.jsf.getFormControlGroup(this).value,
-      this.dataIndex[this.dataIndex.length - 1]
+      this.dataIndex()[this.dataIndex().length - 1]
     );
   }
 

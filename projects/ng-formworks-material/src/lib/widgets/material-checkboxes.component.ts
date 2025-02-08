@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService, TitleMapItem, buildTitleMap } from '@ng-formworks/core';
 
@@ -6,9 +6,9 @@ import { JsonSchemaFormService, TitleMapItem, buildTitleMap } from '@ng-formwork
 // https://material.angular.io/components/list/overview
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-checkboxes-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-checkboxes-widget',
+    template: `
     <div>
       <mat-checkbox type="checkbox"
         [checked]="allChecked"
@@ -42,15 +42,18 @@ import { JsonSchemaFormService, TitleMapItem, buildTitleMap } from '@ng-formwork
       <mat-error *ngIf="options?.showErrors && options?.errorMessage"
         [innerHTML]="options?.errorMessage"></mat-error>
     </div>`,
-  styles: [`
+    styles: [`
     .title { font-weight: bold; }
     .checkbox-list { list-style-type: none; }
     .horizontal-list > li { display: inline-block; margin-right: 10px; zoom: 1; }
     .checkbox-name { white-space: nowrap; }
     mat-error { font-size: 75%; }
   `],
+    standalone: false
 })
 export class MaterialCheckboxesComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
@@ -60,18 +63,15 @@ export class MaterialCheckboxesComponent implements OnInit {
   horizontalList = false;
   formArray: AbstractControl;
   checkboxList: TitleMapItem[] = [];
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
-    this.horizontalList = this.layoutNode.type === 'checkboxes-inline' ||
-      this.layoutNode.type === 'checkboxbuttons';
+    this.options = this.layoutNode().options || {};
+    const layoutNode = this.layoutNode();
+    this.horizontalList = layoutNode.type === 'checkboxes-inline' ||
+      layoutNode.type === 'checkboxbuttons';
     this.jsf.initializeControl(this);
     this.checkboxList = buildTitleMap(
       this.options.titleMap || this.options.enumNames, this.options.enum, true

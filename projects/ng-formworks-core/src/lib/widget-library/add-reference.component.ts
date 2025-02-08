@@ -1,16 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit
-  } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'add-reference-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'add-reference-widget',
+    template: `
     <button *ngIf="showAddButton"
       [class]="options?.fieldHtmlClass || ''"
       [disabled]="options?.readonly"
@@ -19,27 +14,26 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
     </button>`,
     changeDetection: ChangeDetectionStrategy.Default,
+    standalone: false
 })
 export class AddReferenceComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   options: any;
   itemCount: number;
   previousLayoutIndex: number[];
   previousDataIndex: number[];
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
+    this.options = this.layoutNode().options || {};
   }
 
   get showAddButton(): boolean {
-    return !this.layoutNode.arrayItem ||
-      this.layoutIndex[this.layoutIndex.length - 1] < this.options.maxItems;
+    return !this.layoutNode().arrayItem ||
+      this.layoutIndex()[this.layoutIndex().length - 1] < this.options.maxItems;
   }
 
   addItem(event) {
@@ -49,11 +43,11 @@ export class AddReferenceComponent implements OnInit {
 
   get buttonText(): string {
     const parent: any = {
-      dataIndex: this.dataIndex.slice(0, -1),
-      layoutIndex: this.layoutIndex.slice(0, -1),
+      dataIndex: this.dataIndex().slice(0, -1),
+      layoutIndex: this.layoutIndex().slice(0, -1),
       layoutNode: this.jsf.getParentNode(this)
     };
     return parent.layoutNode.add ||
-      this.jsf.setArrayItemTitle(parent, this.layoutNode, this.itemCount);
+      this.jsf.setArrayItemTitle(parent, this.layoutNode(), this.itemCount);
   }
 }

@@ -1,15 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input, signal, inject } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'tabs-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'tabs-widget',
+    template: `
     <div
       [class]="options?.labelHtmlClass || ''">
-      <a *ngFor="let item of layoutNode?.items; let i = index"
+      <a *ngFor="let item of layoutNode()?.items; let i = index"
         [class]="(options?.itemLabelHtmlClass || '') + (selectedItem === i ?
           (' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')) :
           (' ' + options?.style?.unselected))"
@@ -31,46 +31,46 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 </div>
 -->
 
-    <div *ngFor="let layoutItem of layoutNode?.items; let i = index"
+    <div *ngFor="let layoutItem of layoutNode()?.items; let i = index"
       [class]="options?.htmlClass || ''">
 
       <select-framework-widget *ngIf="selectedItem === i"
         [class]="(options?.fieldHtmlClass || '') +
           ' ' + (options?.activeClass || '') +
           ' ' + (options?.style?.selected || '')"
-        [dataIndex]="layoutNode?.dataType === 'array' ? (dataIndex || []).concat(i) : dataIndex"
-        [layoutIndex]="(layoutIndex || []).concat(i)"
+        [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
+        [layoutIndex]="(layoutIndex() || []).concat(i)"
         [layoutNode]="layoutItem"></select-framework-widget>
 
     </div>`,
-  styles: [` a { cursor: pointer; } `],
+    styles: [` a { cursor: pointer; } `],
+    standalone: false
 })
 export class DaisyUITabsComponent implements OnInit {
+  private jsf = inject(JsonSchemaFormService);
+
   options: any;
   itemCount: number;
   selectedItem = 0;
   showAddTab = true;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
-
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {};
-    this.itemCount = this.layoutNode.items.length - 1;
+    this.options = this.layoutNode().options || {};
+    this.itemCount = this.layoutNode().items.length - 1;
     this.updateControl();
   }
 
   select(index) {
-    if (this.layoutNode.items[index].type === '$ref') {
-      this.itemCount = this.layoutNode.items.length;
+    const layoutNode = this.layoutNode();
+    if (layoutNode.items[index].type === '$ref') {
+      this.itemCount = layoutNode.items.length;
       this.jsf.addItem({
-        layoutNode: this.layoutNode.items[index],
-        layoutIndex: this.layoutIndex.concat(index),
-        dataIndex: this.dataIndex.concat(index)
+        layoutNode: signal(layoutNode.items[index]),
+        layoutIndex: signal(this.layoutIndex().concat(index)),
+        dataIndex: signal(this.dataIndex().concat(index))
       });
       this.updateControl();
     }
@@ -78,7 +78,7 @@ export class DaisyUITabsComponent implements OnInit {
   }
 
   updateControl() {
-    const lastItem = this.layoutNode.items[this.layoutNode.items.length - 1];
+    const lastItem = this.layoutNode().items[this.layoutNode().items.length - 1];
     if (lastItem.type === '$ref' &&
       this.itemCount >= (lastItem.options.maxItems || 1000)
     ) {
