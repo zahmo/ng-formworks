@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.13 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -550,7 +550,7 @@ video {
 
 /* Make elements with the HTML hidden attribute stay hidden by default */
 
-[hidden] {
+[hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
 
@@ -1736,7 +1736,7 @@ html {
   position: relative;
   display: grid;
   overflow: hidden;
-  grid-template-rows: auto 0fr;
+  grid-template-rows: max-content 0fr;
   transition: grid-template-rows 0.2s;
   width: 100%;
   border-radius: var(--rounded-box, 1rem);
@@ -1758,6 +1758,13 @@ html {
   opacity: 0;
 }
 
+:where(.tw-dui-collapse > input[type="checkbox"]),
+:where(.tw-dui-collapse > input[type="radio"]) {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
 .tw-dui-collapse-content {
   visibility: hidden;
   grid-column-start: 1;
@@ -1774,12 +1781,12 @@ html {
 .tw-dui-collapse[open],
 .tw-dui-collapse-open,
 .tw-dui-collapse:focus:not(.tw-dui-collapse-close) {
-  grid-template-rows: auto 1fr;
+  grid-template-rows: max-content 1fr;
 }
 
 .tw-dui-collapse:not(.tw-dui-collapse-close):has(> input[type="checkbox"]:checked),
 .tw-dui-collapse:not(.tw-dui-collapse-close):has(> input[type="radio"]:checked) {
-  grid-template-rows: auto 1fr;
+  grid-template-rows: max-content 1fr;
 }
 
 .tw-dui-collapse[open] > .tw-dui-collapse-content,
@@ -1820,6 +1827,7 @@ html {
   display: grid;
   width: 100%;
   overflow: hidden;
+  direction: ltr;
   container-type: inline-size;
   grid-template-columns: auto 1fr;
 }
@@ -2016,24 +2024,24 @@ html {
   grid-auto-columns: auto max-content;
 }
 
-.tw-dui-drawer-end .tw-dui-drawer-toggle ~ .tw-dui-drawer-content {
+.tw-dui-drawer-end > .tw-dui-drawer-toggle ~ .tw-dui-drawer-content {
   grid-column-start: 1;
 }
 
-.tw-dui-drawer-end .tw-dui-drawer-toggle ~ .tw-dui-drawer-side {
+.tw-dui-drawer-end > .tw-dui-drawer-toggle ~ .tw-dui-drawer-side {
   grid-column-start: 2;
   justify-items: end;
 }
 
-.tw-dui-drawer-end .tw-dui-drawer-toggle ~ .tw-dui-drawer-side > *:not(.tw-dui-drawer-overlay) {
+.tw-dui-drawer-end > .tw-dui-drawer-toggle ~ .tw-dui-drawer-side > *:not(.tw-dui-drawer-overlay) {
   transform: translateX(100%);
 }
 
-[dir="rtl"] .tw-dui-drawer-end .tw-dui-drawer-toggle ~ .tw-dui-drawer-side > *:not(.tw-dui-drawer-overlay) {
+[dir="rtl"] .tw-dui-drawer-end > .tw-dui-drawer-toggle ~ .tw-dui-drawer-side > *:not(.tw-dui-drawer-overlay) {
   transform: translateX(-100%);
 }
 
-.tw-dui-drawer-end .tw-dui-drawer-toggle:checked ~ .tw-dui-drawer-side > *:not(.tw-dui-drawer-overlay) {
+.tw-dui-drawer-end > .tw-dui-drawer-toggle:checked ~ .tw-dui-drawer-side > *:not(.tw-dui-drawer-overlay) {
   transform: translateX(0%);
 }
 
@@ -2956,6 +2964,8 @@ html {
   background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  --tw-text-opacity: 1;
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity)));
   border-bottom-width: 2px;
   min-height: 2.2em;
   min-width: 2.2em;
@@ -4754,15 +4764,9 @@ details.tw-dui-collapse summary::-webkit-details-marker {
   position: relative;
 }
 
-:where(.tw-dui-collapse > input[type="checkbox"]),
-:where(.tw-dui-collapse > input[type="radio"]) {
-  z-index: 1;
-}
-
 .tw-dui-collapse-title,
 :where(.tw-dui-collapse > input[type="checkbox"]),
 :where(.tw-dui-collapse > input[type="radio"]) {
-  width: 100%;
   padding: 1rem;
   padding-inline-end: 3rem;
   min-height: 3.75rem;
@@ -5342,38 +5346,38 @@ details.tw-dui-collapse summary::-webkit-details-marker {
           mask-repeat: no-repeat;
   -webkit-mask-position: center;
           mask-position: center;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='%23000' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_V8m1%7Btransform-origin:center;animation:spinner_zKoa 2s linear infinite%7D.spinner_V8m1 circle%7Bstroke-linecap:round;animation:spinner_YpZS 1.5s ease-out infinite%7D%40keyframes spinner_zKoa%7B100%25%7Btransform:rotate(360deg)%7D%7D%40keyframes spinner_YpZS%7B0%25%7Bstroke-dasharray:0 150;stroke-dashoffset:0%7D47.5%25%7Bstroke-dasharray:42 150;stroke-dashoffset:-16%7D95%25%2C100%25%7Bstroke-dasharray:42 150;stroke-dashoffset:-59%7D%7D%3C%2Fstyle%3E%3Cg class='spinner_V8m1'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3'%3E%3C%2Fcircle%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-          mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='%23000' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_V8m1%7Btransform-origin:center;animation:spinner_zKoa 2s linear infinite%7D.spinner_V8m1 circle%7Bstroke-linecap:round;animation:spinner_YpZS 1.5s ease-out infinite%7D%40keyframes spinner_zKoa%7B100%25%7Btransform:rotate(360deg)%7D%7D%40keyframes spinner_YpZS%7B0%25%7Bstroke-dasharray:0 150;stroke-dashoffset:0%7D47.5%25%7Bstroke-dasharray:42 150;stroke-dashoffset:-16%7D95%25%2C100%25%7Bstroke-dasharray:42 150;stroke-dashoffset:-59%7D%7D%3C%2Fstyle%3E%3Cg class='spinner_V8m1'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3'%3E%3C%2Fcircle%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='black' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform-origin='center'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3' stroke-linecap='round'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 12 12' to='360 12 12' dur='2s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dasharray' values='0,150;42,150;42,150' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dashoffset' values='0;-16;-59' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='black' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform-origin='center'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3' stroke-linecap='round'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 12 12' to='360 12 12' dur='2s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dasharray' values='0,150;42,150;42,150' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dashoffset' values='0;-16;-59' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
 }
 
 .tw-dui-loading-spinner {
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='%23000' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_V8m1%7Btransform-origin:center;animation:spinner_zKoa 2s linear infinite%7D.spinner_V8m1 circle%7Bstroke-linecap:round;animation:spinner_YpZS 1.5s ease-out infinite%7D%40keyframes spinner_zKoa%7B100%25%7Btransform:rotate(360deg)%7D%7D%40keyframes spinner_YpZS%7B0%25%7Bstroke-dasharray:0 150;stroke-dashoffset:0%7D47.5%25%7Bstroke-dasharray:42 150;stroke-dashoffset:-16%7D95%25%2C100%25%7Bstroke-dasharray:42 150;stroke-dashoffset:-59%7D%7D%3C%2Fstyle%3E%3Cg class='spinner_V8m1'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3'%3E%3C%2Fcircle%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-          mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='%23000' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_V8m1%7Btransform-origin:center;animation:spinner_zKoa 2s linear infinite%7D.spinner_V8m1 circle%7Bstroke-linecap:round;animation:spinner_YpZS 1.5s ease-out infinite%7D%40keyframes spinner_zKoa%7B100%25%7Btransform:rotate(360deg)%7D%7D%40keyframes spinner_YpZS%7B0%25%7Bstroke-dasharray:0 150;stroke-dashoffset:0%7D47.5%25%7Bstroke-dasharray:42 150;stroke-dashoffset:-16%7D95%25%2C100%25%7Bstroke-dasharray:42 150;stroke-dashoffset:-59%7D%7D%3C%2Fstyle%3E%3Cg class='spinner_V8m1'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3'%3E%3C%2Fcircle%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='black' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform-origin='center'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3' stroke-linecap='round'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 12 12' to='360 12 12' dur='2s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dasharray' values='0,150;42,150;42,150' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dashoffset' values='0;-16;-59' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' stroke='black' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform-origin='center'%3E%3Ccircle cx='12' cy='12' r='9.5' fill='none' stroke-width='3' stroke-linecap='round'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 12 12' to='360 12 12' dur='2s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dasharray' values='0,150;42,150;42,150' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-dashoffset' values='0;-16;-59' keyTimes='0;0.475;1' dur='1.5s' repeatCount='indefinite'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
 }
 
 .tw-dui-loading-dots {
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_qM83%7Banimation:spinner_8HQG 1.05s infinite%7D.spinner_oXPr%7Banimation-delay:.1s%7D.spinner_ZTLf%7Banimation-delay:.2s%7D@keyframes spinner_8HQG%7B0%25,57.14%25%7Banimation-timing-function:cubic-bezier(0.33,.66,.66,1);transform:translate(0)%7D28.57%25%7Banimation-timing-function:cubic-bezier(0.33,0,.66,.33);transform:translateY(-6px)%7D100%25%7Btransform:translate(0)%7D%7D%3C/style%3E%3Ccircle class='spinner_qM83' cx='4' cy='12' r='3'/%3E%3Ccircle class='spinner_qM83 spinner_oXPr' cx='12' cy='12' r='3'/%3E%3Ccircle class='spinner_qM83 spinner_ZTLf' cx='20' cy='12' r='3'/%3E%3C/svg%3E");
-          mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_qM83%7Banimation:spinner_8HQG 1.05s infinite%7D.spinner_oXPr%7Banimation-delay:.1s%7D.spinner_ZTLf%7Banimation-delay:.2s%7D@keyframes spinner_8HQG%7B0%25,57.14%25%7Banimation-timing-function:cubic-bezier(0.33,.66,.66,1);transform:translate(0)%7D28.57%25%7Banimation-timing-function:cubic-bezier(0.33,0,.66,.33);transform:translateY(-6px)%7D100%25%7Btransform:translate(0)%7D%7D%3C/style%3E%3Ccircle class='spinner_qM83' cx='4' cy='12' r='3'/%3E%3Ccircle class='spinner_qM83 spinner_oXPr' cx='12' cy='12' r='3'/%3E%3Ccircle class='spinner_qM83 spinner_ZTLf' cx='20' cy='12' r='3'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1'/%3E%3C/circle%3E%3Ccircle cx='12' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1' begin='0.1s'/%3E%3C/circle%3E%3Ccircle cx='20' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1' begin='0.2s'/%3E%3C/circle%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1'/%3E%3C/circle%3E%3Ccircle cx='12' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1' begin='0.1s'/%3E%3C/circle%3E%3Ccircle cx='20' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1' begin='0.2s'/%3E%3C/circle%3E%3C/svg%3E");
 }
 
 .tw-dui-loading-ring {
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' xmlns='http://www.w3.org/2000/svg' stroke='%23fff'%3E%3Cg fill='none' fill-rule='evenodd' stroke-width='2'%3E%3Ccircle cx='22' cy='22' r='1'%3E%3Canimate attributeName='r' begin='0s' dur='1.8s' values='1; 20' calcMode='spline' keyTimes='0; 1' keySplines='0.165, 0.84, 0.44, 1' repeatCount='indefinite' /%3E%3Canimate attributeName='stroke-opacity' begin='0s' dur='1.8s' values='1; 0' calcMode='spline' keyTimes='0; 1' keySplines='0.3, 0.61, 0.355, 1' repeatCount='indefinite' /%3E%3C/circle%3E%3Ccircle cx='22' cy='22' r='1'%3E%3Canimate attributeName='r' begin='-0.9s' dur='1.8s' values='1; 20' calcMode='spline' keyTimes='0; 1' keySplines='0.165, 0.84, 0.44, 1' repeatCount='indefinite' /%3E%3Canimate attributeName='stroke-opacity' begin='-0.9s' dur='1.8s' values='1; 0' calcMode='spline' keyTimes='0; 1' keySplines='0.3, 0.61, 0.355, 1' repeatCount='indefinite' /%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
-          mask-image: url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' xmlns='http://www.w3.org/2000/svg' stroke='%23fff'%3E%3Cg fill='none' fill-rule='evenodd' stroke-width='2'%3E%3Ccircle cx='22' cy='22' r='1'%3E%3Canimate attributeName='r' begin='0s' dur='1.8s' values='1; 20' calcMode='spline' keyTimes='0; 1' keySplines='0.165, 0.84, 0.44, 1' repeatCount='indefinite' /%3E%3Canimate attributeName='stroke-opacity' begin='0s' dur='1.8s' values='1; 0' calcMode='spline' keyTimes='0; 1' keySplines='0.3, 0.61, 0.355, 1' repeatCount='indefinite' /%3E%3C/circle%3E%3Ccircle cx='22' cy='22' r='1'%3E%3Canimate attributeName='r' begin='-0.9s' dur='1.8s' values='1; 20' calcMode='spline' keyTimes='0; 1' keySplines='0.165, 0.84, 0.44, 1' repeatCount='indefinite' /%3E%3Canimate attributeName='stroke-opacity' begin='-0.9s' dur='1.8s' values='1; 0' calcMode='spline' keyTimes='0; 1' keySplines='0.3, 0.61, 0.355, 1' repeatCount='indefinite' /%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' xmlns='http://www.w3.org/2000/svg' stroke='white'%3E%3Cg fill='none' fill-rule='evenodd' stroke-width='2'%3E%3Ccircle cx='22' cy='22' r='1'%3E%3Canimate attributeName='r' begin='0s' dur='1.8s' values='1;20' calcMode='spline' keyTimes='0;1' keySplines='0.165,0.84,0.44,1' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-opacity' begin='0s' dur='1.8s' values='1;0' calcMode='spline' keyTimes='0;1' keySplines='0.3,0.61,0.355,1' repeatCount='indefinite'/%3E%3C/circle%3E%3Ccircle cx='22' cy='22' r='1'%3E%3Canimate attributeName='r' begin='-0.9s' dur='1.8s' values='1;20' calcMode='spline' keyTimes='0;1' keySplines='0.165,0.84,0.44,1' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-opacity' begin='-0.9s' dur='1.8s' values='1;0' calcMode='spline' keyTimes='0;1' keySplines='0.3,0.61,0.355,1' repeatCount='indefinite'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' xmlns='http://www.w3.org/2000/svg' stroke='white'%3E%3Cg fill='none' fill-rule='evenodd' stroke-width='2'%3E%3Ccircle cx='22' cy='22' r='1'%3E%3Canimate attributeName='r' begin='0s' dur='1.8s' values='1;20' calcMode='spline' keyTimes='0;1' keySplines='0.165,0.84,0.44,1' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-opacity' begin='0s' dur='1.8s' values='1;0' calcMode='spline' keyTimes='0;1' keySplines='0.3,0.61,0.355,1' repeatCount='indefinite'/%3E%3C/circle%3E%3Ccircle cx='22' cy='22' r='1'%3E%3Canimate attributeName='r' begin='-0.9s' dur='1.8s' values='1;20' calcMode='spline' keyTimes='0;1' keySplines='0.165,0.84,0.44,1' repeatCount='indefinite'/%3E%3Canimate attributeName='stroke-opacity' begin='-0.9s' dur='1.8s' values='1;0' calcMode='spline' keyTimes='0;1' keySplines='0.3,0.61,0.355,1' repeatCount='indefinite'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
 }
 
 .tw-dui-loading-ball {
-  -webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_rXNP%7Banimation:spinner_YeBj .8s infinite%7D@keyframes spinner_YeBj%7B0%25%7Banimation-timing-function:cubic-bezier(0.33,0,.66,.33);cy:5px%7D46.875%25%7Bcy:20px;rx:4px;ry:4px%7D50%25%7Banimation-timing-function:cubic-bezier(0.33,.66,.66,1);cy:20.5px;rx:4.8px;ry:3px%7D53.125%25%7Brx:4px;ry:4px%7D100%25%7Bcy:5px%7D%7D%3C/style%3E%3Cellipse class='spinner_rXNP' cx='12' cy='5' rx='4' ry='4'/%3E%3C/svg%3E");
-          mask-image: url("data:image/svg+xml,%0A%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_rXNP%7Banimation:spinner_YeBj .8s infinite%7D@keyframes spinner_YeBj%7B0%25%7Banimation-timing-function:cubic-bezier(0.33,0,.66,.33);cy:5px%7D46.875%25%7Bcy:20px;rx:4px;ry:4px%7D50%25%7Banimation-timing-function:cubic-bezier(0.33,.66,.66,1);cy:20.5px;rx:4.8px;ry:3px%7D53.125%25%7Brx:4px;ry:4px%7D100%25%7Bcy:5px%7D%7D%3C/style%3E%3Cellipse class='spinner_rXNP' cx='12' cy='5' rx='4' ry='4'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cellipse cx='12' cy='5' rx='4' ry='4'%3E%3Canimate attributeName='cy' values='5;20;20.5;20;5' keyTimes='0;0.469;0.5;0.531;1' dur='.8s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1'/%3E%3Canimate attributeName='rx' values='4;4;4.8;4;4' keyTimes='0;0.469;0.5;0.531;1' dur='.8s' repeatCount='indefinite'/%3E%3Canimate attributeName='ry' values='4;4;3;4;4' keyTimes='0;0.469;0.5;0.531;1' dur='.8s' repeatCount='indefinite'/%3E%3C/ellipse%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cellipse cx='12' cy='5' rx='4' ry='4'%3E%3Canimate attributeName='cy' values='5;20;20.5;20;5' keyTimes='0;0.469;0.5;0.531;1' dur='.8s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1'/%3E%3Canimate attributeName='rx' values='4;4;4.8;4;4' keyTimes='0;0.469;0.5;0.531;1' dur='.8s' repeatCount='indefinite'/%3E%3Canimate attributeName='ry' values='4;4;3;4;4' keyTimes='0;0.469;0.5;0.531;1' dur='.8s' repeatCount='indefinite'/%3E%3C/ellipse%3E%3C/svg%3E");
 }
 
 .tw-dui-loading-bars {
-  -webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_hzlK%7Banimation:spinner_vc4H .8s linear infinite;animation-delay:-.8s%7D.spinner_koGT%7Banimation-delay:-.65s%7D.spinner_YF1u%7Banimation-delay:-.5s%7D@keyframes spinner_vc4H%7B0%25%7By:1px;height:22px%7D93.75%25%7By:5px;height:14px;opacity:.2%7D%7D%3C/style%3E%3Crect class='spinner_hzlK' x='1' y='1' width='6' height='22'/%3E%3Crect class='spinner_hzlK spinner_koGT' x='9' y='1' width='6' height='22'/%3E%3Crect class='spinner_hzlK spinner_YF1u' x='17' y='1' width='6' height='22'/%3E%3C/svg%3E");
-          mask-image: url("data:image/svg+xml,%0A%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3E.spinner_hzlK%7Banimation:spinner_vc4H .8s linear infinite;animation-delay:-.8s%7D.spinner_koGT%7Banimation-delay:-.65s%7D.spinner_YF1u%7Banimation-delay:-.5s%7D@keyframes spinner_vc4H%7B0%25%7By:1px;height:22px%7D93.75%25%7By:5px;height:14px;opacity:.2%7D%7D%3C/style%3E%3Crect class='spinner_hzlK' x='1' y='1' width='6' height='22'/%3E%3Crect class='spinner_hzlK spinner_koGT' x='9' y='1' width='6' height='22'/%3E%3Crect class='spinner_hzlK spinner_YF1u' x='17' y='1' width='6' height='22'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1' width='6' height='22'%3E%3Canimate attributeName='y' values='1;5;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite'/%3E%3Canimate attributeName='height' values='22;14;22' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite'/%3E%3Canimate attributeName='opacity' values='1;0.2;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect x='9' y='1' width='6' height='22'%3E%3Canimate attributeName='y' values='1;5;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.65s'/%3E%3Canimate attributeName='height' values='22;14;22' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.65s'/%3E%3Canimate attributeName='opacity' values='1;0.2;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.65s'/%3E%3C/rect%3E%3Crect x='17' y='1' width='6' height='22'%3E%3Canimate attributeName='y' values='1;5;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.5s'/%3E%3Canimate attributeName='height' values='22;14;22' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.5s'/%3E%3Canimate attributeName='opacity' values='1;0.2;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.5s'/%3E%3C/rect%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1' width='6' height='22'%3E%3Canimate attributeName='y' values='1;5;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite'/%3E%3Canimate attributeName='height' values='22;14;22' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite'/%3E%3Canimate attributeName='opacity' values='1;0.2;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect x='9' y='1' width='6' height='22'%3E%3Canimate attributeName='y' values='1;5;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.65s'/%3E%3Canimate attributeName='height' values='22;14;22' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.65s'/%3E%3Canimate attributeName='opacity' values='1;0.2;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.65s'/%3E%3C/rect%3E%3Crect x='17' y='1' width='6' height='22'%3E%3Canimate attributeName='y' values='1;5;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.5s'/%3E%3Canimate attributeName='height' values='22;14;22' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.5s'/%3E%3Canimate attributeName='opacity' values='1;0.2;1' keyTimes='0;0.938;1' dur='.8s' repeatCount='indefinite' begin='-0.5s'/%3E%3C/rect%3E%3C/svg%3E");
 }
 
 .tw-dui-loading-infinity {
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' style='shape-rendering: auto;' width='200px' height='200px' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid'%3E%3Cpath fill='none' stroke='%230a0a0a' stroke-width='10' stroke-dasharray='205.271142578125 51.317785644531256' d='M24.3 30C11.4 30 5 43.3 5 50s6.4 20 19.3 20c19.3 0 32.1-40 51.4-40 C88.6 30 95 43.3 95 50s-6.4 20-19.3 20C56.4 70 43.6 30 24.3 30z' stroke-linecap='round' style='transform:scale(0.8);transform-origin:50px 50px'%3E%3Canimate attributeName='stroke-dashoffset' repeatCount='indefinite' dur='2s' keyTimes='0;1' values='0;256.58892822265625'%3E%3C/animate%3E%3C/path%3E%3C/svg%3E");
-          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' style='shape-rendering: auto;' width='200px' height='200px' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid'%3E%3Cpath fill='none' stroke='%230a0a0a' stroke-width='10' stroke-dasharray='205.271142578125 51.317785644531256' d='M24.3 30C11.4 30 5 43.3 5 50s6.4 20 19.3 20c19.3 0 32.1-40 51.4-40 C88.6 30 95 43.3 95 50s-6.4 20-19.3 20C56.4 70 43.6 30 24.3 30z' stroke-linecap='round' style='transform:scale(0.8);transform-origin:50px 50px'%3E%3Canimate attributeName='stroke-dashoffset' repeatCount='indefinite' dur='2s' keyTimes='0;1' values='0;256.58892822265625'%3E%3C/animate%3E%3C/path%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' style='shape-rendering:auto;' width='200px' height='200px' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid'%3E%3Cpath fill='none' stroke='black' stroke-width='10' stroke-dasharray='205.271 51.318' d='M24.3 30C11.4 30 5 43.3 5 50s6.4 20 19.3 20c19.3 0 32.1-40 51.4-40C88.6 30 95 43.3 95 50s-6.4 20-19.3 20C56.4 70 43.6 30 24.3 30z' stroke-linecap='round' style='transform:scale(0.8);transform-origin:50px 50px'%3E%3Canimate attributeName='stroke-dashoffset' repeatCount='indefinite' dur='2s' keyTimes='0;1' values='0;256.589'/%3E%3C/path%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' style='shape-rendering:auto;' width='200px' height='200px' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid'%3E%3Cpath fill='none' stroke='black' stroke-width='10' stroke-dasharray='205.271 51.318' d='M24.3 30C11.4 30 5 43.3 5 50s6.4 20 19.3 20c19.3 0 32.1-40 51.4-40C88.6 30 95 43.3 95 50s-6.4 20-19.3 20C56.4 70 43.6 30 24.3 30z' stroke-linecap='round' style='transform:scale(0.8);transform-origin:50px 50px'%3E%3Canimate attributeName='stroke-dashoffset' repeatCount='indefinite' dur='2s' keyTimes='0;1' values='0;256.589'/%3E%3C/path%3E%3C/svg%3E");
 }
 
 .tw-dui-loading-xs {
@@ -5779,6 +5783,10 @@ details.tw-dui-collapse summary::-webkit-details-marker {
   margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+.tw-dui-modal-action:where([dir="rtl"], [dir="rtl"] *) > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
 @keyframes modal-pop {
   0% {
     opacity: 0;
@@ -5787,8 +5795,7 @@ details.tw-dui-collapse summary::-webkit-details-marker {
 
 .tw-dui-progress::-moz-progress-bar {
   border-radius: var(--rounded-box, 1rem);
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
+  background-color: currentColor;
 }
 
 .tw-dui-progress-primary::-moz-progress-bar {
@@ -5882,8 +5889,7 @@ details.tw-dui-collapse summary::-webkit-details-marker {
 
 .tw-dui-progress::-webkit-progress-value {
   border-radius: var(--rounded-box, 1rem);
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
+  background-color: currentColor;
 }
 
 .tw-dui-progress-primary::-webkit-progress-value {
@@ -6445,7 +6451,7 @@ details.tw-dui-collapse summary::-webkit-details-marker {
   border-bottom-width: calc(0px * var(--tw-divide-y-reverse));
 }
 
-:is([dir="rtl"] .tw-dui-stats > :not([hidden]) ~ :not([hidden])) {
+[dir="rtl"] .tw-dui-stats > *:not([hidden]) ~ *:not([hidden]) {
   --tw-divide-x-reverse: 1;
 }
 
@@ -8578,6 +8584,7 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-dui-join.tw-dui-join-horizontal > :where(*:not(:first-child)):is(.tw-dui-btn) {
   margin-inline-start: calc(var(--border-btn) * -1);
+  margin-top: 0px;
 }
 
 .tw-dui-menu-horizontal > li:not(.tw-dui-menu-title) > details > ul {
@@ -9148,32 +9155,32 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-divide-accent > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-a,oklch(var(--a)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-a,oklch(var(--a)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-accent-content > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-base-100 > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-base-200 > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-base-300 > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-base-content > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-current > :not([hidden]) ~ :not([hidden]) {
@@ -9182,62 +9189,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-divide-error > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-error-content > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-info > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-in,oklch(var(--in)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-in,oklch(var(--in)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-info-content > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-neutral > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-n,oklch(var(--n)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-n,oklch(var(--n)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-neutral-content > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-primary > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-primary-content > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-secondary > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-s,oklch(var(--s)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-s,oklch(var(--s)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-secondary-content > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-success > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-su,oklch(var(--su)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-su,oklch(var(--su)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-success-content > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-transparent > :not([hidden]) ~ :not([hidden]) {
@@ -9246,12 +9253,12 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-divide-warning > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-divide-warning-content > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
-  border-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-divide-opacity)));
+  border-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-divide-opacity, 1)));
 }
 
 .tw-rounded-badge {
@@ -9462,32 +9469,32 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-accent {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  border-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-accent-content {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
+  border-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-base-100 {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
+  border-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-base-200 {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  border-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-base-300 {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
+  border-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-base-content {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  border-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-current {
@@ -9496,62 +9503,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-error {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-error-content {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
+  border-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-info {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  border-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-info-content {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
+  border-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-neutral {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  border-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-neutral-content {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
+  border-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-primary {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-primary-content {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
+  border-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-secondary {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  border-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-secondary-content {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
+  border-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-success {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  border-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-success-content {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
+  border-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-transparent {
@@ -9560,48 +9567,48 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-warning {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  border-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-warning-content {
   --tw-border-opacity: 1;
-  border-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
+  border-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-accent {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-accent-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-base-100 {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-base-200 {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-base-300 {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-base-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-current {
@@ -9611,74 +9618,74 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-x-error {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-error-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-info {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-info-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-neutral {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-neutral-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-primary {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-primary-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-secondary {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-secondary-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-success {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-success-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-transparent {
@@ -9688,50 +9695,50 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-x-warning {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-x-warning-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
-  border-right-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
+  border-right-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-accent {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-accent-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-base-100 {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-base-200 {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-base-300 {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-base-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-current {
@@ -9741,74 +9748,74 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-y-error {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-error-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-info {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-info-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-neutral {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-neutral-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-primary {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-primary-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-secondary {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-secondary-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-success {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-success-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-transparent {
@@ -9818,44 +9825,44 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-y-warning {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-y-warning-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
-  border-bottom-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
+  border-bottom-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-accent {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-accent-content {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-base-100 {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-base-200 {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-base-300 {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-base-content {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-current {
@@ -9864,62 +9871,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-b-error {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-error-content {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-info {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-info-content {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-neutral {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-neutral-content {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-primary {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-primary-content {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-secondary {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-secondary-content {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-success {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-success-content {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-transparent {
@@ -9928,42 +9935,42 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-b-warning {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-b-warning-content {
   --tw-border-opacity: 1;
-  border-bottom-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
+  border-bottom-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-accent {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-accent-content {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-base-100 {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-base-200 {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-base-300 {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-base-content {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-current {
@@ -9972,62 +9979,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-e-error {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-error-content {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-info {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-info-content {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-neutral {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-neutral-content {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-primary {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-primary-content {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-secondary {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-secondary-content {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-success {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-success-content {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-transparent {
@@ -10036,42 +10043,42 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-e-warning {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-e-warning-content {
   --tw-border-opacity: 1;
-  border-inline-end-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
+  border-inline-end-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-accent {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-accent-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-base-100 {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-base-200 {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-base-300 {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-base-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-current {
@@ -10080,62 +10087,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-l-error {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-error-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-info {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-info-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-neutral {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-neutral-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-primary {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-primary-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-secondary {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-secondary-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-success {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-success-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-transparent {
@@ -10144,42 +10151,42 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-l-warning {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-l-warning-content {
   --tw-border-opacity: 1;
-  border-left-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
+  border-left-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-accent {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-accent-content {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-base-100 {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-base-200 {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-base-300 {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-base-content {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-current {
@@ -10188,62 +10195,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-r-error {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-error-content {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-info {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-info-content {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-neutral {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-neutral-content {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-primary {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-primary-content {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-secondary {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-secondary-content {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-success {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-success-content {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-transparent {
@@ -10252,42 +10259,42 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-r-warning {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-r-warning-content {
   --tw-border-opacity: 1;
-  border-right-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
+  border-right-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-accent {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-accent-content {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-base-100 {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-base-200 {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-base-300 {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-base-content {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-current {
@@ -10296,62 +10303,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-s-error {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-error-content {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-info {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-info-content {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-neutral {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-neutral-content {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-primary {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-primary-content {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-secondary {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-secondary-content {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-success {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-success-content {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-transparent {
@@ -10360,42 +10367,42 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-s-warning {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-s-warning-content {
   --tw-border-opacity: 1;
-  border-inline-start-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
+  border-inline-start-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-accent {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-accent-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-base-100 {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-base-200 {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-base-300 {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-base-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-current {
@@ -10404,62 +10411,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-t-error {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-error-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-info {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-info-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-neutral {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-neutral-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-primary {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-primary-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-secondary {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-secondary-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-success {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-success-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-transparent {
@@ -10468,42 +10475,42 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-border-t-warning {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity, 1)));
 }
 
 .tw-border-t-warning-content {
   --tw-border-opacity: 1;
-  border-top-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity)));
+  border-top-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-border-opacity, 1)));
 }
 
 .tw-bg-accent {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-accent-content {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-base-100 {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-base-200 {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-base-300 {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-base-content {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-current {
@@ -10512,62 +10519,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-bg-error {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-er,oklch(var(--er)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-er,oklch(var(--er)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-error-content {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-info {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-in,oklch(var(--in)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-in,oklch(var(--in)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-info-content {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-neutral {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-n,oklch(var(--n)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-n,oklch(var(--n)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-neutral-content {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-primary {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-primary-content {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-secondary {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-s,oklch(var(--s)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-s,oklch(var(--s)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-secondary-content {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-success {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-su,oklch(var(--su)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-su,oklch(var(--su)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-success-content {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-transparent {
@@ -10576,12 +10583,12 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-bg-warning {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-warning-content {
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-bg-opacity)));
+  background-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-bg-opacity, 1)));
 }
 
 .tw-bg-gradient-to-b {
@@ -11053,32 +11060,32 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-text-accent {
   --tw-text-opacity: 1;
-  color: var(--fallback-a,oklch(var(--a)/var(--tw-text-opacity)));
+  color: var(--fallback-a,oklch(var(--a)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-accent-content {
   --tw-text-opacity: 1;
-  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-text-opacity)));
+  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-base-100 {
   --tw-text-opacity: 1;
-  color: var(--fallback-b1,oklch(var(--b1)/var(--tw-text-opacity)));
+  color: var(--fallback-b1,oklch(var(--b1)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-base-200 {
   --tw-text-opacity: 1;
-  color: var(--fallback-b2,oklch(var(--b2)/var(--tw-text-opacity)));
+  color: var(--fallback-b2,oklch(var(--b2)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-base-300 {
   --tw-text-opacity: 1;
-  color: var(--fallback-b3,oklch(var(--b3)/var(--tw-text-opacity)));
+  color: var(--fallback-b3,oklch(var(--b3)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-base-content {
   --tw-text-opacity: 1;
-  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity)));
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-current {
@@ -11087,62 +11094,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-text-error {
   --tw-text-opacity: 1;
-  color: var(--fallback-er,oklch(var(--er)/var(--tw-text-opacity)));
+  color: var(--fallback-er,oklch(var(--er)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-error-content {
   --tw-text-opacity: 1;
-  color: var(--fallback-erc,oklch(var(--erc)/var(--tw-text-opacity)));
+  color: var(--fallback-erc,oklch(var(--erc)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-info {
   --tw-text-opacity: 1;
-  color: var(--fallback-in,oklch(var(--in)/var(--tw-text-opacity)));
+  color: var(--fallback-in,oklch(var(--in)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-info-content {
   --tw-text-opacity: 1;
-  color: var(--fallback-inc,oklch(var(--inc)/var(--tw-text-opacity)));
+  color: var(--fallback-inc,oklch(var(--inc)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-neutral {
   --tw-text-opacity: 1;
-  color: var(--fallback-n,oklch(var(--n)/var(--tw-text-opacity)));
+  color: var(--fallback-n,oklch(var(--n)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-neutral-content {
   --tw-text-opacity: 1;
-  color: var(--fallback-nc,oklch(var(--nc)/var(--tw-text-opacity)));
+  color: var(--fallback-nc,oklch(var(--nc)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-primary {
   --tw-text-opacity: 1;
-  color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity)));
+  color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-primary-content {
   --tw-text-opacity: 1;
-  color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity)));
+  color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-secondary {
   --tw-text-opacity: 1;
-  color: var(--fallback-s,oklch(var(--s)/var(--tw-text-opacity)));
+  color: var(--fallback-s,oklch(var(--s)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-secondary-content {
   --tw-text-opacity: 1;
-  color: var(--fallback-sc,oklch(var(--sc)/var(--tw-text-opacity)));
+  color: var(--fallback-sc,oklch(var(--sc)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-success {
   --tw-text-opacity: 1;
-  color: var(--fallback-su,oklch(var(--su)/var(--tw-text-opacity)));
+  color: var(--fallback-su,oklch(var(--su)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-success-content {
   --tw-text-opacity: 1;
-  color: var(--fallback-suc,oklch(var(--suc)/var(--tw-text-opacity)));
+  color: var(--fallback-suc,oklch(var(--suc)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-transparent {
@@ -11151,72 +11158,72 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-text-warning {
   --tw-text-opacity: 1;
-  color: var(--fallback-wa,oklch(var(--wa)/var(--tw-text-opacity)));
+  color: var(--fallback-wa,oklch(var(--wa)/var(--tw-text-opacity, 1)));
 }
 
 .tw-text-warning-content {
   --tw-text-opacity: 1;
-  color: var(--fallback-wac,oklch(var(--wac)/var(--tw-text-opacity)));
+  color: var(--fallback-wac,oklch(var(--wac)/var(--tw-text-opacity, 1)));
 }
 
 .tw-placeholder-accent::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-a,oklch(var(--a)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-a,oklch(var(--a)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-accent::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-a,oklch(var(--a)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-a,oklch(var(--a)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-accent-content::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-accent-content::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-base-100::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-b1,oklch(var(--b1)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-b1,oklch(var(--b1)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-base-100::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-b1,oklch(var(--b1)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-b1,oklch(var(--b1)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-base-200::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-b2,oklch(var(--b2)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-b2,oklch(var(--b2)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-base-200::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-b2,oklch(var(--b2)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-b2,oklch(var(--b2)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-base-300::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-b3,oklch(var(--b3)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-b3,oklch(var(--b3)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-base-300::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-b3,oklch(var(--b3)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-b3,oklch(var(--b3)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-base-content::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-base-content::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-current::-moz-placeholder {
@@ -11229,122 +11236,122 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-placeholder-error::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-er,oklch(var(--er)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-er,oklch(var(--er)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-error::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-er,oklch(var(--er)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-er,oklch(var(--er)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-error-content::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-erc,oklch(var(--erc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-erc,oklch(var(--erc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-error-content::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-erc,oklch(var(--erc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-erc,oklch(var(--erc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-info::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-in,oklch(var(--in)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-in,oklch(var(--in)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-info::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-in,oklch(var(--in)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-in,oklch(var(--in)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-info-content::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-inc,oklch(var(--inc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-inc,oklch(var(--inc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-info-content::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-inc,oklch(var(--inc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-inc,oklch(var(--inc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-neutral::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-n,oklch(var(--n)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-n,oklch(var(--n)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-neutral::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-n,oklch(var(--n)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-n,oklch(var(--n)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-neutral-content::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-nc,oklch(var(--nc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-nc,oklch(var(--nc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-neutral-content::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-nc,oklch(var(--nc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-nc,oklch(var(--nc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-primary::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-p,oklch(var(--p)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-p,oklch(var(--p)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-primary::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-p,oklch(var(--p)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-p,oklch(var(--p)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-primary-content::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-pc,oklch(var(--pc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-pc,oklch(var(--pc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-primary-content::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-pc,oklch(var(--pc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-pc,oklch(var(--pc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-secondary::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-s,oklch(var(--s)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-s,oklch(var(--s)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-secondary::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-s,oklch(var(--s)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-s,oklch(var(--s)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-secondary-content::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-sc,oklch(var(--sc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-sc,oklch(var(--sc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-secondary-content::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-sc,oklch(var(--sc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-sc,oklch(var(--sc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-success::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-su,oklch(var(--su)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-su,oklch(var(--su)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-success::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-su,oklch(var(--su)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-su,oklch(var(--su)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-success-content::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-suc,oklch(var(--suc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-suc,oklch(var(--suc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-success-content::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-suc,oklch(var(--suc)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-suc,oklch(var(--suc)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-transparent::-moz-placeholder {
@@ -11357,22 +11364,22 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-placeholder-warning::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-wa,oklch(var(--wa)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-wa,oklch(var(--wa)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-warning::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-wa,oklch(var(--wa)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-wa,oklch(var(--wa)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-warning-content::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-wac,oklch(var(--wac)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-wac,oklch(var(--wac)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-placeholder-warning-content::placeholder {
   --tw-placeholder-opacity: 1;
-  color: var(--fallback-wac,oklch(var(--wac)/var(--tw-placeholder-opacity)));
+  color: var(--fallback-wac,oklch(var(--wac)/var(--tw-placeholder-opacity, 1)));
 }
 
 .tw-opacity-50 {
@@ -11515,32 +11522,32 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-ring-accent {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-a,oklch(var(--a)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-a,oklch(var(--a)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-accent-content {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-ac,oklch(var(--ac)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-base-100 {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-base-200 {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-base-300 {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-base-content {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-current {
@@ -11549,62 +11556,62 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-ring-error {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-er,oklch(var(--er)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-er,oklch(var(--er)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-error-content {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-erc,oklch(var(--erc)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-info {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-in,oklch(var(--in)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-in,oklch(var(--in)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-info-content {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-inc,oklch(var(--inc)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-neutral {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-n,oklch(var(--n)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-n,oklch(var(--n)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-neutral-content {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-nc,oklch(var(--nc)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-primary {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-p,oklch(var(--p)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-p,oklch(var(--p)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-primary-content {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-pc,oklch(var(--pc)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-secondary {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-s,oklch(var(--s)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-s,oklch(var(--s)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-secondary-content {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-sc,oklch(var(--sc)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-success {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-su,oklch(var(--su)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-su,oklch(var(--su)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-success-content {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-suc,oklch(var(--suc)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-transparent {
@@ -11613,12 +11620,12 @@ html:has(.tw-dui-drawer-open.tw-dui-drawer-open) {
 
 .tw-ring-warning {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-warning-content {
   --tw-ring-opacity: 1;
-  --tw-ring-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-ring-opacity)));
+  --tw-ring-color: var(--fallback-wac,oklch(var(--wac)/var(--tw-ring-opacity, 1)));
 }
 
 .tw-ring-offset-0 {
