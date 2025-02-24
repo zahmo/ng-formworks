@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, inject, input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, inject, input, model } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, addClasses, inArray } from '@ng-formworks/core';
 import _, { cloneDeep, map } from 'lodash';
 import { Subscription } from 'rxjs';
@@ -31,7 +31,7 @@ export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
 
-  readonly widgetStyles = signal<css_fw.widgetstyles>(undefined);
+  readonly widgetStyles = model<css_fw.widgetstyles>(undefined);
 
 
 
