@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, forwardRef, input, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, forwardRef, inject, input, output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -267,7 +267,7 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
 
       // Get names of changed inputs
       let changedInput = Object.keys(this.previousInputs)
-        .filter(input => this.previousInputs[input] !== this[input]);
+        .filter(input => this.previousInputs[input] !== this.getInputValue(input));
       let resetFirst = true;
       if (changedInput.length === 1 && changedInput[0] === 'form' &&
         this.formValuesInput.startsWith('form.')
@@ -282,11 +282,12 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
       // If only input values have changed, update the form values
       if (changedInput.length === 1 && changedInput[0] === this.formValuesInput) {
         if (this.formValuesInput.indexOf('.') === -1) {
-          changedData=this[this.formValuesInput];
+          changedData=this.getInputValue(this.formValuesInput)
+          //this[this.formValuesInput];
           this.setFormValues(changedData, resetFirst);
         } else {
           const [input, key] = this.formValuesInput.split('.');
-          changedData=this[input][key];
+          changedData=this.getInputValue(input)[key];
           this.setFormValues(changedData, resetFirst);
         }
 
@@ -305,7 +306,7 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
 
       // Update previous inputs
       Object.keys(this.previousInputs)
-        .filter(input => this.previousInputs[input] !== this[input])
+        .filter(input => this.previousInputs[input] !== this.getInputValue(input))
         .forEach(input => this.previousInputs[input] = this.getInputValue(input));
     }
   }
