@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, OnChanges, OnInit, ViewContainerRef, input, inject, viewChild } from '@angular/core';
+import { Component, ComponentRef, OnChanges, OnInit, ViewContainerRef, inject, input, viewChild } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -8,7 +8,6 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   template: `<div #widgetContainer></div>`,
 })
 export class TemplateComponent implements OnInit, OnChanges {
-  private componentFactory = inject(ComponentFactoryResolver);
   private jsf = inject(JsonSchemaFormService);
 
   newComponent: ComponentRef<any> = null;
@@ -29,8 +28,7 @@ export class TemplateComponent implements OnInit, OnChanges {
     const layoutNode = this.layoutNode();
     const widgetContainer = this.widgetContainer();
     if (widgetContainer && !this.newComponent && layoutNode.options.template) {
-      this.newComponent = widgetContainer.createComponent(
-        this.componentFactory.resolveComponentFactory(layoutNode.options.template)
+      this.newComponent = widgetContainer.createComponent((layoutNode.options.template)
       );
     }
     if (this.newComponent) {
