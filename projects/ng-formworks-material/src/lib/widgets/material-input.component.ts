@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, input, inject, viewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, inject, input, viewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -28,7 +28,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [placeholder]="options?.notitle ? options?.placeholder : options?.title"
         [required]="options?.required"
         [type]="layoutNode()?.type"
-        (blur)="options.showErrors = true">
+        (blur)="options.showErrors = true"
+        [attributes]="options?.inputAttributes">
       <input #input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.list]="'control' + layoutNode()?._id + 'Autocomplete'"
@@ -44,7 +45,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [type]="layoutNode()?.type"
         [value]="controlValue"
         (input)="updateValue($event)"
-        (blur)="options.showErrors = true">
+        (blur)="options.showErrors = true"
+        [attributes]="options?.inputAttributes"
+        >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
       <mat-hint *ngIf="options?.description && (!options?.showErrors || !options?.errorMessage)"
