@@ -27,7 +27,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [name]="controlName"
         [readonly]="options?.readonly ? 'readonly' : null"
         [type]="layoutNode()?.type"
-        [attributes]="options?.inputAttributes"
+        [attributes]="inputAttributes"
         >
       <input *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
@@ -45,7 +45,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [type]="layoutNode()?.type"
         [value]="controlValue"
         (input)="updateValue($event)"
-        [attributes]="options?.inputAttributes"
+        [attributes]="inputAttributes"
         >
         <datalist *ngIf="options?.typeahead?.source"
           [id]="'control' + layoutNode()?._id + 'Autocomplete'">
@@ -67,6 +67,12 @@ export class InputComponent implements OnInit {
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
+
+  //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
+  get inputAttributes() {
+    return this.options?.['x-inputAttributes'];
+  }
+
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};
