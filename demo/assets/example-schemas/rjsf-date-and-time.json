@@ -3,20 +3,33 @@
         "title": "Date and time widgets",
         "type": "object",
         "properties": {
+            "date": {
+                "type": "string",
+                "format": "date"
+            },
             "datetime": {
                 "type": "string",
                 "format": "date-time"
             },
-            "date": {
+            "datetimeSeconds": {
                 "type": "string",
-                "format": "date"
+                "format": "date-time",
+                "x-inputAttributes": {
+                    "step": 1
+                }
+            },
+            "datetimeMinMax": {
+                "type": "string",
+                "description": "*NB the values of this will not be validated",
+                "format": "date-time",
+                "x-inputAttributes": {
+                    "min": "2018-06-07T00:00",
+                    "max": "2018-06-14T00:00"
+                }
             }
         }
     },
     "uiSchema": {
-        "datetime": {
-            "ui:widget": "datetime-local"
-        },
         "date": {
             "ui:widget": "date"
         }

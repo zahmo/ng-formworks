@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, OnChanges, OnInit, ViewContainerRef, input, inject, viewChild } from '@angular/core';
+import { Component, ComponentRef, OnChanges, OnInit, ViewContainerRef, inject, input, viewChild } from '@angular/core';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
@@ -9,7 +9,6 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     standalone: false
 })
 export class SelectFrameworkComponent implements OnChanges, OnInit {
-  private componentFactory = inject(ComponentFactoryResolver);
   private jsf = inject(JsonSchemaFormService);
 
   newComponent: ComponentRef<any> = null;
@@ -29,8 +28,7 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
   updateComponent() {
     const widgetContainer = this.widgetContainer();
     if (widgetContainer && !this.newComponent && this.jsf.framework) {
-      this.newComponent = widgetContainer.createComponent(
-        this.componentFactory.resolveComponentFactory(this.jsf.framework)
+      this.newComponent = widgetContainer.createComponent((this.jsf.framework)
       );
       //TODO fix all deprecated calls and test 
       //this.widgetContainer.createComponent<any>(this.jsf.framework)
