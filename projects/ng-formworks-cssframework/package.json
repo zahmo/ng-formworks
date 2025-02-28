@@ -1,6 +1,6 @@
 {
     "name": "@ng-formworks/cssframework",
-    "version": "16.5.2",
+    "version": "16.5.6",
     "description": "Angular ng-formworks - JSON Schema Form builder cssframework",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "keywords": [
@@ -42,7 +42,7 @@
     },
     "dependencies": {
         "tslib": "^2.3.0",
-        "@ng-formworks/core": "~16.5.2"
+        "@ng-formworks/core": "~16.5.6"
     },
     "devDependencies": {
         "@types/lodash-es": "^4.17.6"
