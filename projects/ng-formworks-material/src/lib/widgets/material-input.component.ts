@@ -29,7 +29,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [required]="options?.required"
         [type]="layoutNode?.type"
         (blur)="options.showErrors = true"
-        [attributes]="options?.inputAttributes">
+        [attributes]="inputAttributes">
       <input #input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.list]="'control' + layoutNode()?._id + 'Autocomplete'"
@@ -47,7 +47,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [value]="controlValue"
         (input)="updateValue($event)"
         (blur)="options.showErrors = true"
-        [attributes]="options?.inputAttributes"
+        [attributes]="inputAttributes"
         >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
@@ -92,6 +92,11 @@ export class MaterialInputComponent implements OnInit {
     @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) @Optional() public matFormFieldDefaultOptions,
     private jsf: JsonSchemaFormService
   ) {
+  }
+
+    //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
+  get inputAttributes() {
+    return this.options?.['x-inputAttributes'];
   }
 
   ngOnInit() {
