@@ -7,7 +7,7 @@ import {
   OnInit,
   ViewChild,
   ViewContainerRef
-  } from '@angular/core';
+} from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -38,9 +38,10 @@ export class TemplateComponent implements OnInit, OnChanges {
   }
 
   updateComponent() {
-    if (this.widgetContainer && !this.newComponent && this.layoutNode.options.template) {
-      this.newComponent = this.widgetContainer.createComponent(
-        this.componentFactory.resolveComponentFactory(this.layoutNode.options.template)
+    const layoutNode = this.layoutNode();
+    const widgetContainer = this.widgetContainer;
+    if (widgetContainer && !this.newComponent && layoutNode.options.template) {
+      this.newComponent = widgetContainer.createComponent((layoutNode.options.template)
       );
     }
     if (this.newComponent) {
