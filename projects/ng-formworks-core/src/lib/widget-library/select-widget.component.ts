@@ -1,5 +1,6 @@
 import {
-  Component, ComponentFactoryResolver, ComponentRef, Input,
+  Component,
+  ComponentRef, Input,
   OnChanges, OnInit, ViewChild, ViewContainerRef
 } from '@angular/core';
 
@@ -19,7 +20,6 @@ export class SelectWidgetComponent implements OnChanges, OnInit {
     widgetContainer: ViewContainerRef;
 
   constructor(
-    private componentFactory: ComponentFactoryResolver,
     private jsf: JsonSchemaFormService
   ) { }
 
