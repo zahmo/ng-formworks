@@ -34,9 +34,9 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
   }
 
   updateComponent() {
-    if (this.widgetContainer && !this.newComponent && this.jsf.framework) {
-      this.newComponent = this.widgetContainer.createComponent(
-        this.componentFactory.resolveComponentFactory(this.jsf.framework)
+    const widgetContainer = this.widgetContainer;
+    if (widgetContainer && !this.newComponent && this.jsf.framework) {
+      this.newComponent = widgetContainer.createComponent((this.jsf.framework)
       );
       //TODO fix all deprecated calls and test 
       //this.widgetContainer.createComponent<any>(this.jsf.framework)
