@@ -32,9 +32,9 @@ export class SelectWidgetComponent implements OnChanges, OnInit {
   }
 
   updateComponent() {
-    if (this.widgetContainer && !this.newComponent && (this.layoutNode || {}).widget) {
-      this.newComponent = this.widgetContainer.createComponent(
-        this.componentFactory.resolveComponentFactory(this.layoutNode.widget)
+    const widgetContainer = this.widgetContainer;
+    if (widgetContainer && !this.newComponent && (this.layoutNode() || {}).widget) {
+      this.newComponent = widgetContainer.createComponent((this.layoutNode().widget)
       );
     }
     if (this.newComponent) {
