@@ -27,12 +27,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [name]="controlName"
         [placeholder]="options?.notitle ? options?.placeholder : options?.title"
         [required]="options?.required"
-        [style.width]="'100%'"
         [type]="layoutNode?.type"
-        (blur)="options.showErrors = true">
-      <input matInput *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
-        [attr.list]="'control' + layoutNode?._id + 'Autocomplete'"
+        (blur)="options.showErrors = true"
+        [attributes]="options?.inputAttributes">
+      <input #input matInput *ngIf="!boundControl"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+        [attr.list]="'control' + layoutNode()?._id + 'Autocomplete'"
         [attr.maxlength]="options?.maxLength"
         [attr.minlength]="options?.minLength"
         [attr.pattern]="options?.pattern"
@@ -46,7 +46,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [type]="layoutNode?.type"
         [value]="controlValue"
         (input)="updateValue($event)"
-        (blur)="options.showErrors = true">
+        (blur)="options.showErrors = true"
+        [attributes]="options?.inputAttributes"
+        >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
       <mat-hint *ngIf="options?.description && (!options?.showErrors || !options?.errorMessage)"
