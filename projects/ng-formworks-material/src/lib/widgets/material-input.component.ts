@@ -31,8 +31,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes">
       <input #input matInput *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [attr.list]="'control' + layoutNode()?._id + 'Autocomplete'"
+        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+        [attr.list]="'control' + layoutNode?._id + 'Autocomplete'"
         [attr.maxlength]="options?.maxLength"
         [attr.minlength]="options?.minLength"
         [attr.pattern]="options?.pattern"
