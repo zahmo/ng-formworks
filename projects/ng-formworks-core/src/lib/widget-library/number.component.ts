@@ -27,7 +27,13 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [name]="controlName"
         [readonly]="options?.readonly ? 'readonly' : null"
         [title]="lastValidNumber"
-        [type]="layoutNode?.type === 'range' ? 'range' : 'number'">
+        [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
+        [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
+        >
       <input *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
         [attr.max]="options?.maximum"
@@ -44,10 +50,17 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [title]="lastValidNumber"
         [type]="layoutNode?.type === 'range' ? 'range' : 'number'"
         [value]="controlValue"
-        (input)="updateValue($event)">
-      <span *ngIf="layoutNode?.type === 'range'" [innerHTML]="controlValue"></span>
+        (input)="updateValue($event)"
+        [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
+        >
+      <span *ngIf="layoutNode()?.type === 'range'" [innerHTML]="controlValue"></span>
     </div>`,
 })
+//TODO look at reusing InputComponent
 export class NumberComponent implements OnInit {
   formControl: AbstractControl;
   controlName: string;
@@ -76,4 +89,23 @@ export class NumberComponent implements OnInit {
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
   }
+
+    onSliderMouseDown(event: MouseEvent): void {
+      this.jsf.setDraggableState(false);
+    }
+
+    onSliderMouseUp(event: MouseEvent): void {
+      this.jsf.setDraggableState(true);
+    }
+  
+    onSliderTouchStart(event: TouchEvent): void {
+      this.jsf.setDraggableState(false);
+    }
+  
+
+     onSliderTouchEnd(event: TouchEvent): void {
+      this.jsf.setDraggableState(true);
+    }
+  
+  
 }
