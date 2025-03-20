@@ -6,7 +6,7 @@ import Ajv2019, { ErrorObject, Options } from 'ajv/dist/2019';
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
-import { Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
   enValidationMessages,
@@ -164,6 +164,19 @@ export class JsonSchemaFormService implements OnDestroy {
 
   fcValueChangesSubs:Subscription;
   fcStatusChangesSubs:Subscription;
+
+  //this has been added to enable or disable the dragabble state of a component
+  //using the OrderableDirective, mainly when an <input type="range"> 
+  //elements are present, as the draggable attribute makes it difficult to
+  //slide the range sliders and end up dragging
+  //NB this will be set globally for all OrderableDirective instances
+  //and will only be enabled when/if the caller sets the value back to true 
+  private draggableStateSubject = new BehaviorSubject<boolean>(true); // Default value true
+  draggableState$ = this.draggableStateSubject.asObservable();
+
+  setDraggableState(value: boolean) {
+    this.draggableStateSubject.next(value); // Update the draggable value
+  }
   constructor() {
     this.setLanguage(this.language);
     this.ajv.addMetaSchema(jsonDraft6);
