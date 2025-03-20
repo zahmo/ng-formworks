@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
@@ -15,7 +15,13 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [step]="options?.multipleOf || options?.step || 'any'"
       [style.width]="'100%'"
       (blur)="options.showErrors = true">
-        <input matSliderThumb [formControl]="formControl" />
+        <input matSliderThumb [formControl]="formControl" 
+                [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
+        />
       </mat-slider>
     <mat-slider discrete *ngIf="!boundControl"
       [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
@@ -28,7 +34,13 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       (blur)="options.showErrors = true" #ngSlider>
         <input matSliderThumb [value]="controlValue" 
         (change)="updateValue({source: ngSliderThumb, parent: ngSlider, value: ngSliderThumb.value})"
-        #ngSliderThumb="matSliderThumb" />
+        #ngSliderThumb="matSliderThumb" 
+                [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
+        />
     </mat-slider>
     <mat-error *ngIf="options?.showErrors && options?.errorMessage"
       [innerHTML]="options?.errorMessage"></mat-error>`,
@@ -52,6 +64,12 @@ export class MaterialSliderComponent implements OnInit {
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
 
+    //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
+    get inputAttributes() {
+      return this.options?.['x-inputAttributes'];
+    }
+  
+
   ngOnInit() {
     this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this, !this.options.readonly);
@@ -60,5 +78,21 @@ export class MaterialSliderComponent implements OnInit {
   updateValue(event) {
     this.options.showErrors = true;
     this.jsf.updateValue(this, event.value);
+  }
+
+  onSliderMouseDown(event: MouseEvent): void {
+    this.jsf.setDraggableState(false);
+  }
+
+  onSliderMouseUp(event: MouseEvent): void {
+    this.jsf.setDraggableState(true);
+  }
+
+  onSliderTouchStart(event: TouchEvent): void {
+    this.jsf.setDraggableState(false);
+  }
+
+   onSliderTouchEnd(event: TouchEvent): void {
+    this.jsf.setDraggableState(true);
   }
 }

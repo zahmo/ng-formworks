@@ -29,7 +29,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [required]="options?.required"
         [type]="layoutNode()?.type"
         (blur)="options.showErrors = true"
-        [attributes]="inputAttributes">
+        [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
+        >
       <input #input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.list]="'control' + layoutNode()?._id + 'Autocomplete'"
@@ -47,6 +52,10 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (input)="updateValue($event)"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
         >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
@@ -105,5 +114,21 @@ export class MaterialInputComponent implements OnInit {
 
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
+  }
+
+  onSliderMouseDown(event: MouseEvent): void {
+    this.jsf.setDraggableState(false);
+  }
+
+  onSliderMouseUp(event: MouseEvent): void {
+    this.jsf.setDraggableState(true);
+  }
+
+  onSliderTouchStart(event: TouchEvent): void {
+    this.jsf.setDraggableState(false);
+  }
+
+   onSliderTouchEnd(event: TouchEvent): void {
+    this.jsf.setDraggableState(true);
   }
 }

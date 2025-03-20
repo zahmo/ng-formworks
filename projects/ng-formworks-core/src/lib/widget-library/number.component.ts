@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -27,7 +27,13 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [name]="controlName"
         [readonly]="options?.readonly ? 'readonly' : null"
         [title]="lastValidNumber"
-        [type]="layoutNode()?.type === 'range' ? 'range' : 'number'">
+        [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
+        [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
+        >
       <input *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.max]="options?.maximum"
@@ -44,11 +50,18 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [title]="lastValidNumber"
         [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
         [value]="controlValue"
-        (input)="updateValue($event)">
+        (input)="updateValue($event)"
+        [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
+        >
       <span *ngIf="layoutNode()?.type === 'range'" [innerHTML]="controlValue"></span>
     </div>`,
     standalone: false
 })
+//TODO look at reusing InputComponent
 export class NumberComponent implements OnInit {
   private jsf = inject(JsonSchemaFormService);
 
@@ -66,6 +79,12 @@ export class NumberComponent implements OnInit {
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
 
+    //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
+    get inputAttributes() {
+      return this.options?.['x-inputAttributes'];
+    }
+  
+
   ngOnInit() {
     this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this);
@@ -75,4 +94,23 @@ export class NumberComponent implements OnInit {
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
   }
+
+    onSliderMouseDown(event: MouseEvent): void {
+      this.jsf.setDraggableState(false);
+    }
+
+    onSliderMouseUp(event: MouseEvent): void {
+      this.jsf.setDraggableState(true);
+    }
+  
+    onSliderTouchStart(event: TouchEvent): void {
+      this.jsf.setDraggableState(false);
+    }
+  
+
+     onSliderTouchEnd(event: TouchEvent): void {
+      this.jsf.setDraggableState(true);
+    }
+  
+  
 }
