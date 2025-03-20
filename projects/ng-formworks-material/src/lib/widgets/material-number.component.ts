@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -28,7 +28,13 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [required]="options?.required"
         [style.width]="'100%'"
         [type]="'number'"
-        (blur)="options.showErrors = true">
+        (blur)="options.showErrors = true"
+        [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
+        >
       <input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.max]="options?.maximum"
@@ -44,7 +50,13 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [type]="'number'"
         [value]="controlValue"
         (input)="updateValue($event)"
-        (blur)="options.showErrors = true">
+        (blur)="options.showErrors = true"
+        [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
+        >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
       <mat-hint *ngIf="layoutNode()?.type === 'range'" align="start"
@@ -78,6 +90,11 @@ export class MaterialNumberComponent implements OnInit {
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
 
+  //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
+  get inputAttributes() {
+     return this.options?.['x-inputAttributes'];
+  }
+    
   ngOnInit() {
     this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this);
@@ -89,5 +106,21 @@ export class MaterialNumberComponent implements OnInit {
 
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
+  }
+
+  onSliderMouseDown(event: MouseEvent): void {
+    this.jsf.setDraggableState(false);
+  }
+
+  onSliderMouseUp(event: MouseEvent): void {
+    this.jsf.setDraggableState(true);
+  }
+
+  onSliderTouchStart(event: TouchEvent): void {
+    this.jsf.setDraggableState(false);
+  }
+
+  onSliderTouchEnd(event: TouchEvent): void {
+    this.jsf.setDraggableState(true);
   }
 }
