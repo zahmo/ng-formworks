@@ -28,6 +28,10 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [readonly]="options?.readonly ? 'readonly' : null"
         [type]="layoutNode?.type"
         [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
         >
       <input *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
@@ -46,6 +50,10 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [value]="controlValue"
         (input)="updateValue($event)"
         [attributes]="inputAttributes"
+        (mousedown)="onSliderMouseDown($event)"
+        (mouseup)="onSliderMouseUp($event)"
+        (touchstart)="onSliderTouchStart($event)"
+        (touchend)="onSliderTouchEnd($event)"
         >
         <datalist *ngIf="options?.typeahead?.source"
           [id]="'control' + layoutNode?._id + 'Autocomplete'">
@@ -82,5 +90,22 @@ export class InputComponent implements OnInit {
 
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
+  }
+
+  onSliderMouseDown(event: MouseEvent): void {
+    this.jsf.setDraggableState(false);
+  }
+
+  onSliderMouseUp(event: MouseEvent): void {
+    this.jsf.setDraggableState(true);
+  }
+
+  onSliderTouchStart(event: TouchEvent): void {
+    this.jsf.setDraggableState(false);
+  }
+
+
+   onSliderTouchEnd(event: TouchEvent): void {
+    this.jsf.setDraggableState(true);
   }
 }

@@ -4,7 +4,8 @@ import {
   Input,
   NgZone,
   OnInit
-  } from '@angular/core';
+} from '@angular/core';
+import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -43,12 +44,12 @@ export class OrderableDirective implements OnInit {
   @Input() layoutIndex: number[];
   @Input() dataIndex: number[];
 
-  constructor(
-    private elementRef: ElementRef,
-    private jsf: JsonSchemaFormService,
-    private ngZone: NgZone
-  ) { }
-
+    constructor(
+        private elementRef: ElementRef,
+        private jsf: JsonSchemaFormService,
+        private ngZone: NgZone
+      ) { }
+      private draggableStateSubscription: Subscription;
   ngOnInit() {
     if (this.orderable && this.layoutNode && this.layoutIndex && this.dataIndex) {
       this.element = this.elementRef.nativeElement;
@@ -125,6 +126,17 @@ export class OrderableDirective implements OnInit {
         });
 
       });
+      // Subscribe to the draggable state
+    this.draggableStateSubscription = this.jsf.draggableState$.subscribe(
+      (value) => {
+        this.element.draggable = value;
+      }
+    );
+    }
+  }
+  ngOnDestroy(): void {
+    if (this.draggableStateSubscription) {
+      this.draggableStateSubscription.unsubscribe();
     }
   }
 }
