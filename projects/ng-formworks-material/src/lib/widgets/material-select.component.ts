@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/core';
@@ -9,7 +9,7 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
   template: `
     <mat-form-field
       [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
-      [class]="options?.htmlClass || ''"
+      [class]="options?.htmlClass || ''" class="sortable-filter"
       [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
       [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
       [style.width]="'100%'">
