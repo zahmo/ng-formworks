@@ -14,13 +14,10 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [min]="options?.minimum"
       [step]="options?.multipleOf || options?.step || 'any'"
       [style.width]="'100%'"
+      class="sortable-filter"
       (blur)="options.showErrors = true">
         <input matSliderThumb [formControl]="formControl" 
                 [attributes]="inputAttributes"
-        (mousedown)="onSliderMouseDown($event)"
-        (mouseup)="onSliderMouseUp($event)"
-        (touchstart)="onSliderTouchStart($event)"
-        (touchend)="onSliderTouchEnd($event)"
         />
       </mat-slider>
     <mat-slider discrete *ngIf="!boundControl"
@@ -31,15 +28,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [min]="options?.minimum"
       [step]="options?.multipleOf || options?.step || 'any'"
       [style.width]="'100%'"
+      class="sortable-filter"
       (blur)="options.showErrors = true" #ngSlider>
         <input matSliderThumb [value]="controlValue" 
         (change)="updateValue({source: ngSliderThumb, parent: ngSlider, value: ngSliderThumb.value})"
         #ngSliderThumb="matSliderThumb" 
                 [attributes]="inputAttributes"
-        (mousedown)="onSliderMouseDown($event)"
-        (mouseup)="onSliderMouseUp($event)"
-        (touchstart)="onSliderTouchStart($event)"
-        (touchend)="onSliderTouchEnd($event)"
         />
     </mat-slider>
     <mat-error *ngIf="options?.showErrors && options?.errorMessage"
@@ -75,19 +69,4 @@ export class MaterialSliderComponent implements OnInit {
     this.jsf.updateValue(this, event.value);
   }
 
-  onSliderMouseDown(event: MouseEvent): void {
-    this.jsf.setDraggableState(false);
-  }
-
-  onSliderMouseUp(event: MouseEvent): void {
-    this.jsf.setDraggableState(true);
-  }
-
-  onSliderTouchStart(event: TouchEvent): void {
-    this.jsf.setDraggableState(false);
-  }
-
-   onSliderTouchEnd(event: TouchEvent): void {
-    this.jsf.setDraggableState(true);
-  }
 }

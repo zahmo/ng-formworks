@@ -8,7 +8,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
   selector: 'material-input-widget',
   template: `
     <mat-form-field [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
-      [class]="options?.htmlClass || ''"
+      [class]="options?.htmlClass || ''" class="sortable-filter"
       [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
       [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
       [style.width]="'100%'">
@@ -30,10 +30,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [type]="layoutNode?.type"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
-        (mousedown)="onSliderMouseDown($event)"
-        (mouseup)="onSliderMouseUp($event)"
-        (touchstart)="onSliderTouchStart($event)"
-        (touchend)="onSliderTouchEnd($event)"
         >
       <input #input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
@@ -53,10 +49,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (input)="updateValue($event)"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
-        (mousedown)="onSliderMouseDown($event)"
-        (mouseup)="onSliderMouseUp($event)"
-        (touchstart)="onSliderTouchStart($event)"
-        (touchend)="onSliderTouchEnd($event)"
         >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
@@ -120,19 +112,4 @@ export class MaterialInputComponent implements OnInit {
     this.jsf.updateValue(this, event.target.value);
   }
 
-  onSliderMouseDown(event: MouseEvent): void {
-    this.jsf.setDraggableState(false);
-  }
-
-  onSliderMouseUp(event: MouseEvent): void {
-    this.jsf.setDraggableState(true);
-  }
-
-  onSliderTouchStart(event: TouchEvent): void {
-    this.jsf.setDraggableState(false);
-  }
-
-   onSliderTouchEnd(event: TouchEvent): void {
-    this.jsf.setDraggableState(true);
-  }
 }
