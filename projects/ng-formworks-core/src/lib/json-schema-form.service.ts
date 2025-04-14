@@ -177,6 +177,15 @@ export class JsonSchemaFormService implements OnDestroy {
   setDraggableState(value: boolean) {
     this.draggableStateSubject.next(value); // Update the draggable value
   }
+
+  //this is introduced to look at replacing the orderable directive with 
+  //nxt-sortablejs and sortablejs 
+  private sortableOptionsSubject = new BehaviorSubject<any>({disabled:false}); // Default value true
+  sortableOptions$ = this.sortableOptionsSubject.asObservable();
+
+  setSortableOptions(value: any) {
+    this.sortableOptionsSubject.next(value); // Update the sortable options value
+  }
   constructor() {
     this.setLanguage(this.language);
     this.ajv.addMetaSchema(jsonDraft6);
@@ -896,7 +905,7 @@ export class JsonSchemaFormService implements OnDestroy {
     return true;
   }
 
-  moveArrayItem(ctx: WidgetContext, oldIndex: number, newIndex: number): boolean {
+  moveArrayItem(ctx: WidgetContext, oldIndex: number, newIndex: number,moveLayout:boolean=true): boolean {
     if (
       !ctx || !ctx.layoutNode ||
       !isDefined(ctx.layoutNode().dataPointer) ||
@@ -917,8 +926,11 @@ export class JsonSchemaFormService implements OnDestroy {
     formArray.updateValueAndValidity();
 
     // Move layout item
-    const layoutArray = this.getLayoutArray(ctx);
-    layoutArray.splice(newIndex, 0, layoutArray.splice(oldIndex, 1)[0]);
+    if(moveLayout){
+      const layoutArray = this.getLayoutArray(ctx);
+      layoutArray.splice(newIndex, 0, layoutArray.splice(oldIndex, 1)[0]);
+    }
+
     return true;
   }
 

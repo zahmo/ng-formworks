@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -7,13 +7,13 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     // tslint:disable-next-line:component-selector
     selector: 'number-widget',
     template: `
-    <div [class]="options?.htmlClass || ''">
+    <div #divElt [class]="options?.htmlClass || ''" class="sortable-filter" >
       <label *ngIf="options?.title"
         [attr.for]="'control' + layoutNode()?._id"
         [class]="options?.labelHtmlClass || ''"
         [style.display]="options?.notitle ? 'none' : ''"
         [innerHTML]="options?.title"></label>
-      <input *ngIf="boundControl"
+      <input #inputControl *ngIf="boundControl"
         [formControl]="formControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.max]="options?.maximum"
@@ -29,12 +29,9 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [title]="lastValidNumber"
         [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
         [attributes]="inputAttributes"
-        (mousedown)="onSliderMouseDown($event)"
-        (mouseup)="onSliderMouseUp($event)"
-        (touchstart)="onSliderTouchStart($event)"
-        (touchend)="onSliderTouchEnd($event)"
+
         >
-      <input *ngIf="!boundControl"
+      <input #inputControl *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.max]="options?.maximum"
         [attr.min]="options?.minimum"
@@ -52,10 +49,6 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [value]="controlValue"
         (input)="updateValue($event)"
         [attributes]="inputAttributes"
-        (mousedown)="onSliderMouseDown($event)"
-        (mouseup)="onSliderMouseUp($event)"
-        (touchstart)="onSliderTouchStart($event)"
-        (touchend)="onSliderTouchEnd($event)"
         >
       <span *ngIf="layoutNode()?.type === 'range'" [innerHTML]="controlValue"></span>
     </div>`,
@@ -83,7 +76,12 @@ export class NumberComponent implements OnInit {
     get inputAttributes() {
       return this.options?.['x-inputAttributes'];
     }
-  
+  @ViewChild('inputControl', {})
+  inputControl: ElementRef;
+
+  @ViewChild('divElt', {})
+  div: ElementRef;
+
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};
@@ -95,22 +93,6 @@ export class NumberComponent implements OnInit {
     this.jsf.updateValue(this, event.target.value);
   }
 
-    onSliderMouseDown(event: MouseEvent): void {
-      this.jsf.setDraggableState(false);
-    }
-
-    onSliderMouseUp(event: MouseEvent): void {
-      this.jsf.setDraggableState(true);
-    }
-  
-    onSliderTouchStart(event: TouchEvent): void {
-      this.jsf.setDraggableState(false);
-    }
-  
-
-     onSliderTouchEnd(event: TouchEvent): void {
-      this.jsf.setDraggableState(true);
-    }
   
   
 }
