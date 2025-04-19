@@ -87,6 +87,8 @@ export class RootComponent {
   sortableConfig:any={
     filter:".sortable-filter",//needed to disable dragging on input range elements, class needs to be added to the element or its parent
     preventOnFilter: false,//needed for input range elements slider do still work
+    delay: 1000,
+    delayOnTouchOnly: true,
     onEnd: (/**Event*/evt)=> {
       evt.newIndex // most likely why this event is used is to get the dragging element's current index
       // same properties as onEnd
