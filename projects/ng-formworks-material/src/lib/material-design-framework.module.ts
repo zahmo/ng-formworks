@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +23,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
 import {
     Framework,
     FrameworkLibraryService,
@@ -49,6 +51,7 @@ export const ANGULAR_MATERIAL_MODULES = [
   MatRadioModule, MatSelectModule, MatSliderModule, MatSlideToggleModule,
   MatStepperModule, MatTabsModule, MatTooltipModule,
   MatToolbarModule, MatMenuModule, MatToolbarModule,
+  DragDropModule
 ];
 
 @NgModule({
