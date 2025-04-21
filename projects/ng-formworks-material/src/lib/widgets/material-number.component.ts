@@ -30,6 +30,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [type]="'number'"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
+        (mousedown)="onMouseDown($event)"
+        (touchstart)="onTouchStart($event)"  
         >
       <input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
@@ -48,6 +50,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (input)="updateValue($event)"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
+        (mousedown)="onMouseDown($event)"
+        (touchstart)="onTouchStart($event)"  
         >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
@@ -78,6 +82,22 @@ export class MaterialNumberComponent implements OnInit {
   @Input() layoutNode: any;
   @Input() layoutIndex: number[];
   @Input() dataIndex: number[];
+
+      //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
+      get inputAttributes() {
+        return this.options?.['x-inputAttributes'];
+      }
+  
+      //TODO review:stopPropagation used as a workaround 
+      //to prevent dragging onMouseDown and onTouchStart events
+      onMouseDown(e){
+        e.stopPropagation();
+      }
+  
+      onTouchStart(e){
+        e.stopPropagation();
+      }
+  
 
   constructor(
     @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) @Optional() public matFormFieldDefaultOptions,
