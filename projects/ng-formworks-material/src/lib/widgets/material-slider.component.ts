@@ -6,8 +6,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     // tslint:disable-next-line:component-selector
     selector: 'material-slider-widget',
     template: `
+
     <mat-slider discrete *ngIf="boundControl"
-      
       [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
       [id]="'control' + layoutNode()?._id"
       [max]="options?.maximum"
@@ -18,6 +18,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       (blur)="options.showErrors = true">
         <input matSliderThumb [formControl]="formControl" 
                 [attributes]="inputAttributes"
+                (mousedown)="onMouseDown($event)"
+                (touchstart)="onTouchStart($event)"
+                
         />
       </mat-slider>
     <mat-slider discrete *ngIf="!boundControl"
@@ -34,6 +37,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (change)="updateValue({source: ngSliderThumb, parent: ngSlider, value: ngSliderThumb.value})"
         #ngSliderThumb="matSliderThumb" 
                 [attributes]="inputAttributes"
+                (mousedown)="onMouseDown($event)"
+                (touchstart)="onTouchStart($event)"
+
         />
     </mat-slider>
     <mat-error *ngIf="options?.showErrors && options?.errorMessage"
@@ -62,7 +68,16 @@ export class MaterialSliderComponent implements OnInit {
     get inputAttributes() {
       return this.options?.['x-inputAttributes'];
     }
-  
+
+    //TODO review:stopPropagation used as a workaround 
+    //to prevent dragging onMouseDown and onTouchStart events
+    onMouseDown(e){
+      e.stopPropagation();
+    }
+
+    onTouchStart(e){
+      e.stopPropagation();
+    }
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};
