@@ -15,7 +15,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [class]="options?.labelHtmlClass || ''"
         [innerHTML]="sectionTitle"
         (click)="toggleExpanded()"></label>
-      <root-widget *ngIf="expanded"
+      <root-widget 
         [dataIndex]="dataIndex"
         [layout]="layoutNode.items"
         [layoutIndex]="layoutIndex"
@@ -25,7 +25,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
         [style.align-content]="getFlexAttribute('align-content')"
         [style.align-items]="getFlexAttribute('align-items')"
-        [style.display]="getFlexAttribute('display')"
+        [style.display]="!expanded?'none':getFlexAttribute('display')"
         [style.flex-direction]="getFlexAttribute('flex-direction')"
         [style.flex-wrap]="getFlexAttribute('flex-wrap')"
         [style.justify-content]="getFlexAttribute('justify-content')"></root-widget>
@@ -46,7 +46,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [class]="options?.labelHelpBlockClass || ''"
         [innerHTML]="options?.description"></p>
       </div>
-      <root-widget *ngIf="expanded"
+      <root-widget 
         [dataIndex]="dataIndex"
         [layout]="layoutNode.items"
         [layoutIndex]="layoutIndex"
@@ -56,7 +56,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
         [style.align-content]="getFlexAttribute('align-content')"
         [style.align-items]="getFlexAttribute('align-items')"
-        [style.display]="getFlexAttribute('display')"
+        [style.display]="!expanded?'none':getFlexAttribute('display')"
         [style.flex-direction]="getFlexAttribute('flex-direction')"
         [style.flex-wrap]="getFlexAttribute('flex-wrap')"
         [style.justify-content]="getFlexAttribute('justify-content')"></root-widget>
