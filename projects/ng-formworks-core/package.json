@@ -39,7 +39,9 @@
     "dependencies": {
         "lodash-es": "~4.17.21",
         "ajv": "^8.12.0",
-        "tslib": "^2.0.0"
+        "tslib": "^2.0.0",
+        "nxt-sortablejs": "^16.2.0",
+        "sortablejs": "^1.15.6"
     },
     "peerDependencies": {
         "@angular/common": ">=16.0.0",
