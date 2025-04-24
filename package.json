@@ -1,6 +1,6 @@
 {
     "name": "demo",
-    "version": "16.5.6",
+    "version": "16.5.7",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "description": "Angular JSON Schema Form builder Demo",
     "engines": {
