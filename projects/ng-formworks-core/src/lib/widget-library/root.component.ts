@@ -89,9 +89,9 @@ export class RootComponent implements OnInit, OnDestroy{
       let dataInd=layoutItem?.arrayItem ? (this.dataIndex || []).concat(trgInd) : (this.dataIndex || []);
       let layoutInd=(this.layoutIndex || []).concat(trgInd)
       let itemCtx:any={
-        dataIndex:()=>{return dataInd},
-        layoutIndex:()=>{return layoutInd},
-        layoutNode:()=>{return layoutItem},
+        dataIndex:dataInd,
+        layoutIndex:layoutInd,
+        layoutNode:layoutItem,
       }
       //must set moveLayout to false as nxtSortable already moves it
       this.jsf.moveArrayItem(itemCtx, evt.oldIndex, evt.newIndex,false);
