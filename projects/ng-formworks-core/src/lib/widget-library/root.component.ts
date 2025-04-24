@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -6,9 +7,9 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   // tslint:disable-next-line:component-selector
   selector: 'root-widget',
   template: `
-    <div #sortableContainter [nxtSortablejs]="layout()" [config]="sortableConfig" (init)="sortableInit($event)">
-      <div *ngFor="let layoutItem of layout(); let i = index"
-        [class.form-flex-item]="isFlexItem()"
+    <div #sortableContainter [nxtSortablejs]="layout" [config]="sortableConfig" (init)="sortableInit($event)">
+      <div *ngFor="let layoutItem of layout; let i = index"
+        [class.form-flex-item]="isFlexItem"
         [style.align-self]="(layoutItem.options || {})['align-self']"
         [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
         [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
@@ -20,15 +21,15 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
           otherwise the compiler won't recognize dataIndex and other dependent attributes
         -->
         <div 
-          [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
-          [layoutIndex]="(layoutIndex() || []).concat(i)"
+          [dataIndex]="layoutItem?.arrayItem ? (dataIndex || []).concat(i) : (dataIndex || [])"
+          [layoutIndex]="(layoutIndex || []).concat(i)"
           [layoutNode]="layoutItem"
           [orderable]="false"
           [class.sortable-filter]="!isDraggable(layoutItem)"
           >
           <select-framework-widget *ngIf="showWidget(layoutItem)"
-            [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
-            [layoutIndex]="(layoutIndex() || []).concat(i)"
+            [dataIndex]="layoutItem?.arrayItem ? (dataIndex || []).concat(i) : (dataIndex || [])"
+            [layoutIndex]="(layoutIndex || []).concat(i)"
             [layoutNode]="layoutItem"></select-framework-widget>
         </div>
       </div>
@@ -58,12 +59,9 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   `],
   standalone: false
 })
-export class RootComponent implements OnInit, OnDestroy {
 
 
-  private jsf = inject(JsonSchemaFormService);
-
-export class RootComponent {
+export class RootComponent implements OnInit, OnDestroy{
   options: any;
   @Input() dataIndex: number[];
   @Input() layoutIndex: number[];
@@ -74,12 +72,6 @@ export class RootComponent {
   constructor(
     private jsf: JsonSchemaFormService
   ) { }
-  readonly dataIndex = input<number[]>(undefined);
-  readonly layoutIndex = input<number[]>(undefined);
-  readonly layout = input<any[]>(undefined);
-  readonly isOrderable = input<boolean>(undefined);
-  readonly isFlexItem = input(false);
-
   // @ViewChild('sortableContainter', {})
   // sortableContainterElt: ElementRef;
 
@@ -87,17 +79,15 @@ export class RootComponent {
   sortableConfig:any={
     filter:".sortable-filter",//needed to disable dragging on input range elements, class needs to be added to the element or its parent
     preventOnFilter: false,//needed for input range elements slider do still work
-    delay: 1000,
-    delayOnTouchOnly: true,
     onEnd: (/**Event*/evt)=> {
       evt.newIndex // most likely why this event is used is to get the dragging element's current index
       // same properties as onEnd
       //console.log(`sortablejs event:${evt}`);
       let srcInd=evt.oldIndex;
       let trgInd=evt.newIndex;
-      let layoutItem=this.layout()[trgInd];
-      let dataInd=layoutItem?.arrayItem ? (this.dataIndex() || []).concat(trgInd) : (this.dataIndex() || []);
-      let layoutInd=(this.layoutIndex() || []).concat(trgInd)
+      let layoutItem=this.layout[trgInd];
+      let dataInd=layoutItem?.arrayItem ? (this.dataIndex || []).concat(trgInd) : (this.dataIndex || []);
+      let layoutInd=(this.layoutIndex || []).concat(trgInd)
       let itemCtx:any={
         dataIndex:()=>{return dataInd},
         layoutIndex:()=>{return layoutInd},
@@ -115,7 +105,7 @@ export class RootComponent {
 
   isDraggable(node: any): boolean {
     let result=node.arrayItem && node.type !== '$ref' &&
-    node.arrayItemType === 'list' && this.isOrderable() !== false;
+    node.arrayItemType === 'list' && this.isOrderable !== false;
     if (this.sortableObj) {
       //this.sortableObj.option("disabled",true);
       //this.sortableObj.option("sort",false);
@@ -135,7 +125,7 @@ export class RootComponent {
 
 
   showWidget(layoutNode: any): boolean {
-    return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+    return this.jsf.evaluateCondition(layoutNode, this.dataIndex);
   }
   ngOnInit(): void {
     // Subscribe to the draggable state
