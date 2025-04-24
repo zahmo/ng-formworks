@@ -7168,6 +7168,7 @@ details.tw-dui-collapse summary::-webkit-details-marker {
   --tw-prose-pre-bg: var(--fallback-n,oklch(var(--n)/1));
   --tw-prose-th-borders: var(--fallback-bc,oklch(var(--bc)/0.5));
   --tw-prose-td-borders: var(--fallback-bc,oklch(var(--bc)/0.2));
+  --tw-prose-kbd: var(--fallback-bc,oklch(var(--bc)/0.8));
 }
 
 .tw-dui-prose :where(code):not(:where([class~="dui-not-prose"] *, pre *)) {
