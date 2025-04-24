@@ -69,9 +69,16 @@ export class NumberComponent implements OnInit {
   @Input() layoutIndex: number[];
   @Input() dataIndex: number[];
 
+
+
   constructor(
     private jsf: JsonSchemaFormService
   ) { }
+
+  //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
+  get inputAttributes() {
+    return this.options?.['x-inputAttributes'];
+  }
 
   ngOnInit() {
     this.options = this.layoutNode.options || {};

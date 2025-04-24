@@ -9,9 +9,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     template: `
     <div cdkDropList (cdkDropListDropped)="drop($event)" 
     >
-      <div *ngFor="let layoutNode of layout(); let i = index" 
+      <div *ngFor="let layoutNode of layout; let i = index" 
        cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
-        [class.form-flex-item]="isFlexItem()"
+        [class.form-flex-item]="isFlexItem"
         [style.flex-grow]="getFlexAttribute(layoutNode, 'flex-grow')"
         [style.flex-shrink]="getFlexAttribute(layoutNode, 'flex-shrink')"
         [style.flex-basis]="getFlexAttribute(layoutNode, 'flex-basis')"
@@ -29,8 +29,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         </div>
         <select-framework-widget *ngIf="showWidget(layoutNode)"
        
-          [dataIndex]="layoutNode?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
-          [layoutIndex]="(layoutIndex() || []).concat(i)"
+          [dataIndex]="layoutNode?.arrayItem ? (dataIndex || []).concat(i) : (dataIndex || [])"
+          [layoutIndex]="(layoutIndex || []).concat(i)"
           [layoutNode]="layoutNode"></select-framework-widget>
       <div>
     </div>`,
