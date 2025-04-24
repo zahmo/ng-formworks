@@ -27,12 +27,12 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [name]="controlName"
         [readonly]="options?.readonly ? 'readonly' : null"
         [title]="lastValidNumber"
-        [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
+        [type]="layoutNode?.type === 'range' ? 'range' : 'number'"
         [attributes]="inputAttributes"
 
         >
       <input #inputControl *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
         [attr.max]="options?.maximum"
         [attr.min]="options?.minimum"
         [attr.placeholder]="options?.placeholder"
@@ -50,7 +50,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         (input)="updateValue($event)"
         [attributes]="inputAttributes"
         >
-      <span *ngIf="layoutNode()?.type === 'range'" [innerHTML]="controlValue"></span>
+      <span *ngIf="layoutNode?.type === 'range'" [innerHTML]="controlValue"></span>
     </div>`,
 })
 //TODO look at reusing InputComponent
