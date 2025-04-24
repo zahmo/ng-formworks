@@ -7,7 +7,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   // tslint:disable-next-line:component-selector
   selector: 'root-widget',
   template: `
-    <div #sortableContainter [nxtSortablejs]="layout" [config]="sortableConfig" (init)="sortableInit($event)">
+    <div #sortableContainter [sortablejs]="layout" [sortablejsOptions]="sortableConfig" (init)="sortableInit($event)">
       <div *ngFor="let layoutItem of layout; let i = index"
         [class.form-flex-item]="isFlexItem"
         [style.align-self]="(layoutItem.options || {})['align-self']"
