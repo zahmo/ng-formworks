@@ -6,7 +6,7 @@ import Ajv2019, { ErrorObject, Options } from 'ajv/dist/2019';
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
-import { Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
   enValidationMessages,
@@ -164,6 +164,28 @@ export class JsonSchemaFormService implements OnDestroy {
 
   fcValueChangesSubs:Subscription;
   fcStatusChangesSubs:Subscription;
+
+  //this has been added to enable or disable the dragabble state of a component
+  //using the OrderableDirective, mainly when an <input type="range"> 
+  //elements are present, as the draggable attribute makes it difficult to
+  //slide the range sliders and end up dragging
+  //NB this will be set globally for all OrderableDirective instances
+  //and will only be enabled when/if the caller sets the value back to true 
+  private draggableStateSubject = new BehaviorSubject<boolean>(true); // Default value true
+  draggableState$ = this.draggableStateSubject.asObservable();
+
+  setDraggableState(value: boolean) {
+    this.draggableStateSubject.next(value); // Update the draggable value
+  }
+
+  //this is introduced to look at replacing the orderable directive with 
+  //nxt-sortablejs and sortablejs 
+  private sortableOptionsSubject = new BehaviorSubject<any>({disabled:false}); // Default value true
+  sortableOptions$ = this.sortableOptionsSubject.asObservable();
+
+  setSortableOptions(value: any) {
+    this.sortableOptionsSubject.next(value); // Update the sortable options value
+  }
   constructor() {
     this.setLanguage(this.language);
     this.ajv.addMetaSchema(jsonDraft6);
@@ -883,7 +905,7 @@ export class JsonSchemaFormService implements OnDestroy {
     return true;
   }
 
-  moveArrayItem(ctx: WidgetContext, oldIndex: number, newIndex: number): boolean {
+  moveArrayItem(ctx: WidgetContext, oldIndex: number, newIndex: number,moveLayout:boolean=true): boolean {
     if (
       !ctx || !ctx.layoutNode ||
       !isDefined(ctx.layoutNode().dataPointer) ||
@@ -904,8 +926,11 @@ export class JsonSchemaFormService implements OnDestroy {
     formArray.updateValueAndValidity();
 
     // Move layout item
-    const layoutArray = this.getLayoutArray(ctx);
-    layoutArray.splice(newIndex, 0, layoutArray.splice(oldIndex, 1)[0]);
+    if(moveLayout){
+      const layoutArray = this.getLayoutArray(ctx);
+      layoutArray.splice(newIndex, 0, layoutArray.splice(oldIndex, 1)[0]);
+    }
+
     return true;
   }
 

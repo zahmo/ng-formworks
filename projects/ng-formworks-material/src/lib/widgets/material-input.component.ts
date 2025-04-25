@@ -8,7 +8,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     selector: 'material-input-widget',
     template: `
     <mat-form-field [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
-      [class]="options?.htmlClass || ''"
+      [class]="options?.htmlClass || ''" class="sortable-filter"
       [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
       [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
       [style.width]="'100%'">
@@ -29,7 +29,10 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [required]="options?.required"
         [type]="layoutNode()?.type"
         (blur)="options.showErrors = true"
-        [attributes]="inputAttributes">
+        [attributes]="inputAttributes"
+        (mousedown)="onMouseDown($event)"
+        (touchstart)="onTouchStart($event)"
+        >
       <input #input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.list]="'control' + layoutNode()?._id + 'Autocomplete'"
@@ -47,6 +50,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (input)="updateValue($event)"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
+        (mousedown)="onMouseDown($event)"
+        (touchstart)="onTouchStart($event)"        
         >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
@@ -95,6 +100,16 @@ export class MaterialInputComponent implements OnInit {
     return this.options?.['x-inputAttributes'];
   }
 
+    //TODO review:stopPropagation used as a workaround 
+    //to prevent dragging onMouseDown and onTouchStart events
+    onMouseDown(e){
+      e.stopPropagation();
+    }
+
+    onTouchStart(e){
+      e.stopPropagation();
+    }
+
   ngOnInit() {
     this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this);
@@ -106,4 +121,5 @@ export class MaterialInputComponent implements OnInit {
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
   }
+
 }

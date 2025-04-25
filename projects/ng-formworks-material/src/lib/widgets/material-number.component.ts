@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -8,7 +8,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     selector: 'material-number-widget',
     template: `
     <mat-form-field [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
-    [class]="options?.htmlClass || ''"
+    [class]="options?.htmlClass || ''" class="sortable-filter"
     [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
     [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
     [style.width]="'100%'">
@@ -28,7 +28,11 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [required]="options?.required"
         [style.width]="'100%'"
         [type]="'number'"
-        (blur)="options.showErrors = true">
+        (blur)="options.showErrors = true"
+        [attributes]="inputAttributes"
+        (mousedown)="onMouseDown($event)"
+        (touchstart)="onTouchStart($event)"  
+        >
       <input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [attr.max]="options?.maximum"
@@ -44,7 +48,11 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [type]="'number'"
         [value]="controlValue"
         (input)="updateValue($event)"
-        (blur)="options.showErrors = true">
+        (blur)="options.showErrors = true"
+        [attributes]="inputAttributes"
+        (mousedown)="onMouseDown($event)"
+        (touchstart)="onTouchStart($event)"  
+        >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
       <mat-hint *ngIf="layoutNode()?.type === 'range'" align="start"
@@ -79,6 +87,21 @@ export class MaterialNumberComponent implements OnInit {
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
 
+  //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
+  get inputAttributes() {
+     return this.options?.['x-inputAttributes'];
+  }
+ 
+    //TODO review:stopPropagation used as a workaround 
+    //to prevent dragging onMouseDown and onTouchStart events
+    onMouseDown(e){
+      e.stopPropagation();
+    }
+
+    onTouchStart(e){
+      e.stopPropagation();
+    }  
+  
   ngOnInit() {
     this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this);
@@ -91,4 +114,5 @@ export class MaterialNumberComponent implements OnInit {
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
   }
+
 }

@@ -7,7 +7,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     // tslint:disable-next-line:component-selector
     selector: 'input-widget',
     template: `
-    <div [class]="options?.htmlClass || ''">
+    <div [class]="options?.htmlClass || ''" class="sortable-filter" >
       <label *ngIf="options?.title"
         [attr.for]="'control' + layoutNode()?._id"
         [class]="options?.labelHtmlClass || ''"
@@ -82,4 +82,5 @@ export class InputComponent implements OnInit {
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
   }
+
 }

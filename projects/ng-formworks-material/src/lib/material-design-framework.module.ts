@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +23,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
 import {
     Framework,
     FrameworkLibraryService,
@@ -30,6 +32,7 @@ import {
     WidgetLibraryModule, WidgetLibraryService
 } from '@ng-formworks/core';
 import { CssFrameworkModule } from '@ng-formworks/cssframework';
+import { SortablejsModule } from 'nxt-sortablejs';
 import { MaterialDesignFramework } from './material-design.framework';
 import { MATERIAL_FRAMEWORK_COMPONENTS } from './widgets/public_api';
 
@@ -48,6 +51,7 @@ export const ANGULAR_MATERIAL_MODULES = [
   MatRadioModule, MatSelectModule, MatSliderModule, MatSlideToggleModule,
   MatStepperModule, MatTabsModule, MatTooltipModule,
   MatToolbarModule, MatMenuModule, MatToolbarModule,
+  DragDropModule
 ];
 
 @NgModule({
@@ -58,7 +62,14 @@ export const ANGULAR_MATERIAL_MODULES = [
         ...ANGULAR_MATERIAL_MODULES,
         WidgetLibraryModule,
         JsonSchemaFormModule,
-        CssFrameworkModule
+        CssFrameworkModule,
+                SortablejsModule.forRoot({
+                //disabled:false,
+                //draggable:".draggableitem",//">:not(.nonsort)",//">.draggable-item",//":not(.nonsort)",//">*",//":not(.nonsort)",//":not(.non-draggable)",
+                filter:".sortable-filter",//needed to disable dragging on input range elements, class needs to be added to the element or its parent
+                preventOnFilter: false//needed for input range elements slider do still work
+        
+              })
     ],
     declarations: [
         ...MATERIAL_FRAMEWORK_COMPONENTS,

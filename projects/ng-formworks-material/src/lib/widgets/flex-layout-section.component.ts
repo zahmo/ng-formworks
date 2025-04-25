@@ -6,6 +6,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     // tslint:disable-next-line:component-selector
     selector: 'flex-layout-section-widget',
     template: `
+
     <div *ngIf="containerType === 'div'"
       [class]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
@@ -14,14 +15,14 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [class]="'legend ' + (options?.labelHtmlClass || '')"
         [innerHTML]="sectionTitle"
         (click)="toggleExpanded()"></label>
-      <flex-layout-root-widget *ngIf="expanded"
+      <flex-layout-root-widget 
         [layout]="layoutNode().items"
         [dataIndex]="dataIndex()"
         [layoutIndex]="layoutIndex()"
         [isFlexItem]="getFlexAttribute('is-flex')"
         [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
         [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
-        [style.display]="getFlexAttribute('display')"
+        [style.display]="!expanded?'none':getFlexAttribute('display')"
         [style.flex-direction]="getFlexAttribute('flex-direction')"
         [style.flex-wrap]="getFlexAttribute('flex-wrap')"
         [style.justify-content]="getFlexAttribute('justify-content')"
@@ -44,14 +45,14 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [class]="'legend ' + (options?.labelHtmlClass || '')"
         [innerHTML]="sectionTitle"
         (click)="toggleExpanded()"></legend>
-      <flex-layout-root-widget *ngIf="expanded"
+      <flex-layout-root-widget 
         [layout]="layoutNode().items"
         [dataIndex]="dataIndex()"
         [layoutIndex]="layoutIndex()"
         [isFlexItem]="getFlexAttribute('is-flex')"
         [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
         [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
-        [style.display]="getFlexAttribute('display')"
+        [style.display]="!expanded?'none':getFlexAttribute('display')"
         [style.flex-direction]="getFlexAttribute('flex-direction')"
         [style.flex-wrap]="getFlexAttribute('flex-wrap')"
         [style.justify-content]="getFlexAttribute('justify-content')"
@@ -75,16 +76,16 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
           [innerHTML]="sectionTitle"
           (click)="toggleExpanded()"></legend>
       </mat-card-header>
-      <mat-card-content *ngIf="expanded">
+      <mat-card-content >
         <fieldset [disabled]="options?.readonly">
-          <flex-layout-root-widget *ngIf="expanded"
+          <flex-layout-root-widget 
             [layout]="layoutNode().items"
             [dataIndex]="dataIndex()"
             [layoutIndex]="layoutIndex()"
             [isFlexItem]="getFlexAttribute('is-flex')"
             [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
             [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
-            [style.display]="getFlexAttribute('display')"
+            [style.display]="!expanded?'none':getFlexAttribute('display')"
             [style.flex-direction]="getFlexAttribute('flex-direction')"
             [style.flex-wrap]="getFlexAttribute('flex-wrap')"
             [style.justify-content]="getFlexAttribute('justify-content')"
@@ -114,14 +115,14 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         </mat-panel-title>
       </mat-expansion-panel-header>
       <fieldset [disabled]="options?.readonly">
-        <flex-layout-root-widget *ngIf="expanded"
+        <flex-layout-root-widget 
           [layout]="layoutNode().items"
           [dataIndex]="dataIndex()"
           [layoutIndex]="layoutIndex()"
           [isFlexItem]="getFlexAttribute('is-flex')"
           [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
           [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
-          [style.display]="getFlexAttribute('display')"
+          [style.display]="!expanded?'none':getFlexAttribute('display')"
           [style.flex-direction]="getFlexAttribute('flex-direction')"
           [style.flex-wrap]="getFlexAttribute('flex-wrap')"
           [style.justify-content]="getFlexAttribute('justify-content')"
