@@ -8,6 +8,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     selector: 'flex-layout-root-widget',
     template: `
     <div cdkDropList (cdkDropListDropped)="drop($event)" 
+    [class.flex-inherit]="true"
     >
       <div *ngFor="let layoutNode of layout; let i = index" 
        cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
@@ -32,7 +33,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
           [dataIndex]="layoutNode?.arrayItem ? (dataIndex || []).concat(i) : (dataIndex || [])"
           [layoutIndex]="(layoutIndex || []).concat(i)"
           [layoutNode]="layoutNode"></select-framework-widget>
-      <div>
+      </div>
     </div>`,
     styles:[`
     .example-list {
@@ -84,6 +85,14 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+.flex-inherit{
+    display:inherit;
+    flex-flow:inherit;
+    flex-wrap:inherit;
+    flex-direction:inherit;
+    width:100%
+}
+    
 `],
     changeDetection: ChangeDetectionStrategy.Default,
     standalone: false

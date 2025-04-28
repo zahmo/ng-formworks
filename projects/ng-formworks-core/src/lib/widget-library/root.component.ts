@@ -7,7 +7,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   // tslint:disable-next-line:component-selector
   selector: 'root-widget',
   template: `
-    <div #sortableContainter [nxtSortablejs]="layout" [config]="sortableConfig" (init)="sortableInit($event)">
+    <div [class.flex-inherit]="true" #sortableContainter [nxtSortablejs]="layout" [config]="sortableConfig" (init)="sortableInit($event)">
       <div *ngFor="let layoutItem of layout; let i = index"
         [class.form-flex-item]="isFlexItem"
         [style.align-self]="(layoutItem.options || {})['align-self']"
@@ -55,6 +55,13 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     [draggable=true].drag-target-bottom {
       box-shadow: 0 2px 0 #000;
       position: relative; z-index: 20;
+    }
+    .flex-inherit{
+      display:inherit;
+      flex-flow:inherit;
+      flex-wrap:inherit;
+      flex-direction:inherit;
+      width:100%
     }
   `],
   standalone: false
