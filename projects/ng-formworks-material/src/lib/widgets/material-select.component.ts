@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/core';
@@ -81,7 +81,7 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
       .mat-form-field-infix { width: initial; }
   `],
 })
-export class MaterialSelectComponent implements OnInit {
+export class MaterialSelectComponent implements OnInit, OnDestroy {
   matFormFieldDefaultOptions = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
   private jsf = inject(JsonSchemaFormService);
 
@@ -112,5 +112,9 @@ export class MaterialSelectComponent implements OnInit {
   updateValue(event) {
     this.options.showErrors = true;
     this.jsf.updateValue(this, event.value);
+  }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 }
