@@ -3,7 +3,7 @@ import {
   Component,
   Input,
   OnInit
-  } from '@angular/core';
+} from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -12,7 +12,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   selector: 'add-reference-widget',
   template: `
     <button *ngIf="showAddButton"
-      [class]="options?.fieldHtmlClass || ''"
+      [class]="options?.fieldHtmlClass || ''" class="sortable-filter sortable-fixed"
       [disabled]="options?.readonly"
       (click)="addItem($event)">
       <span *ngIf="options?.icon" [class]="options?.icon"></span>
