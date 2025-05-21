@@ -16,6 +16,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
         [style.order]="(layoutItem.options || {}).order"
         [class.sortable-filter]="!isDraggable(layoutItem)"
+        [class.sortable-fixed]="isFixed(layoutItem)"
         >
         <!--NB orderable directive is not used but has been left in for now and set to false
           otherwise the compiler won't recognize dataIndex and other dependent attributes
@@ -26,6 +27,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
           [layoutNode]="layoutItem"
           [orderable]="false"
           [class.sortable-filter]="!isDraggable(layoutItem)"
+          [class.sortable-fixed]="isFixed(layoutItem)"
           >
           <select-framework-widget *ngIf="showWidget(layoutItem)"
             [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
@@ -104,7 +106,13 @@ export class RootComponent implements OnInit, OnDestroy {
       //must set moveLayout to false as nxtSortable already moves it
       this.jsf.moveArrayItem(itemCtx, evt.oldIndex, evt.newIndex,false);
       
-    }
+    },
+    onMove: function (/**Event*/evt, /**Event*/originalEvent) {
+      if(evt.related.classList.contains("sortable-fixed")){
+       //console.log(evt.related);
+       return false;
+     }
+   }
   }
   private sortableOptionsSubscription: Subscription;
   sortableInit(sortable) {
@@ -120,6 +128,13 @@ export class RootComponent implements OnInit, OnDestroy {
       //this.sortableObj.option("disabled",!result);
     }
 
+    return result;
+  }
+
+  //TODO also need to think of other types such as button which can be
+  //created by an arbitrary layout
+  isFixed(node: any): boolean {
+    let result=node.type == '$ref';
     return result;
   }
 
