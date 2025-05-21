@@ -115,4 +115,8 @@ export class MaterialSelectComponent implements OnInit {
     this.options.showErrors = true;
     this.jsf.updateValue(this, event.value);
   }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
 }
