@@ -33,6 +33,8 @@ export const zhValidationMessages: any = { // Chinese error messages
         return '必须为相对的 JSON Pointer, 比如 "2/pointer/to/something"';
       case 'regex':
         return '必须为正则表达式, 比如 "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "必须是有效的 ISO 8601 持续时间（例如：'PT1H30M'）";      
       default:
         return '必须为格式正确的 ' + error.requiredFormat;
     }
