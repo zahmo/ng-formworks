@@ -87,11 +87,11 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
   previousInputs: { // Previous input values, to detect which input triggers onChanges
     schema: any, layout: any[], data: any, options: any, framework: any | string,
     widgets: any, form: any, model: any, JSONSchema: any, UISchema: any,
-    formData: any, loadExternalAssets: boolean, debug: boolean,
+    formData: any, loadExternalAssets: boolean, debug: boolean,ajvOptions:any
   } = {
       schema: null, layout: null, data: null, options: null, framework: null,
       widgets: null, form: null, model: null, JSONSchema: null, UISchema: null,
-      formData: null, loadExternalAssets: null, debug: null,
+      formData: null, loadExternalAssets: null, debug: null,ajvOptions:null
     };
 
   // Recommended inputs
@@ -122,6 +122,10 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
   readonly debug = input<boolean>(undefined); // Show debug information?
 
   readonly theme = input<string>(undefined); // Theme
+
+  readonly ajvOptions = input<any>(undefined); // ajvOptions
+
+  private ajvInstanceName:string;
 
   @Input()
   get value(): any {
@@ -363,6 +367,7 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
     ) {
       // Reset all form values to defaults
       this.jsf.resetAllValues();
+      this.initializeAjv();
       this.initializeOptions();   // Update options
       this.initializeSchema();    // Update schema, schemaRefLibrary,
       // schemaRecursiveRefMap, & dataRecursiveRefMap
@@ -415,6 +420,19 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
       this.formInitialized = true;
     }
   }
+
+    /**
+   * 'initializeAjv' function
+   *
+   * Initialize ajv from 'ajvOptions'
+   */
+    private initializeAjv() {
+      const form = this.form();
+      const ajvOptions=cloneDeep(this.ajvOptions())||cloneDeep(form.ajvOptions);
+      if(ajvOptions){
+        this.ajvInstanceName=this.jsf.createAndRegisterAjvInstance(ajvOptions).name;
+      }
+    }
 
   /**
    * 'initializeOptions' function
@@ -544,7 +562,8 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
       this.jsf.schema = convertSchemaToDraft6(this.jsf.schema);
 
       // Initialize ajv and compile schema
-      this.jsf.compileAjvSchema();
+      //this.jsf.compileAjvSchema();
+      //moved to initializeAjv()
 
       // Create schemaRefLibrary, schemaRecursiveRefMap, dataRecursiveRefMap, & arrayMap
       this.jsf.schema = resolveSchemaReferences(
@@ -750,7 +769,8 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
     if (!isEmpty(this.jsf.schema)) {
 
       // If not already initialized, initialize ajv and compile schema
-      this.jsf.compileAjvSchema();
+      //this.jsf.compileAjvSchema();
+      //moved to initializeAjv()
 
       // Update all layout elements, add values, widgets, and validators,
       // replace any '*' with a layout built from all schema elements,
@@ -761,7 +781,7 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
       this.jsf.buildFormGroupTemplate(this.jsf.formValues);
 
       // Build the real Angular FormGroup from the FormGroup template
-      this.jsf.buildFormGroup();
+      this.jsf.buildFormGroup(this.ajvInstanceName);
     }
 
     if (this.jsf.formGroup) {
