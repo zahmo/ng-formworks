@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 //import Ajv, { ErrorObject, Options } from 'ajv';
-import Ajv2019, { ErrorObject, Options } from 'ajv/dist/2019';
-
+import addFormats from "ajv-formats";
+import Ajv2019, { ErrorObject, Options, ValidateFunction } from 'ajv/dist/2019';
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
@@ -42,6 +42,14 @@ import _isEqual from 'lodash/isEqual';
 import { setControl } from './shared/form-group.functions';
 
 
+export type AJVRegistryItem={
+  [name: string]:{
+    name:string,
+    ajvInstance:Ajv2019
+    ajvValidator:ValidateFunction
+  }
+}
+
 export interface TitleMapItem {
   name?: string;
   value?: any;
@@ -65,12 +73,13 @@ export class JsonSchemaFormService implements OnDestroy {
 
   ajvOptions: Options = {
     allErrors: true,
-    validateFormats:false,
+    //validateFormats:false,
     strict:false
   
   };
   ajv:any = new Ajv2019(this.ajvOptions); // AJV: Another JSON Schema Validator
   
+  //Being replaced by getAjvValidator()
   validateFormData: any = null; // Compiled AJV function to validate active form's schema
 
   formValues: any = {}; // Internal form data (may not have correct types)
@@ -177,6 +186,7 @@ export class JsonSchemaFormService implements OnDestroy {
     this.sortableOptionsSubject.next(value); // Update the sortable options value
   }
 
+
   createAjvInstance(ajvOptions){
     let ajvInstance=new Ajv2019(ajvOptions); 
     ajvInstance.addMetaSchema(jsonDraft6);
@@ -214,6 +224,7 @@ export class JsonSchemaFormService implements OnDestroy {
     this.ajv.addMetaSchema(jsonDraft7);
     addFormats(this.ajv);
     this.ajvRegistry['default']={name:'default',ajvInstance:this.ajv,ajvValidator:null};
+    console.log(this.ajvRegistry)
     // Add custom 'duration' format using a regex
 /*    
 this.ajv.addFormat("duration", {
@@ -269,7 +280,7 @@ this.ajv.addFormat("duration", {
     this.ReactJsonSchemaFormCompatibility = false;
     this.AngularSchemaFormCompatibility = false;
     this.tpldata = {};
-    this.validateFormData = null;
+    this.validateFormData = null;//Being replaced by getAjvValidator()
     this.formValues = {};
     this.schema = {};
     this.layout = [];
@@ -288,6 +299,8 @@ this.ajv.addFormat("duration", {
     this.schemaRefLibrary = {};
     this.templateRefLibrary = {};
     this.formOptions = cloneDeep(this.defaultFormOptions);
+    this.ajvRegistry={};
+    this.ajvRegistry['default']={name:'default',ajvInstance:this.ajv,ajvValidator:null};
   }
 
   /**
@@ -321,7 +334,7 @@ this.ajv.addFormat("duration", {
     });
   }
 
-  validateData(newValue: any, updateSubscriptions = true): void {
+  validateData(newValue: any, updateSubscriptions = true,ajvInstanceName='default'): void {
     // Format raw form data to correct data types
     this.data = formatFormData(
       newValue,
@@ -330,7 +343,7 @@ this.ajv.addFormat("duration", {
       this.arrayMap,
       this.formOptions.returnEmptyFields
     );
-    this.isValid = this.validateFormData(this.data);
+    this.isValid = this.getAjvValidator(ajvInstanceName)(this.data);
     this.validData = this.isValid ? this.data : null;
     const compileErrors = (errors:ErrorObject[]) => {
       const compiledErrors = {};
@@ -345,8 +358,9 @@ this.ajv.addFormat("duration", {
       });
       return compiledErrors;
     };
-    this.ajvErrors = this.validateFormData.errors;
-    this.validationErrors = compileErrors(this.validateFormData.errors);
+    //TODO:store avjErrors per ajvInstance in registry
+    this.ajvErrors = this.getAjvValidator(ajvInstanceName).errors;
+    this.validationErrors = compileErrors(this.ajvErrors);
     if (updateSubscriptions) {
       this.dataChanges.next(this.data);
       this.isValidChanges.next(this.isValid);
@@ -362,18 +376,18 @@ this.ajv.addFormat("duration", {
     );
   }
 
-  buildFormGroup() {
+  buildFormGroup(ajvInstanceName?:string) {
     this.formGroup = <UntypedFormGroup>buildFormGroup(this.formGroupTemplate);
     if (this.formGroup) {
-      this.compileAjvSchema();
-      this.validateData(this.formGroup.value);
+      this.compileAjvSchema(ajvInstanceName);
+      this.validateData(this.formGroup.value,true,ajvInstanceName);
 
       // Set up observables to emit data and validation info when form data changes
       if (this.formValueSubscription) {
         this.formValueSubscription.unsubscribe();
       }
       this.formValueSubscription = this.formGroup.valueChanges.subscribe(
-        formValue => this.validateData(formValue)
+        formValue => this.validateData(formValue,true,ajvInstanceName)
       );
     }
   }
@@ -415,15 +429,19 @@ this.ajv.addFormat("duration", {
     }
   }
 
-  compileAjvSchema() {
-    if (!this.validateFormData) {
+  compileAjvSchema(ajvInstanceName='default') {
+    let ajvValidator=this.getAjvValidator(ajvInstanceName);
+    if (!ajvValidator) {
       // if 'ui:order' exists in properties, move it to root before compiling with ajv
       if (Array.isArray(this.schema.properties['ui:order'])) {
         this.schema['ui:order'] = this.schema.properties['ui:order'];
         delete this.schema.properties['ui:order'];
       }
-      this.ajv.removeSchema(this.schema);
-      this.validateFormData = this.ajv.compile(this.schema);
+      this.getAjvInstance(ajvInstanceName).removeSchema(this.schema);
+      
+      ajvValidator = this.getAjvInstance(ajvInstanceName).compile(this.schema);
+      this.ajvRegistry[ajvInstanceName].ajvValidator=ajvValidator;
+
     }
   }
 
