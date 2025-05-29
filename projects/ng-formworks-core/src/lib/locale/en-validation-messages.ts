@@ -33,6 +33,8 @@ export const enValidationMessages: any = { // Default English error messages
         return 'Must be a relative JSON Pointer, like "2/pointer/to/something"';
       case 'regex':
         return 'Must be a regular expression, like "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "Must be a valid ISO 8601 duration (e.g., 'PT1H30M')";
       default:
         return 'Must be a correctly formatted ' + error.requiredFormat;
     }

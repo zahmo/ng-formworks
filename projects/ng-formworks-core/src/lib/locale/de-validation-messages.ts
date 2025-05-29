@@ -33,6 +33,8 @@ export const deValidationMessages: any = { // Default German error messages
         return 'Kein gültiger relativer JSON-Pointer (z. B. "2/pointer/to/something")';
       case 'regex':
         return 'Kein gültiger regulärer Ausdruck (z. B. "(1-)?\\d{3}-\\d{3}-\\d{4}")';
+      case 'duration':
+          return "Muss eine gültige ISO 8601-Dauer sein (z. B. 'PT1H30M')";     
       default:
         return 'Muss diesem Format entsprechen: ' + error.requiredFormat;
     }
