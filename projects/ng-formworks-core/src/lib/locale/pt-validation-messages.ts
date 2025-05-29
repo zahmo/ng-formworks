@@ -33,6 +33,8 @@ export const ptValidationMessages: any = { // Brazilian Portuguese error message
         return 'Tem que ser um JSON Pointer relativo, por exemplo "2/referencia/para/algo"';
       case 'regex':
         return 'Tem que ser uma expressão regular, por exemplo "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "Deve ser uma duração válida no formato ISO 8601 (ex.: 'PT1H30M')";
       default:
         return 'Tem que ser no formato: ' + error.requiredFormat;
     }
