@@ -31,6 +31,8 @@ export const esValidationMessages: any = { // Default Spanish error messages
         return 'Debe ser un JSON Pointer relativo, ej "2/pointer/to/something"';
       case 'regex':
         return 'Debe ser una expresión regular, ej "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "Debe ser una duración válida en formato ISO 8601 (p. ej., 'PT1H30M')";     
       default:
         return 'Debe tener el formato correcto ' + error.requiredFormat;
     }
