@@ -33,6 +33,8 @@ export const itValidationMessages: any = { // Default Italian error messages
         return 'Deve essere un JSON Pointer relativo, come "2/pointer/to/something"';
       case 'regex':
         return 'Deve essere una regular expression, come "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "Deve essere una durata valida nel formato ISO 8601 (es. 'PT1H30M')";      
       default:
         return 'Deve essere formattato correttamente ' + error.requiredFormat;
     }

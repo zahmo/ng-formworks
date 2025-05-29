@@ -33,6 +33,8 @@ export const frValidationMessages: any = { // French error messages
         return 'Doit être un relative JSON Pointer, tel que "2/pointer/to/something"';
       case 'regex':
         return 'Doit être une expression régulière, tel que "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "Doit être une durée valide au format ISO 8601 (par ex., 'PT1H30M')";
       default:
         return 'Doit être avoir le format correct: ' + error.requiredFormat;
     }
