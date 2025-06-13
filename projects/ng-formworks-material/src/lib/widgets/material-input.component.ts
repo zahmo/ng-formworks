@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, inject, input, viewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, inject, input, viewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -76,7 +76,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       input[type='datetime-local'] {width:120%;}
   `],
 })
-export class MaterialInputComponent implements OnInit {
+export class MaterialInputComponent implements OnInit, OnDestroy {
   matFormFieldDefaultOptions = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
   private jsf = inject(JsonSchemaFormService);
 
@@ -119,6 +119,10 @@ export class MaterialInputComponent implements OnInit {
 
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
+  }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 
 }

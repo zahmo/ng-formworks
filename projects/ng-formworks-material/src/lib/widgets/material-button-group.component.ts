@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
 
@@ -35,7 +35,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
     </div>`,
     styles: [` mat-error { font-size: 75%; } `],
 })
-export class MaterialButtonGroupComponent implements OnInit {
+export class MaterialButtonGroupComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
   formControl: AbstractControl;
@@ -62,5 +62,8 @@ export class MaterialButtonGroupComponent implements OnInit {
   updateValue(value) {
     this.options.showErrors = true;
     this.jsf.updateValue(this, value);
+  }
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService, TitleMapItem, buildTitleMap } from '@ng-formworks/core';
 
@@ -50,7 +50,7 @@ import { JsonSchemaFormService, TitleMapItem, buildTitleMap } from '@ng-formwork
     mat-error { font-size: 75%; }
   `],
 })
-export class MaterialCheckboxesComponent implements OnInit {
+export class MaterialCheckboxesComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
   formControl: AbstractControl;
@@ -103,5 +103,10 @@ export class MaterialCheckboxesComponent implements OnInit {
     this.options.showErrors = true;
     this.checkboxList.forEach(t => t.checked = event.checked);
     this.updateValue();
+  }
+  
+  //TODO review this
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 }
