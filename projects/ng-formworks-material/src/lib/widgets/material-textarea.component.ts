@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -58,7 +58,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       .mat-form-field-infix { width: initial; }
   `],
 })
-export class MaterialTextareaComponent implements OnInit {
+export class MaterialTextareaComponent implements OnInit,OnDestroy {
   matFormFieldDefaultOptions = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
   private jsf = inject(JsonSchemaFormService);
 
@@ -82,5 +82,8 @@ export class MaterialTextareaComponent implements OnInit {
 
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
+  }
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 }

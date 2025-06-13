@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
@@ -9,7 +9,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
   selector: 'material-stepper-widget',
   template: ``,
 })
-export class MaterialStepperComponent implements OnInit {
+export class MaterialStepperComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
   formControl: AbstractControl;
@@ -30,4 +30,9 @@ export class MaterialStepperComponent implements OnInit {
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
   }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
+
 }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, input, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService, hasOwn } from '@ng-formworks/core';
 import { Subscription } from 'rxjs';
@@ -42,6 +42,7 @@ export class MaterialButtonComponent implements OnInit,OnDestroy {
   ngOnDestroy(): void {
     this.isValidChangesSubs?.unsubscribe();
     this.isValidChangesSubs=null;
+    this.updateValue({target:null});
   }
 
   ngOnInit() {
@@ -62,4 +63,6 @@ export class MaterialButtonComponent implements OnInit,OnDestroy {
       this.jsf.updateValue(this, event.target.value);
     }
   }
+
+  
 }
