@@ -90,6 +90,8 @@ export class NumberComponent implements OnInit {
     this.jsf.updateValue(this, event.target.value);
   }
 
-  
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
   
 }
