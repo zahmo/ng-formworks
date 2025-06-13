@@ -1,5 +1,5 @@
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Component, OnInit, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -42,7 +42,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         (input)="updateValue($event)">{{controlValue}}</textarea>
     </div>`,
 })
-export class TextareaComponent implements OnInit {
+export class TextareaComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
   formControl: AbstractControl;
@@ -62,5 +62,9 @@ export class TextareaComponent implements OnInit {
 
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
+  }
+  
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, inject, input } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -54,7 +54,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     </div>`,
 })
 //TODO look at reusing InputComponent
-export class NumberComponent implements OnInit {
+export class NumberComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
   formControl: AbstractControl;
@@ -92,6 +92,8 @@ export class NumberComponent implements OnInit {
     this.jsf.updateValue(this, event.target.value);
   }
 
-  
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
   
 }
