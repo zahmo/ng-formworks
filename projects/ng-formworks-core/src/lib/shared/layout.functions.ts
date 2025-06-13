@@ -5,6 +5,7 @@ import uniqueId from 'lodash/uniqueId';
 import { TitleMapItem } from '../json-schema-form.service';
 import {
   checkInlineType,
+  convertJSONSchemaIfToCondition,
   getFromSchema,
   getInputType,
   isInputRequired,
@@ -488,7 +489,7 @@ export function buildLayout_original(jsf, widgetLibrary) {
 //TODO-review:this implements a quick 'post' fix rather than an
 //integrared ideal fix
 export function buildLayout(jsf, widgetLibrary) {
-  let layout=buildLayout_original(jsf, widgetLibrary);
+  let layout = buildLayout_original(jsf, widgetLibrary);
   if (jsf.formValues) {
     let fixedLayout = fixNestedArrayLayout({
       builtLayout: layout,
@@ -573,10 +574,10 @@ function fixNestedArrayLayout(options: any) {
       })
       return;
     }
-  
-    let dataTypes=["array"];//check only array for now
-     //for now added condition to ignore recursive references
-    if (builtLayout.items && dataTypes.indexOf(builtLayout.dataType)>=0
+
+    let dataTypes = ["array"];//check only array for now
+    //for now added condition to ignore recursive references
+    if (builtLayout.items && dataTypes.indexOf(builtLayout.dataType) >= 0
       && builtLayout.dataPointer
       && !builtLayout.recursiveReference
     ) {
@@ -674,6 +675,7 @@ export function buildLayoutFromSchema(
   const schema = JsonPointer.get(jsf.schema, schemaPointer);
   if (!hasOwn(schema, 'type') && !hasOwn(schema, '$ref') &&
     !hasOwn(schema, 'x-schema-form')
+    && !hasOwn(schema, 'if') && !hasOwn(schema, 'then') && !hasOwn(schema, 'else')
   ) { return null; }
   const newNodeType: string = getInputType(schema);
   if (!isDefined(nodeValue) && (
@@ -755,6 +757,63 @@ export function buildLayoutFromSchema(
             newSection.push(innerItem);
           }
         });
+
+      if (hasOwn(schema, "allOf") && isArray(schema.allOf)) {
+        schema.allOf.forEach((allOfItem, ind) => {
+          const keySchemaPointer = `/allOf/${ind}`;
+          //console.log(`found:${keySchemaPointer}`)
+
+          const innerItem = buildLayoutFromSchema(
+            jsf, widgetLibrary, allOfItem,
+            schemaPointer + keySchemaPointer,
+            dataPointer,
+            false, null, null, forRefLibrary, dataPointerPrefix
+          );
+          if (innerItem) {
+            //newSection.push(innerItem);
+            if (isArray(innerItem)) {
+              innerItem.forEach(item => {
+                newSection.push(item);
+              });
+            } else {
+              newSection.push(innerItem)
+            }
+
+          }
+
+        })
+      }
+      if (hasOwn(schema, "if")) {
+        ["then", "else"].forEach(con => {
+          if (hasOwn(schema, con)) {
+            const keySchemaPointer = `/${con}`;
+            const negateClause = con == "else";
+            const innerItem = buildLayoutFromSchema(
+              jsf, widgetLibrary, nodeValue.then,
+              schemaPointer + keySchemaPointer,
+              dataPointer,
+              false, null, null, forRefLibrary, dataPointerPrefix
+            );
+            if (innerItem) {
+
+              if (isArray(innerItem)) {
+                innerItem.forEach(item => {
+                  item.schemaPointer = schemaPointer + keySchemaPointer + item.dataPointer;
+                  item.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
+                  newSection.push(item);
+                });
+              } else {
+                innerItem.schemaPointer = schemaPointer + keySchemaPointer + innerItem.dataPointer;
+                innerItem.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
+                newSection.push(innerItem)
+              }
+            }
+          }
+        })
+
+
+      }
+
       if (dataPointer === '' && !forRefLibrary) {
         newNode = newSection;
       } else {
@@ -987,6 +1046,39 @@ export function buildLayoutFromSchema(
       }
     }
   }
+
+  else if (newNode.type === 'if') {
+    const newSection: any[] = [];
+    ["then", "else"].forEach(con => {
+      if (hasOwn(schema, con)) {
+
+        const keySchemaPointer = `/${con}`;
+        const negateClause = con == "else";
+        const innerItem = buildLayoutFromSchema(
+          jsf, widgetLibrary, nodeValue.then,
+          schemaPointer + keySchemaPointer,
+          dataPointer,
+          false, null, null, forRefLibrary, dataPointerPrefix
+        );
+        if (innerItem) {
+
+          if (isArray(innerItem)) {
+            innerItem.forEach(item => {
+              item.schemaPointer = schemaPointer + keySchemaPointer + item.dataPointer;
+              item.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
+              newSection.push(item);
+              newNode = newSection
+            });
+          } else {
+            innerItem.schemaPointer = schemaPointer + keySchemaPointer + innerItem.dataPointer;
+            innerItem.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
+            newNode = innerItem
+          }
+        }
+      }
+    })
+  }
+
   return newNode;
 }
 

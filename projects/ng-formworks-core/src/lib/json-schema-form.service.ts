@@ -39,6 +39,7 @@ import {
 } from './shared';
 
 import _isEqual from 'lodash/isEqual';
+import { setControl } from './shared/form-group.functions';
 
 
 export type WidgetContext={
@@ -174,6 +175,7 @@ export class JsonSchemaFormService implements OnDestroy {
   fcValueChangesSubs:Subscription;
   fcStatusChangesSubs:Subscription;
 
+  //TODO-review,may not be needed as sortablejs replaces dnd
   //this has been added to enable or disable the dragabble state of a component
   //using the OrderableDirective, mainly when an <input type="range"> 
   //elements are present, as the draggable attribute makes it difficult to
@@ -673,6 +675,11 @@ this.ajv.addFormat("duration", {
         : cloneDeep(this.formOptions);
     }
     ctx.formControl = this.getFormControl(ctx);
+    //introduced to check if the node  is part of ITE conditional
+    //then change or add the control
+    if(ctx.layoutNode()?.schemaPointer){
+      this.setFormControl(ctx,ctx.formControl);
+    }
     ctx.boundControl = bind && !!ctx.formControl;
     if (ctx.formControl) {
       ctx.controlName = this.getFormControlName(ctx);
@@ -700,14 +707,6 @@ this.ajv.addFormat("duration", {
               ))
       );
       this.fcValueChangesSubs=ctx.formControl.valueChanges.subscribe(value => {
-         //commented out to revert back to previous commits
-         //as seems to be causing some issues
-         /*
-        if (!!value) {
-          ctx.controlValue = value;
-        }
-        */
-        //TODO-test,this is the original code
         if (!_isEqual(ctx.controlValue, value)) { ctx.controlValue = value }
       });
     } else {
@@ -719,6 +718,14 @@ this.ajv.addFormat("duration", {
           `warning: control "${dataPointer}" is not bound to the Angular FormGroup.`
         );
       }
+    }
+    //if this is a ITE conditional field, the value would not have been
+    //set, as the control would only be initialized when the condition is true 
+    if(ctx.options?.condition){
+      const value=JsonPointer.has(this.formValues,ctx.layoutNode().dataPointer)
+      ? JsonPointer.get(this.formValues,ctx.layoutNode().dataPointer)
+      :ctx.options?.default
+      ctx.formControl?.setValue(value)
     }
     return ctx.boundControl;
   }
@@ -841,7 +848,18 @@ this.ajv.addFormat("duration", {
     ) {
       return null;
     }
-    return getControl(this.formGroup, this.getDataPointer(ctx));
+    return getControl(this.formGroup, this.getDataPointer(ctx),false,ctx.layoutNode()?.schemaPointer);
+  }
+
+  setFormControl(ctx: WidgetContext,control:AbstractControl): AbstractControl {
+    if (
+      !ctx || !ctx.layoutNode ||
+      !isDefined(ctx.layoutNode().dataPointer) ||
+      ctx.layoutNode().type === '$ref'
+    ) {
+      return null;
+    }
+    return setControl(this.formGroup, this.getDataPointer(ctx),control);
   }
 
   getFormControlValue(ctx: WidgetContext): AbstractControl {
@@ -860,7 +878,7 @@ this.ajv.addFormat("duration", {
     if (!ctx || !ctx.layoutNode || !isDefined(ctx.layoutNode().dataPointer)) {
       return null;
     }
-    return getControl(this.formGroup, this.getDataPointer(ctx), true);
+    return getControl(this.formGroup, this.getDataPointer(ctx), true,ctx.layoutNode()?.schemaPointer);
   }
 
   getFormControlName(ctx: WidgetContext): string {
