@@ -86,4 +86,8 @@ export class MaterialDatepickerComponent implements OnInit {
       this.options.description = this.options.placeholder;
     }
   }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
 }

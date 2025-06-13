@@ -65,4 +65,7 @@ export class MaterialButtonGroupComponent implements OnInit {
     this.options.showErrors = true;
     this.jsf.updateValue(this, value);
   }
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
 }

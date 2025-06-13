@@ -32,4 +32,8 @@ export class MaterialFileComponent implements OnInit {
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
   }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
 }
