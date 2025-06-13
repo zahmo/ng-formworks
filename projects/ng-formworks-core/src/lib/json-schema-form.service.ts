@@ -765,7 +765,7 @@ export class JsonSchemaFormService implements OnDestroy {
     return getControl(this.formGroup, this.getDataPointer(ctx),false,ctx.layoutNode()?.schemaPointer);
   }
 
-  setFormControl(ctx: WidgetContext,control:AbstractControl): AbstractControl {
+  setFormControl(ctx: any,control:AbstractControl): AbstractControl {
     if (
       !ctx || !ctx.layoutNode ||
       !isDefined(ctx.layoutNode().dataPointer) ||

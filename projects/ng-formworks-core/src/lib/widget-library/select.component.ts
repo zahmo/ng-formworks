@@ -1,7 +1,7 @@
-import { AbstractControl } from '@angular/forms';
-import { buildTitleMap, isArray } from '../shared';
 import { Component, Input, OnInit } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '../json-schema-form.service';
+import { buildTitleMap, isArray } from '../shared';
 
 
 @Component({
@@ -92,5 +92,9 @@ export class SelectComponent implements OnInit {
 
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
+  }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 }

@@ -1,5 +1,5 @@
-import { AbstractControl } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -71,4 +71,9 @@ export class CheckboxComponent implements OnInit {
   get isChecked() {
     return this.jsf.getFormControlValue(this) === this.trueValue;
   }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
+
 }
