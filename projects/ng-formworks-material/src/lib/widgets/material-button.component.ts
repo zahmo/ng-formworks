@@ -43,6 +43,7 @@ export class MaterialButtonComponent implements OnInit,OnDestroy {
   ngOnDestroy(): void {
     this.isValidChangesSubs?.unsubscribe();
     this.isValidChangesSubs=null;
+    this.updateValue({target:null});
   }
 
   ngOnInit() {
@@ -63,4 +64,6 @@ export class MaterialButtonComponent implements OnInit,OnDestroy {
       this.jsf.updateValue(this, event.target.value);
     }
   }
+
+  
 }

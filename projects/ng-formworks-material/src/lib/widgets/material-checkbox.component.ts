@@ -109,4 +109,8 @@ export class MaterialCheckboxComponent implements OnInit {
   get isChecked() {
     return this.jsf.getFormControlValue(this) === this.trueValue;
   }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
 }

@@ -105,4 +105,9 @@ export class MaterialCheckboxesComponent implements OnInit {
     this.checkboxList.forEach(t => t.checked = event.checked);
     this.updateValue();
   }
+  
+  //TODO review this
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
 }
