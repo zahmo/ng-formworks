@@ -318,7 +318,8 @@ export function getInputType(schema, layoutNode: any = null) {
     }
   }
   if (hasOwn(schema, '$ref')) { return '$ref'; }
-  if (isArray(schema.oneOf) || isArray(schema.anyOf)) { return 'one-of'; }
+  //if (isArray(schema.anyOf)) { return 'any-of'; }//treated as allOf
+  if (isArray(schema.oneOf) ) { return 'one-of'; }//{ return 'tabarray'; }
   if (hasOwn(schema, 'if')) { return 'if'; }
   if (hasOwn(schema, 'then')) { return 'then'; }
   if (hasOwn(schema, 'else')) { return 'else'; }
@@ -782,7 +783,9 @@ export function combineAllOf(schema) {
   if (Object.keys(schema).length > 1) {
     const extraKeys = { ...schema };
     delete extraKeys.allOf;
-    mergedSchema = mergeSchemas(mergedSchema, extraKeys);
+    //TODO Test-changed order to preserve originial order
+    mergedSchema = mergeSchemas(extraKeys,mergedSchema);
+    //mergeSchemas(mergedSchema, extraKeys);
     //need to put it back if ITE 
     if(allITE && allITE.length>0){
       mergedSchema.allOf=mergedSchema.allOf||[];
