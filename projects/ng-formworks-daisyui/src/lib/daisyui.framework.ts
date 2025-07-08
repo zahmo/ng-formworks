@@ -4,6 +4,7 @@ import { cssFrameworkCfgDaisyUI, getCssFrameworkCfgPrefixed } from './daisui-css
 import { DaisyUIFrameworkComponent } from './daisyui-framework.component';
 import { DaisyUIFrameworkComponentPrefixed } from './daisyui-framework.prefixed.component';
 import { DUIOPTIONS } from './tokens.defs';
+import { DaisyUIOneOfComponent } from './widgets/daisyui-one-of.component';
 import { DaisyUITabsComponent } from './widgets/daisyui-tabs.component';
 
 
@@ -29,6 +30,7 @@ framework=DaisyUIFrameworkComponent;
     this.widgets= {
 
       'tabs': DaisyUITabsComponent,
+      'one-of':DaisyUIOneOfComponent
     
     };
   }
