@@ -347,9 +347,15 @@ export class JsonValidators {
       let isValid: boolean;
       const currentValue: string|Date = control.value;
       if (isString(currentValue)) {
+        //TODO fix-Reg exp last index problem
+        //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test
+        //before every call to .test it needs to be reset
+        //use either formatTest.lastIndex = 0; // Reset the lastIndex before each test
+        //or new RegExp(formatTest.source, formatTest.flags);
+        
         const formatTest: Function|RegExp = jsonSchemaFormatTests[requiredFormat];
         if (typeof formatTest === 'object') {
-          isValid = (<RegExp>formatTest).test(<string>currentValue);
+          isValid = new RegExp((<RegExp>formatTest).source,(<RegExp>formatTest).flags).test(<string>currentValue);
         } else if (typeof formatTest === 'function') {
           isValid = (<Function>formatTest)(<string>currentValue);
         } else {
