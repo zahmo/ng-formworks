@@ -104,7 +104,10 @@ export class CheckboxesComponent implements OnInit {
 
   //TODO review this
   ngOnDestroy () {
-    this.jsf.updateValue(this, null);
+        //this.jsf.updateValue(this, null);
+        let nullVal=[];
+        this.formControl.reset(nullVal)
+        this.controlValue=null;
   }
 
 }
