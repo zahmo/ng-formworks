@@ -176,10 +176,51 @@ export class JsonSchemaFormService implements OnDestroy {
   setSortableOptions(value: any) {
     this.sortableOptionsSubject.next(value); // Update the sortable options value
   }
+
+  createAjvInstance(ajvOptions){
+    let ajvInstance=new Ajv2019(ajvOptions); 
+    ajvInstance.addMetaSchema(jsonDraft6);
+    ajvInstance.addMetaSchema(jsonDraft7);
+    addFormats(ajvInstance);
+    return ajvInstance;
+  }
+
+  createAndRegisterAjvInstance(ajvOptions,name?:string){
+    const intanceName=name||`ajv_${Date.now()}`;
+    if(this.ajvRegistry[intanceName]){
+      throw new Error(`ajv instance with name:'${intanceName}' has already been registered`);
+    }
+    const ajvInstance=this.createAjvInstance(ajvOptions);
+    this.ajvRegistry[intanceName]={
+      name:intanceName,
+      ajvInstance:ajvInstance,
+      ajvValidator:null
+    };
+    return this.ajvRegistry[intanceName];
+  }
+
+  ajvRegistry:AJVRegistryItem={}
+
+  getAjvInstance(name='default'){
+    return this.ajvRegistry[name].ajvInstance;
+  }
+  getAjvValidator(name='default'){
+    return this.ajvRegistry[name]?.ajvValidator;
+  }
+
   constructor() {
     this.setLanguage(this.language);
     this.ajv.addMetaSchema(jsonDraft6);
     this.ajv.addMetaSchema(jsonDraft7);
+    addFormats(this.ajv);
+    this.ajvRegistry['default']={name:'default',ajvInstance:this.ajv,ajvValidator:null};
+    // Add custom 'duration' format using a regex
+/*    
+this.ajv.addFormat("duration", {
+  type: "string",
+  validate: (duration) => /^P(?!$)(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$/.test(duration)
+});
+*/
   }
   ngOnDestroy(): void {
     this.fcValueChangesSubs?.unsubscribe();
@@ -583,6 +624,7 @@ export class JsonSchemaFormService implements OnDestroy {
     if (!isObject(ctx)) {
       return false;
     }
+    const layoutNode=ctx.layoutNode();
     if (isEmpty(ctx.options)) {
       ctx.options = !isEmpty((ctx.layoutNode || {}).options)
         ? ctx.layoutNode.options
@@ -591,7 +633,12 @@ export class JsonSchemaFormService implements OnDestroy {
     ctx.formControl = this.getFormControl(ctx);
     //introduced to check if the node  is part of ITE conditional
     //then change or add the control
-    if(ctx.layoutNode()?.schemaPointer){
+    if(layoutNode?.schemaPointer){
+      //before changing control, need to set the new data type for data formatting
+      const schemaType=this.dataMap.get(layoutNode?.dataPointer).get("schemaType");
+      if(schemaType!=layoutNode.dataType){
+        this.dataMap.get(layoutNode?.dataPointer).set("schemaType",layoutNode.dataType)
+      }
       this.setFormControl(ctx,ctx.formControl);
     }
     ctx.boundControl = bind && !!ctx.formControl;
@@ -621,7 +668,10 @@ export class JsonSchemaFormService implements OnDestroy {
               ))
       );
       this.fcValueChangesSubs=ctx.formControl.valueChanges.subscribe(value => {
-        if (!_isEqual(ctx.controlValue, value)) { ctx.controlValue = value }
+        if (!_isEqual(ctx.controlValue, value)) { 
+          ctx.controlValue = value 
+        }
+
       });
     } else {
       ctx.controlName = ctx.layoutNode.name;
@@ -636,8 +686,8 @@ export class JsonSchemaFormService implements OnDestroy {
     //if this is a ITE conditional field, the value would not have been
     //set, as the control would only be initialized when the condition is true 
     if(ctx.options?.condition){
-      const value=JsonPointer.has(this.formValues,ctx.layoutNode().dataPointer)
-      ? JsonPointer.get(this.formValues,ctx.layoutNode().dataPointer)
+      const value=JsonPointer.has(this.formValues,layoutNode.dataPointer)
+      ? JsonPointer.get(this.formValues,layoutNode.dataPointer)
       :ctx.options?.default
       ctx.formControl?.setValue(value)
     }
@@ -754,6 +804,33 @@ export class JsonSchemaFormService implements OnDestroy {
     formArray.markAsDirty();
   }
 
+  updateArrayMultiSelectList(ctx: any, selectList: TitleMapItem[]): void {
+    this.updateArrayCheckboxList(ctx,selectList);
+    /* const formArray = <UntypedFormArray>this.getFormControl(ctx);
+
+    // Remove all existing items
+    while (formArray.value.length) {
+      formArray.removeAt(0);
+    }
+
+    // Re-add an item for each checked box
+    const refPointer = removeRecursiveReferences(
+      ctx.layoutNode().dataPointer + '/-',
+      this.dataRecursiveRefMap,
+      this.arrayMap
+    );
+    for (const selectItem of selectList) {
+      if (selectItem.value) {
+        const newFormControl = buildFormGroup(
+          this.templateRefLibrary[refPointer]
+        );
+        newFormControl.setValue(selectItem.value);
+        formArray.push(newFormControl);
+      }
+    }
+    formArray.markAsDirty();
+    */
+  }
   getFormControl(ctx: any): AbstractControl {
     if (
       !ctx.layoutNode ||
