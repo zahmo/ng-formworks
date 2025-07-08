@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, input, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -41,6 +41,7 @@ export class SubmitComponent implements OnInit,OnDestroy {
   ngOnDestroy(): void {
     this.isValidChangesSubs?.unsubscribe();
     this.isValidChangesSubs=null;
+    this.updateValue({target:{value:null}});
   }
 
   ngOnInit() {
