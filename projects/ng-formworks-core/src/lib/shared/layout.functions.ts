@@ -666,9 +666,12 @@ function fixNestedArrayLayout(options: any) {
 export function buildLayoutFromSchema(
   jsf, widgetLibrary, nodeValue = null, schemaPointer = '',
   dataPointer = '', arrayItem = false, arrayItemType: string = null,
-  removable: boolean = null, forRefLibrary = false, dataPointerPrefix = ''
+  removable: boolean = null, forRefLibrary = false, dataPointerPrefix = '',
+  jsonSchema?
 ) {
-  const schema = JsonPointer.get(jsf.schema, schemaPointer);
+  const jsSchema=jsonSchema||jsf.schema;
+  const schema = JsonPointer.get(jsSchema, schemaPointer);
+  //JsonPointer.get(jsf.schema, schemaPointer);
   if (!hasOwn(schema, 'type') && !hasOwn(schema, '$ref') &&
     !hasOwn(schema, 'x-schema-form')
     && !hasOwn(schema, 'if') && !hasOwn(schema, 'then') && !hasOwn(schema, 'else')
@@ -678,7 +681,7 @@ export function buildLayoutFromSchema(
     jsf.formOptions.setSchemaDefaults === true ||
     (jsf.formOptions.setSchemaDefaults === 'auto' && isEmpty(jsf.formValues))
   )) {
-    nodeValue = JsonPointer.get(jsf.schema, schemaPointer + '/default');
+    nodeValue = JsonPointer.get(jsSchema, schemaPointer + '/default');
   }
   let newNode: any = {
     _id: forRefLibrary ? null : uniqueId(),
@@ -686,7 +689,7 @@ export function buildLayoutFromSchema(
     dataPointer: JsonPointer.toGenericPointer(dataPointer, jsf.arrayMap),
     dataType: schema.type || (hasOwn(schema, '$ref') ? '$ref' : null),
     options: {},
-    required: isInputRequired(jsf.schema, schemaPointer),
+    required: isInputRequired(jsSchema, schemaPointer),
     type: newNodeType,
     widget: widgetLibrary.getWidget(newNodeType),
   };
@@ -754,31 +757,79 @@ export function buildLayoutFromSchema(
           }
         });
 
-      if (hasOwn(schema, "allOf") && isArray(schema.allOf)) {
-        schema.allOf.forEach((allOfItem, ind) => {
-          const keySchemaPointer = `/allOf/${ind}`;
-          //console.log(`found:${keySchemaPointer}`)
+      //treat allOf the same as any of but need to add an extra
+      //condition for which anyOf item is to be rendered 
+      ["allOf", "anyOf","oneOf"].forEach(ofType => {
+        if (hasOwn(schema, ofType) && isArray(schema[ofType])) {
 
-          const innerItem = buildLayoutFromSchema(
-            jsf, widgetLibrary, allOfItem,
-            schemaPointer + keySchemaPointer,
-            dataPointer,
-            false, null, null, forRefLibrary, dataPointerPrefix
-          );
-          if (innerItem) {
-            //newSection.push(innerItem);
-            if (isArray(innerItem)) {
-              innerItem.forEach(item => {
-                newSection.push(item);
-              });
-            } else {
-              newSection.push(innerItem)
-            }
-
+          let outerOneOfItem; 
+          
+          if(ofType=="oneOf"){
+            outerOneOfItem = buildLayoutFromSchema(
+              jsf, widgetLibrary, schema.oneOf,//{type:"tabarray",items:schema.oneOf},
+              "/",//schemaPointer + `/${ofType}`,
+              dataPointer,
+              false, null, null, forRefLibrary, dataPointerPrefix,
+              //{type:"tabarray",items:schema.oneOf,oneOf:schema.oneOf}
+              {type:"one-of",items:schema.oneOf,oneOf:schema.oneOf}
+            );
+            //outerItem.items=cloneDeep(newSection);
+            //newSection.length=0;
+            newSection.push(outerOneOfItem);
+            
           }
+            
+          schema[ofType].forEach((ofItem, ind) => {
+            const keySchemaPointer = `/${ofType}/${ind}`;
+            const innerItem = buildLayoutFromSchema(
+              jsf, widgetLibrary, ofItem,
+              schemaPointer + keySchemaPointer,
+              dataPointer,
+              false, null, null, forRefLibrary, dataPointerPrefix
+            );
+            if (innerItem) {
+              //newSection.push(innerItem);
+              if(innerItem.items){
+                innerItem.items.forEach(innerItemLevel2=>{
+                  const l2SchemaPointer = hasOwn(ofItem,'properties') ?
+                  '/properties/' +innerItemLevel2.name:innerItemLevel2.name;
+                  innerItemLevel2.oneOfPointer =  schemaPointer + keySchemaPointer + l2SchemaPointer;
+                  innerItemLevel2.schemaPointer=innerItemLevel2.oneOfPointer; 
+                })
 
-        })
-      }
+              }
+              if (isArray(innerItem)) {
+                innerItem.forEach(item => {
+                  const l2SchemaPointer = hasOwn(ofItem,'properties') ?
+                  '/properties/' +item.name:item.name;
+                  if(outerOneOfItem){
+                    item.oneOfPointer =  schemaPointer + keySchemaPointer + l2SchemaPointer;
+                    //schemaPointer + keySchemaPointer + item.dataPointer;
+                    item.schemaPointer=item.oneOfPointer; 
+                    outerOneOfItem.items=outerOneOfItem.items||[];
+                    outerOneOfItem.items.push(item);
+                  }else{
+                    newSection.push(item);
+                  }
+                  
+                });
+                //TODO test-might not work for more than 2 levels of nesting
+              }else {
+                if(outerOneOfItem){
+                  innerItem.oneOfPointer = schemaPointer + keySchemaPointer;// + innerItem.dataPointer;
+                  innerItem.schemaPointer=innerItem.oneOfPointer; 
+                  outerOneOfItem.items=outerOneOfItem.items||[];
+                  outerOneOfItem.items.push(innerItem);
+                }else{
+                  newSection.push(innerItem)
+                }
+              }
+            }
+          })
+
+        }
+      })
+
       if (hasOwn(schema, "if")) {
         ["then", "else"].forEach(con => {
           if (hasOwn(schema, con)) {
@@ -829,7 +880,7 @@ export function buildLayoutFromSchema(
     newNode.options.minItems = Math.max(
       schema.minItems || 0, newNode.options.minItems || 0
     );
-    if (!newNode.options.minItems && isInputRequired(jsf.schema, schemaPointer)) {
+    if (!newNode.options.minItems && isInputRequired(jsSchema, schemaPointer)) {
       newNode.options.minItems = 1;
     }
     if (!hasOwn(newNode.options, 'listItems')) { newNode.options.listItems = 1; }
@@ -987,7 +1038,7 @@ export function buildLayoutFromSchema(
 
   } else if (newNode.dataType === '$ref') {
     const schemaRef = JsonPointer.compile(schema.$ref);
-    const dataRef = JsonPointer.toDataPointer(schemaRef, jsf.schema);
+    const dataRef = JsonPointer.toDataPointer(schemaRef, jsSchema);
     let buttonText = '';
 
     // Get newNode title
@@ -1000,7 +1051,7 @@ export function buildLayoutFromSchema(
       // If newNode doesn't have a title, look for title of parent array item
     } else {
       const parentSchema =
-        JsonPointer.get(jsf.schema, schemaPointer, 0, -1);
+        JsonPointer.get(jsSchema, schemaPointer, 0, -1);
       if (hasOwn(parentSchema, 'title')) {
         buttonText = 'Add to ' + parentSchema.title;
       } else {
@@ -1017,9 +1068,9 @@ export function buildLayoutFromSchema(
       removable: false,
       title: buttonText,
     });
-    if (isNumber(JsonPointer.get(jsf.schema, schemaPointer, 0, -1).maxItems)) {
+    if (isNumber(JsonPointer.get(jsSchema, schemaPointer, 0, -1).maxItems)) {
       newNode.options.maxItems =
-        JsonPointer.get(jsf.schema, schemaPointer, 0, -1).maxItems;
+        JsonPointer.get(jsSchema, schemaPointer, 0, -1).maxItems;
     }
 
     // Add layout template to layoutRefLibrary
@@ -1041,9 +1092,7 @@ export function buildLayoutFromSchema(
         jsf.layoutRefLibrary[dataRef].recursiveReference = true;
       }
     }
-  }
-
-  else if (newNode.type === 'if') {
+  }else if (newNode.type === 'if') {
     const newSection: any[] = [];
     ["then", "else"].forEach(con => {
       if (hasOwn(schema, con)) {
