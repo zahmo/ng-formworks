@@ -26,7 +26,7 @@ export const deValidationMessages: any = { // Default German error messages
       case 'uuid':
         return 'Keine gültige UUID (z. B. "12345678-9ABC-DEF0-1234-56789ABCDEF0")';
       case 'color':
-        return 'Kein gültiger Farbwert (z. B. "#FFFFFF" oder "rgb(255, 255, 255)")';
+        return 'Kein gültiger Farbwert (z. B. "#FFFFFF")';
       case 'json-pointer':
         return 'Kein gültiger JSON-Pointer (z. B. "/pointer/to/something")';
       case 'relative-json-pointer':

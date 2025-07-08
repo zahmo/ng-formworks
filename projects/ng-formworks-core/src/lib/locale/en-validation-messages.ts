@@ -26,7 +26,7 @@ export const enValidationMessages: any = { // Default English error messages
       case 'uuid':
         return 'Must be a uuid, like "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
       case 'color':
-        return 'Must be a color, like "#FFFFFF" or "rgb(255, 255, 255)"';
+        return 'Must be a color, like "#FFFFFF"';
       case 'json-pointer':
         return 'Must be a JSON Pointer, like "/pointer/to/something"';
       case 'relative-json-pointer':

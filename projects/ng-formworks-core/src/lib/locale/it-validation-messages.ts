@@ -26,7 +26,7 @@ export const itValidationMessages: any = { // Default Italian error messages
       case 'uuid':
         return 'Deve essere un uuid, come "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
       case 'color':
-        return 'Deve essere un colore, come "#FFFFFF" o "rgb(255, 255, 255)"';
+        return 'Deve essere un colore, come "#FFFFFF"';
       case 'json-pointer':
         return 'Deve essere un JSON Pointer, come "/pointer/to/something"';
       case 'relative-json-pointer':
