@@ -75,7 +75,8 @@ export const Examples: any = {
       { name: 'Errors',                     file: 'rjsf-errors', },
       { name: 'Large',                      file: 'rjsf-large', },
       { name: 'Date & Time',                file: 'rjsf-date-and-time', },
-      { name: 'Validation',                 file: 'rjsf-validation', },
+      //Not Implemented/Obsolete
+      //{ name: 'Validation',                 file: 'rjsf-validation', },
       { name: 'Files',                      file: 'rjsf-files', },
       { name: 'Single',                     file: 'rjsf-single', },
       // { name: 'Custom Array',               file: 'rjsf-custom-array', },
