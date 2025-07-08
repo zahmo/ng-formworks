@@ -26,7 +26,7 @@ export const zhValidationMessages: any = { // Chinese error messages
       case 'uuid':
         return '必须为 uuid, 比如 "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
       case 'color':
-        return '必须为颜色值, 比如 "#FFFFFF" 或者 "rgb(255, 255, 255)"';
+        return '必须为颜色值, 比如 "#FFFFFF"';
       case 'json-pointer':
         return '必须为 JSON Pointer, 比如 "/pointer/to/something"';
       case 'relative-json-pointer':
