@@ -42,6 +42,7 @@ export class SubmitComponent implements OnInit,OnDestroy {
   ngOnDestroy(): void {
     this.isValidChangesSubs?.unsubscribe();
     this.isValidChangesSubs=null;
+    this.updateValue({target:{value:null}});
   }
 
   ngOnInit() {
