@@ -1,4 +1,5 @@
-import {hasValue, inArray, isArray, isDefined, isEmpty, isMap, isObject, isSet, isString, PlainObject} from './validator.functions';
+import { isNil, some } from 'lodash';
+import { hasValue, inArray, isArray, isDefined, isEmpty, isMap, isObject, isSet, isString, PlainObject } from './validator.functions';
 
 /**
  * Utility function library:
@@ -369,5 +370,37 @@ export function toTitleCase(input: string, forceWords?: string|string[]): string
       prevLastChar = word.slice(-1);
       return newWord;
     }
+  });
+}
+
+
+/**
+ * Recursively checks if at least one property of the given object (including nested objects)
+ * has a non-null and non-undefined value.
+ *
+ * @param obj - The object to check.
+ * @returns `true` if at least one property has a non-null and non-undefined value, otherwise `false`.
+ *
+ * @example
+ * const testObj = { a: null, b: { b1: null, b2: undefined } };
+ * console.log(hasNonNullValue(testObj));  // Output: false
+ * 
+ * const testObj2 = { a: 1, b: { b1: null, b2: undefined } };
+ * console.log(hasNonNullValue(testObj2));  // Output: true
+ */
+export function hasNonNullValue(obj: Record<string, any>): boolean {
+  // If the object is null or not an object, return false immediately
+  if (obj === null || typeof obj !== 'object') {
+    return false;
+  }
+
+  // _.some checks if at least one element passes the given condition.
+  return some(obj, (value: any): boolean => {
+    // If value is an object, recurse deeper into the object.
+    if (isObject(value)) {
+      return hasNonNullValue(value);
+    }
+    // Check if value is neither null nor undefined.
+    return !isNil(value);
   });
 }
