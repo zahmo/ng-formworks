@@ -198,7 +198,6 @@ export class JsonSchemaFormService implements OnDestroy {
     this.sortableOptionsSubject.next(value); // Update the sortable options value
   }
 
-
   createAjvInstance(ajvOptions){
     let ajvInstance=new Ajv2019(ajvOptions); 
     ajvInstance.addMetaSchema(jsonDraft6);
@@ -236,7 +235,6 @@ export class JsonSchemaFormService implements OnDestroy {
     this.ajv.addMetaSchema(jsonDraft7);
     addFormats(this.ajv);
     this.ajvRegistry['default']={name:'default',ajvInstance:this.ajv,ajvValidator:null};
-    console.log(this.ajvRegistry)
     // Add custom 'duration' format using a regex
 /*    
 this.ajv.addFormat("duration", {
@@ -669,15 +667,21 @@ this.ajv.addFormat("duration", {
     if (!isObject(ctx)) {
       return false;
     }
+    const layoutNode=ctx.layoutNode();
     if (isEmpty(ctx.options)) {
-      ctx.options = !isEmpty((ctx.layoutNode() || {}).options)
-        ? ctx.layoutNode().options
+      ctx.options = !isEmpty((layoutNode || {}).options)
+        ? layoutNode.options
         : cloneDeep(this.formOptions);
     }
     ctx.formControl = this.getFormControl(ctx);
     //introduced to check if the node  is part of ITE conditional
     //then change or add the control
-    if(ctx.layoutNode()?.schemaPointer){
+    if(layoutNode?.schemaPointer){
+      //before changing control, need to set the new data type for data formatting
+      const schemaType=this.dataMap.get(layoutNode?.dataPointer).get("schemaType");
+      if(schemaType!=layoutNode.dataType){
+        this.dataMap.get(layoutNode?.dataPointer).set("schemaType",layoutNode.dataType)
+      }
       this.setFormControl(ctx,ctx.formControl);
     }
     ctx.boundControl = bind && !!ctx.formControl;
@@ -707,11 +711,14 @@ this.ajv.addFormat("duration", {
               ))
       );
       this.fcValueChangesSubs=ctx.formControl.valueChanges.subscribe(value => {
-        if (!_isEqual(ctx.controlValue, value)) { ctx.controlValue = value }
+        if (!_isEqual(ctx.controlValue, value)) { 
+          ctx.controlValue = value 
+        }
+
       });
     } else {
-      ctx.controlName = ctx.layoutNode().name;
-      ctx.controlValue = ctx.layoutNode().value || null;
+      ctx.controlName = layoutNode.name;
+      ctx.controlValue = layoutNode.value || null;
       const dataPointer = this.getDataPointer(ctx);
       if (bind && dataPointer) {
         console.error(
@@ -722,8 +729,8 @@ this.ajv.addFormat("duration", {
     //if this is a ITE conditional field, the value would not have been
     //set, as the control would only be initialized when the condition is true 
     if(ctx.options?.condition){
-      const value=JsonPointer.has(this.formValues,ctx.layoutNode().dataPointer)
-      ? JsonPointer.get(this.formValues,ctx.layoutNode().dataPointer)
+      const value=JsonPointer.has(this.formValues,layoutNode.dataPointer)
+      ? JsonPointer.get(this.formValues,layoutNode.dataPointer)
       :ctx.options?.default
       ctx.formControl?.setValue(value)
     }
@@ -840,6 +847,33 @@ this.ajv.addFormat("duration", {
     formArray.markAsDirty();
   }
 
+  updateArrayMultiSelectList(ctx: WidgetContext, selectList: TitleMapItem[]): void {
+    this.updateArrayCheckboxList(ctx,selectList);
+    /* const formArray = <UntypedFormArray>this.getFormControl(ctx);
+
+    // Remove all existing items
+    while (formArray.value.length) {
+      formArray.removeAt(0);
+    }
+
+    // Re-add an item for each checked box
+    const refPointer = removeRecursiveReferences(
+      ctx.layoutNode().dataPointer + '/-',
+      this.dataRecursiveRefMap,
+      this.arrayMap
+    );
+    for (const selectItem of selectList) {
+      if (selectItem.value) {
+        const newFormControl = buildFormGroup(
+          this.templateRefLibrary[refPointer]
+        );
+        newFormControl.setValue(selectItem.value);
+        formArray.push(newFormControl);
+      }
+    }
+    formArray.markAsDirty();
+    */
+  }
   getFormControl(ctx: WidgetContext): AbstractControl {
     if (
       !ctx || !ctx.layoutNode ||
