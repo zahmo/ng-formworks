@@ -4,21 +4,28 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'tabs-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'daisyui-tabs-widget',
+    template: `
     <div
       [class]="options?.labelHtmlClass || ''">
       <a *ngFor="let item of layoutNode?.items; let i = index"
         [class]="(options?.itemLabelHtmlClass || '') + (selectedItem === i ?
           (' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')) :
           (' ' + options?.style?.unselected))"
+          (click)="select(i)"
         >
+          <input type="radio" [value]="i" *ngIf="options?.tabMode=='oneOfMode'" 
+           name="tabSelection" 
+           [(ngModel)]="selectedItem"
+           [class]="(options?.widget_radioClass || '')"
+           [value]="i" 
+           (change)="select(i)"
+          />
         <span *ngIf="showAddTab || item.type !== '$ref'"
         [class]="(selectedItem === i ? (' ' + options?.activeClass + ' ' + options?.style?.selected) :
-        (' ' + options?.style?.unselected))"
-      [innerHTML]="setTabTitle(item, i)"
-      (click)="select(i)"></span>
+        (' ' + options?.style?.unselected))">{{setTabTitle(item, i)}}</span>
+          
       </a>
 
     </div>
@@ -32,18 +39,30 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 -->
 
     <div *ngFor="let layoutItem of layoutNode?.items; let i = index"
-      [class]="options?.htmlClass || ''">
-
-      <select-framework-widget *ngIf="selectedItem === i"
-        [class]="(options?.fieldHtmlClass || '') +
-          ' ' + (options?.activeClass || '') +
-          ' ' + (options?.style?.selected || '')"
-        [dataIndex]="layoutNode?.dataType === 'array' ? (dataIndex || []).concat(i) : dataIndex"
-        [layoutIndex]="(layoutIndex || []).concat(i)"
-        [layoutNode]="layoutItem"></select-framework-widget>
-
+      [class]="(options?.htmlClass || '') + (selectedItem != i?' ngf-hidden':'')">
+      <ng-container *ngIf="options?.tabMode=='oneOfMode'">
+        <select-framework-widget *ngIf="selectedItem === i"
+          [class]="(options?.fieldHtmlClass || '') +
+            ' ' + (options?.activeClass || '') +
+            ' ' + (options?.style?.selected || '')"
+          [dataIndex]="layoutNode?.dataType === 'array' ? (dataIndex || []).concat(i) : dataIndex"
+          [layoutIndex]="(layoutIndex || []).concat(i)"
+          [layoutNode]="layoutItem"></select-framework-widget>
+      </ng-container>
+      <ng-container *ngIf="options?.tabMode != 'oneOfMode'">
+        <select-framework-widget 
+          [class]="(options?.fieldHtmlClass || '') +
+            ' ' + (options?.activeClass || '') +
+            ' ' + (options?.style?.selected || '')"
+          [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
+          [layoutIndex]="(layoutIndex() || []).concat(i)"
+          [layoutNode]="layoutItem"></select-framework-widget>
+      </ng-container>
     </div>`,
-  styles: [` a { cursor: pointer; } `],
+    styles: [` a { cursor: pointer; }
+      .ngf-hidden{display:none}
+       `],
+    standalone: false
 })
 export class DaisyUITabsComponent implements OnInit {
   options: any;
@@ -60,6 +79,9 @@ export class DaisyUITabsComponent implements OnInit {
 
   ngOnInit() {
     this.options = this.layoutNode.options || {};
+    if(this.options.selectedTab){
+      this.selectedItem = this.options.selectedTab;
+    }
     this.itemCount = this.layoutNode.items.length - 1;
     this.updateControl();
   }
