@@ -71,13 +71,13 @@ export const cssFrameworkCfgBootstrap4:css_fw.frameworkcfg={
             "htmlClass": "btn-group",
             "itemLabelHtmlClass": "btn"
         },
-        "radio": { "fieldHtmlClass": "radio" },
+        "radio": { "fieldHtmlClass": "form-check" },
         "radios": {
-            "fieldHtmlClass": "radio"
+            "fieldHtmlClass": "form-check"
         },
         "radios-inline": {
-            "htmlClass": "radio",
-            "itemLabelHtmlClass": "radio-inline"
+            "htmlClass": "form-check form-check-inline",
+            "itemLabelHtmlClass": "form-check-label"
         },
         "range": {},
         "section": {},
@@ -90,12 +90,20 @@ export const cssFrameworkCfgBootstrap4:css_fw.frameworkcfg={
         "tabs": {
             "labelHtmlClass": "nav nav-tabs",
             "htmlClass": "tab-content",
-            "fieldHtmlClass": "tab-pane"
+            "fieldHtmlClass": "tab-pane",
+            "widget_radioClass":"form-check"
         },
         "tabarray": {
             "labelHtmlClass": "nav nav-tabs",
             "htmlClass": "tab-content",
-            "fieldHtmlClass": "tab-pane"
+            "fieldHtmlClass": "tab-pane",
+            "widget_radioClass":"form-check"
+        },
+        "one-of": {
+            "labelHtmlClass": "nav nav-tabs",
+            "htmlClass": "tab-content",
+            "fieldHtmlClass": "tab-pane",
+            "widget_radioClass":"form-check"
         },
         "textarea": {},
         "default": {
