@@ -125,13 +125,22 @@ export const cssFrameworkCfgDaisyUI:css_fw.frameworkcfg={
             "labelHtmlClass": "tabs-md tabs-boxed",
             "htmlClass": "",
             "itemLabelHtmlClass": "tab",
-            "activeClass": "tab-active"
+            "activeClass": "tab-active",
+            "widget_radioClass":"radio"
         },
         "tabarray": {
             "labelHtmlClass": "tabs tabs-boxed",
             "htmlClass": "",
             "itemLabelHtmlClass": "tab",
-            "activeClass": "tab-active"
+            "activeClass": "tab-active",
+            "widget_radioClass":"radio"
+        },
+        "one-of": {
+            "labelHtmlClass": "tabs tabs-boxed",
+            "htmlClass": "",
+            "itemLabelHtmlClass": "tab",
+            "activeClass": "tab-active",
+            "widget_radioClass":"radio"
         },
         "textarea": {
             "fieldHtmlClass": "textarea textarea-bordered w-full"
