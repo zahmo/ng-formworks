@@ -26,7 +26,7 @@ export const ptValidationMessages: any = { // Brazilian Portuguese error message
       case 'uuid':
         return 'Tem que ser um uuid, por exemplo "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
       case 'color':
-        return 'Tem que ser uma cor, por exemplo "#FFFFFF" ou "rgb(255, 255, 255)"';
+        return 'Tem que ser uma cor, por exemplo "#FFFFFF"';
       case 'json-pointer':
         return 'Tem que ser um JSON Pointer, por exemplo "/referencia/para/algo"';
       case 'relative-json-pointer':

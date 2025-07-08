@@ -26,7 +26,7 @@ export const frValidationMessages: any = { // French error messages
       case 'uuid':
         return 'Doit être un UUID, tel que "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
       case 'color':
-        return 'Doit être une couleur, tel que "#FFFFFF" or "rgb(255, 255, 255)"';
+        return 'Doit être une couleur, tel que "#FFFFFF"';
       case 'json-pointer':
         return 'Doit être un JSON Pointer, tel que "/pointer/to/something"';
       case 'relative-json-pointer':
