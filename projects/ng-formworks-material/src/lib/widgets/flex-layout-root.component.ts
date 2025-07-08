@@ -107,7 +107,7 @@ export class FlexLayoutRootComponent implements OnInit {
   readonly layout = input<any[]>(undefined);
   readonly isFlexItem = input(false);
   ngOnInit() {
-    console.log("debug FlexLayoutRootComponent:"+this);
+
   }
   removeItem(item) {
     this.jsf.removeItem(item);
