@@ -75,6 +75,7 @@ export function path2ControlKey(path: string) {
  * //  {any = ''} templatePointer -
  * // {any} -
  */
+
 export function buildFormGroupTemplate(
   jsf: any, nodeValue: any = null, setValues = true,
   schemaPointer = '', dataPointer = '', templatePointer = ''
@@ -140,14 +141,29 @@ export function buildFormGroupTemplate(
           .filter(key => hasOwn(schema.properties, key) ||
             hasOwn(schema, 'additionalProperties')
           )
-          .forEach(key => controls[key] = buildFormGroupTemplate(
-            jsf, JsonPointer.get(nodeValue, [<string>key]), setValues,
-            schemaPointer + (hasOwn(schema.properties, key) ?
-              '/properties/' + key : '/additionalProperties'
-            ),
-            dataPointer + '/' + key,
-            templatePointer + '/controls/' + key
-          ));
+          .forEach(key => {
+              controls[key] = buildFormGroupTemplate(
+              jsf, JsonPointer.get(nodeValue, [<string>key]), setValues,
+              schemaPointer + (hasOwn(schema.properties, key) ?
+                '/properties/' + key : '/additionalProperties'
+              ),
+              dataPointer + '/' + key,
+              templatePointer + '/controls/' + key
+            );
+            //add the $<control> type to the root
+            //so it can be flattened and acceses directly in the formgroup
+            //by its full '$' path
+            ["allOf", "anyOf","oneOf"].forEach(ofType => {
+              if(controls[key].controls && controls[key].controls[`_${ofType}`]){
+                Object.keys(controls[key].controls[`_${ofType}`]).forEach($key=>{
+                  controls[$key]=controls[key].controls[`_${ofType}`][$key];
+                  delete controls[key].controls[$key];
+                })
+                delete controls[key].controls[`_${ofType}`]
+              }
+            })
+          } 
+        );
 
         if (hasOwn(schema, "if")) {
           ["then", "else"].forEach(con => {
@@ -165,6 +181,8 @@ export function buildFormGroupTemplate(
           });
         }
 
+              /*  treat allOf the same as any of but need to add an extra
+      condition for which anyOf item is to be rendered 
         let allOfControls = {}
         let allOfAllowedKeys = ["allOf", "anyOf", "oneOf", "if", "then", "else", "type", "properties", "items"];
         if (hasOwn(schema, "allOf") && isArray(schema.allOf)) {
@@ -208,6 +226,81 @@ export function buildFormGroupTemplate(
           })
           controls["allOf"] = allOfControls;
         }
+        */
+
+
+        let ofAllowedKeys = ["allOf", "anyOf", "oneOf", "if", "then", "else", "type", "properties", "items"];
+        ["allOf", "anyOf","oneOf"].forEach(ofType => {
+          if (hasOwn(schema, ofType) && isArray(schema[ofType])) {
+            schema[ofType].forEach((ofItem, ind) => {
+              let aoItemKeys = Object.keys(ofItem);
+              let foundKeys = ofAllowedKeys.filter(value =>
+                aoItemKeys.includes(value)
+              );
+              if (foundKeys && foundKeys.length > 0) {
+                const keySchemaPointer = `/${ofType}/${ind}`;
+                //console.log(`found:${keySchemaPointer}`);
+                let newNodeValue=JsonPointer.get(nodeValue, keySchemaPointer);
+                if(ofType=="oneOf"){
+                  newNodeValue=nodeValue;
+                }
+                let allOfFGTemplate = buildFormGroupTemplate(
+                  jsf, newNodeValue, setValues,
+                  schemaPointer + keySchemaPointer,
+                  dataPointer,
+                  templatePointer + '/controls/' + ind
+                );
+                if (allOfFGTemplate.controls) {
+                  Object.keys(allOfFGTemplate.controls).forEach(key => {
+                    const l2SchemaPointer = hasOwn(schema,'properties') ?
+                    '/properties/' +key:key;
+                    let controlKey = allOfFGTemplate.controls[key].schemaPointer || `${schemaPointer}${keySchemaPointer}${l2SchemaPointer}`;
+                    controlKey = path2ControlKey(controlKey);
+                    /*
+                    controls[controlKey] = {
+                      key: key,
+                      schemaPointer:  `${schemaPointer}${keySchemaPointer}/${key}`,//schemaPointer + keySchemaPointer,
+                      controls: allOfFGTemplate.controls[key]
+                    }
+                    */
+               
+                    let controlItem=cloneDeep(allOfFGTemplate.controls[key]);
+                    controlItem.key = key;
+                    controlItem.schemaPointer = controlItem.schemaPointer|| `${schemaPointer}${keySchemaPointer}${l2SchemaPointer}`;
+                    
+                    controls[controlKey]=controlItem
+                    //need to test if value matches schema,
+                    //as the same oneOf item will be assigned to the same value
+                    //if key is a $oneOf key then it was inserted at the root of the controls
+                    //as form control name will be the full(escaped) path 
+                    const pointerPath=key.startsWith('$oneOf')?controlItem.schemaPointer:keySchemaPointer
+                    let oneOfItemSchema=JsonPointer.get(schema,pointerPath);
+                    let oneOfItemValue={};
+                    oneOfItemValue[key]=controlItem.value?.value;
+                    if(controlItem.value && !jsf.ajv.validate(oneOfItemSchema,oneOfItemValue)){
+                      controlItem.value.value=null;
+                    } 
+                    //controls[controlKey] = controlItem;
+
+                    //allOfFGTemplate.controls[key].schemaPointer ||`${schemaPointer}${keySchemaPointer}/${key}`;
+                    //allOfFGTemplate.controls[key].schemaPointer || schemaPointer + keySchemaPointer;
+  
+                    controls[key] = cloneDeep(allOfFGTemplate.controls[key]);
+                    //add schemacontrol to root 
+                    //controls[controlKey]=controlItem
+                    controls[`_${ofType}`]=controls[`_${ofType}`]||{};
+                    controls[`_${ofType}`][controlKey]=controlItem
+                    //allOfFGTemplate.controls[key];
+                  })
+                }
+  
+              }
+  
+            })
+          }
+        })
+
+
 
         jsf.formOptions.fieldsRequired = setRequiredFields(schema, controls);
       }
@@ -367,9 +460,7 @@ export function buildFormGroupTemplate(
           }
         });
       }
-
       return { controlType, controls, validators };
-
     default:
       return null;
   }
@@ -684,12 +775,32 @@ export function setControl(
 
   // If formGroup input is a real formGroup (not a formGroup template)
   // try using formGroup.get() to return the control
+  /*
   if (typeof formGroup.get === 'function' &&
     dataPointerArray.every(key => key.indexOf('.') === -1)
   ) {
     formGroup.setControl(dataPointerArray.join('.'), control);
     return;
   }
+  */
+  let currentGroup: any= formGroup;
+    for (let i = 0; i < dataPointerArray.length - 1; i++) {
+      // Navigate down the form structure to find the correct nested FormGroup
+      currentGroup = currentGroup.get(dataPointerArray[i]);
+  
+      // If it's not a FormGroup, we throw an error since we can't set a control in a non-group.
+      if (!(typeof currentGroup.setControl=== 'function' )) {
+        throw new Error(`Path '${dataPointerArray[i]}' is not a valid FormGroup or  FormArray.`);
+      }
+    }
+  
+    // Now we are at the parent FormGroup, set the control at the last part of the path
+    const lastPart = dataPointerArray[dataPointerArray.length - 1];
+  
+    // Set the control at the final path (like 'name' inside 'state')
+    currentGroup.setControl(lastPart, control);
+  
+  
 
   // If formGroup input is a formGroup template,
   // or formGroup.get() failed to return the control,
