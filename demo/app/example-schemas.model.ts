@@ -68,14 +68,15 @@ export const Examples: any = {
       { name: 'Nested',                     file: 'rjsf-nested', },
       { name: 'Arrays',                     file: 'rjsf-arrays', },
       { name: 'Numbers',                    file: 'rjsf-numbers', },
-      { name: 'Widgets',                    file: 'rjsf-widgets', },
+      //Not Implemented/Obsolete/Not Applicable
+      //{ name: 'Widgets',                    file: 'rjsf-widgets', },
       { name: 'Ordering',                   file: 'rjsf-ordering', },
       { name: 'References',                 file: 'rjsf-references', },
       { name: 'Custom',                     file: 'rjsf-custom', },
       { name: 'Errors',                     file: 'rjsf-errors', },
       { name: 'Large',                      file: 'rjsf-large', },
       { name: 'Date & Time',                file: 'rjsf-date-and-time', },
-      //Not Implemented/Obsolete
+      //Not Implemented/Obsolete/Not Applicable
       //{ name: 'Validation',                 file: 'rjsf-validation', },
       { name: 'Files',                      file: 'rjsf-files', },
       { name: 'Single',                     file: 'rjsf-single', },
