@@ -35,6 +35,16 @@ export const Examples: any = {
       // { name: 'JSON Meta-Schema - Draft 1',    file: 'json-schema-draft01', },
     ]
   },
+  'ng-jsf-comb': {
+    name: 'JSON Schema Combination examples',
+    schemas: [
+      { name: 'one-of', file: 'ng-jsf-oneof'},
+      { name: 'any-of', file: 'ng-jsf-anyof'},
+      { name: 'all-of', file: 'ng-jsf-allof'},
+      { name: 'if-then-else', file: 'ng-jsf-ite'},
+
+    ]
+  },
   'asf': {
     name: 'Angular Schema Form (AngularJS) examples',
     url: 'http://schemaform.io/examples/bootstrap-example.html',
