@@ -13,3 +13,23 @@
     name: "daisyui_leaf";
     default: true;
 }
+
+:root {
+    --color-gray-200: #e5e7eb;
+}
+
+@layer base {
+    *,
+     ::after,
+     ::before,
+     ::backdrop,
+     ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+        /*
+        border-top-color: var(--color-gray-200, currentColor);
+        border-left-color: var(--color-gray-200, currentColor);
+        border-right-color: var(--color-gray-200, currentColor);
+        border-bottom-color: var(--color-gray-200, currentColor);
+        */
+    }
+}
