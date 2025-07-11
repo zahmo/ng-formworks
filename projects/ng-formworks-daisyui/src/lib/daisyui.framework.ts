@@ -1,6 +1,6 @@
 import { Inject, Injectable, Optional } from '@angular/core';
 import { CssFramework, CssframeworkService } from '@ng-formworks/cssframework';
-import { cssFrameworkCfgDaisyUI, getCssFrameworkCfgPrefixed } from './daisui-cssframework';
+import { cssFrameworkCfgDaisyUI, getCssFrameworkCfgPrefixed } from './daisyui-cssframework';
 import { DaisyUIFrameworkComponent } from './daisyui-framework.component';
 import { DaisyUIFrameworkComponentPrefixed } from './daisyui-framework.prefixed.component';
 import { DUIOPTIONS } from './tokens.defs';
