@@ -152,8 +152,8 @@ export const cssFrameworkCfgDaisyUI:css_fw.frameworkcfg={
 }
 //need to classify which classnames are controlled by DaisyU and which
 //are controlled by tailwind
-//-ones controlled by tailwind will have prefix tw-{{class name}}
-//-ones controlled by daisyui will have prefix tw-dui-{{class name}}
+//-ones controlled by tailwind will have prefix tw:{{class name}}
+//-ones controlled by daisyui will have prefix tw:dui-{{class name}}
 export function getCssFrameworkCfgPrefixed(cssFrameworkCfg:css_fw.frameworkcfg,prefixDUI="tw:dui-",prefixTW="tw:"):css_fw.frameworkcfg{
     
     let classNamesIgnored=[
@@ -166,8 +166,8 @@ export function getCssFrameworkCfgPrefixed(cssFrameworkCfg:css_fw.frameworkcfg,p
     //TODO use regexs
     //-regex won't work the actual prefix classname needs to be 
     //available as string literals as tailwind seems to scans for the
-    //actual names so for ex: 'tw-' + 'bg-primary' wont be picked up,
-    //has to be 'tw-bg-primary'
+    //actual names so for ex: 'tw:' + 'bg-primary' wont be picked up,
+    //has to be 'tw:bg-primary'
 
     //NB this is not used in code, but need during the taiwind scanning 
     //to output the class names
@@ -178,12 +178,12 @@ export function getCssFrameworkCfgPrefixed(cssFrameworkCfg:css_fw.frameworkcfg,p
         'w-px',
         'border',
         'max-w-xs','rounded-full','form-control','inline-flex',
-        'tw-w-full','tw-mb-1','tw-shadow-md','tw-p-1',
-        'tw-sr-only','tw-text-2xl', 'tw-opacity-50',
-        'tw-float-right',
-        'tw-w-px',
-        'tw-max-w-xs','tw-rounded-full','tw-form-control','tw-inline-flex',
-        'tw-border'
+        'tw:w-full','tw:mb-1','tw:shadow-md','tw:p-1',
+        'tw:sr-only','tw:text-2xl', 'tw:opacity-50',
+        'tw:float-right',
+        'tw:w-px',
+        'tw:max-w-xs','tw:rounded-full','tw:form-control','tw:inline-flex',
+        'tw:border'
         
     ];
 
