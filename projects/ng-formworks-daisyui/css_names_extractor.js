@@ -24,12 +24,15 @@ const args = minimist(process.argv.slice(2), {
         stylePath: 's',
         outputPath: 'o',
         outputFormat: 'f',
-        classPrefix: 'p'
+        classPrefix: 'p',
+        prefixSep: 'e'
 
     },
     default: {
         outputFormat: 'css', //can be  json|css
-        outputPath: 'css_class_names.css'
+        outputPath: 'css_class_names.css',
+        classPrefix: "",
+        prefixSep: ""
     }
 });
 
@@ -53,6 +56,7 @@ let stylePath = args.stylePath;
 let cwd = process.cwd()
 var classes;
 fs.readFile(path.join(cwd, stylePath), { encoding: 'utf-8' }).then(readRes => {
+    /*
     let mainCss = readRes;
 
     var dom = new JSDOM(htmlDoc, {
@@ -64,10 +68,14 @@ fs.readFile(path.join(cwd, stylePath), { encoding: 'utf-8' }).then(readRes => {
     style.type = 'text/css';
     style.innerHTML = mainCss;
     head.appendChild(style);
-
-    classes = getClassNames(doc, args.classPrefix);
+*/
+    classes = extractClassNames(readRes).map(cname => {
+            return "." + args.classPrefix + args.prefixSep + cname;
+        })
+        //getClassNames(doc, args.classPrefix, args.prefixSep);
     console.log(Object.keys(classes).length + " class names to be written");
-    let cssTxt = args.outputFormat == "json" ? JSON.stringify(classes) : classesMap2Css(classes);
+    let cssTxt = args.outputFormat == "json" ? JSON.stringify(classes) : classes.map(cname => cname + " {}");
+    //args.outputFormat == "json" ? JSON.stringify(classes) : classesMap2Css(classes);
     return fs.writeFile(args.outputPath, cssTxt);
 }).then(wfres => {
     // Object.keys(classes).forEach(cname => {
@@ -93,7 +101,7 @@ function classesMap2Css(classMap) {
     return cssTxt;
 }
 
-function getClassNames(doc, prefix) {
+function getClassNames(doc, prefix, prefixSep) {
     var sheet, sheets = doc.styleSheets;
     var rule, rules;
     var classes = {};
@@ -120,7 +128,7 @@ function getClassNames(doc, prefix) {
                 }
                 let fcname = cname;
                 if (prefix) {
-                    fcname = "." + prefix + "-" + cname.split(".")[1];
+                    fcname = "." + prefix + prefixSep + cname.split(".")[1];
                 }
 
                 classes[fcname] = {}
@@ -130,4 +138,16 @@ function getClassNames(doc, prefix) {
     // Return an array of the classes
     return classes;
 
+}
+
+const extractClassNames = function(cssContent) {
+    const classRegex =
+        /\.([a-zA-Z_-][a-zA-Z0-9_-]*)(?=\s*[{,:(])|:where\(\.([a-zA-Z_-][a-zA-Z0-9_-]*)\)/g
+    const matches = cssContent.match(classRegex)
+    const classNames = matches ?
+        matches.map((match) => {
+            const cleanedMatch = match.replace(/:where\(\.|[{,:()]/g, "").trim()
+            return cleanedMatch.startsWith(".") ? cleanedMatch.slice(1) : cleanedMatch
+        }) : []
+    return [...new Set(classNames)] // Remove duplicates
 }
