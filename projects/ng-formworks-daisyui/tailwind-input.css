@@ -1,1 +1,15 @@
-@import 'tailwindcss';
+@import "tailwindcss" prefix(tw);
+@plugin "daisyui" {
+    themes: light --default, dark --prefersdark, cupcake, cmyk, pastel;
+    prefix: "dui-";
+}
+
+@plugin "daisyui/theme" {
+    name: "daisyui_default";
+    default: true;
+}
+
+@plugin "daisyui/theme" {
+    name: "daisyui_leaf";
+    default: true;
+}
