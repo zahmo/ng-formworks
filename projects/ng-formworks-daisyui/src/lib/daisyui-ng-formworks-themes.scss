@@ -59,3 +59,14 @@
     border-top-left-radius: 9999px;
     border-bottom-right-radius: 5000px;
 }
+
+[data-theme="daisyui_leaf"] .tabs-box .tab {
+    border-top-left-radius: 9999px;
+    border-bottom-right-radius: 5000px;
+    border-style: none;
+}
+
+//overrides active tab to default to primary color
+.tab-active {
+    --tab-bg: var(--color-primary);
+}
