@@ -12,8 +12,8 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [class.form-flex-item]="isFlexItem"
         [style.align-self]="(layoutItem.options || {})['align-self']"
         [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
-        [style.grow]="getFlexAttribute(layoutItem, 'grow')"
-        [style.shrink]="getFlexAttribute(layoutItem, 'shrink')"
+        [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
+        [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
         [style.order]="(layoutItem.options || {}).order"
         [class.sortable-filter]="!isDraggable(layoutItem)"
         [class.sortable-fixed]="isFixed(layoutItem)"
@@ -140,7 +140,7 @@ export class RootComponent implements OnInit, OnDestroy{
   // Set attributes for flexbox child
   // (container attributes are set in section.component)
   getFlexAttribute(node: any, attribute: string) {
-    const index = ['grow', 'shrink', 'flex-basis'].indexOf(attribute);
+    const index = ['flex-grow', 'flex-shrink', 'flex-basis'].indexOf(attribute);
     return ((node.options || {}).flex || '').split(/\s+/)[index] ||
       (node.options || {})[attribute] || ['1', '1', 'auto'][index];
   }
