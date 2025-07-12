@@ -17,7 +17,7 @@ export const cssFrameworkCfgBootstrap5:css_fw.frameworkcfg={
             {"name":"light","text":"Light"}
         ],
         "$ref": {
-            "fieldHtmlClass": "btn float-end btn-info"
+            "fieldHtmlClass": "btn btn-info"
         },
         "__array_item_nonref__": {
             "htmlClass": "list-group-item"
