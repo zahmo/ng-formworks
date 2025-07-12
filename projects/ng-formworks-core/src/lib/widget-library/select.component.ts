@@ -62,6 +62,33 @@ import { buildTitleMap, isArray } from '../shared';
           </optgroup>
         </ng-template>
       </select>
+      <select *ngIf="boundControl && options?.multiple"
+        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+        [attr.readonly]="options?.readonly ? 'readonly' : null"
+        [attr.required]="options?.required"
+        [class]="options?.fieldHtmlClass || ''"
+        [disabled]="controlDisabled"
+        [id]="'control' + layoutNode()?._id"
+        [multiple]="options?.multiple"
+        [name]="controlName"
+        [(ngModel)]="controlValue"
+        (change)="updateValue($event)">
+        <ng-template ngFor let-selectItem [ngForOf]="selectList">
+          <option *ngIf="!isArray(selectItem?.items)"
+            [selected]="selectItem?.value === controlValue"
+            [value]="selectItem?.value">
+            <span [innerHTML]="selectItem?.name"></span>
+          </option>
+          <optgroup *ngIf="isArray(selectItem?.items)"
+            [label]="selectItem?.group">
+            <option *ngFor="let subItem of selectItem.items"
+              [attr.selected]="subItem?.value === controlValue"
+              [value]="subItem?.value">
+              <span [innerHTML]="subItem?.name"></span>
+            </option>
+          </optgroup>
+        </ng-template>
+      </select>
     </div>`,
 })
 export class SelectComponent implements OnInit {
