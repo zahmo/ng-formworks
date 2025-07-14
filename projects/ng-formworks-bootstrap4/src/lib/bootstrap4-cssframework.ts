@@ -15,7 +15,7 @@ export const cssFrameworkCfgBootstrap4:css_fw.frameworkcfg={
             {"name":"bootstrap4_default","text":"Bootstrap4 default"}
         ],
         "$ref": {
-            "fieldHtmlClass": "btn float-right btn-info"
+            "fieldHtmlClass": "btn btn-info"
         },
         "__array_item_nonref__": {
             "htmlClass": "list-group-item"
