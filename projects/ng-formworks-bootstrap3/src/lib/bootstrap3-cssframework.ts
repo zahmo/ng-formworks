@@ -19,7 +19,7 @@ export const cssFrameworkCfgBootstrap3:css_fw.frameworkcfg={
             {"name":"bootstrap3_default","text":"Bootstrap3 default"}
         ],
         "$ref": {
-            "fieldHtmlClass": "btn pull-right btn-info"
+            "fieldHtmlClass": "btn btn-info"
         },
         "__array_item_nonref__": {
             "htmlClass": "list-group-item"

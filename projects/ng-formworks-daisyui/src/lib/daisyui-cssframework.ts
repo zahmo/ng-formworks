@@ -19,7 +19,7 @@ export const cssFrameworkCfgDaisyUI:css_fw.frameworkcfg={
             
         ],
         "$ref": {
-            "fieldHtmlClass": "btn btn-sm btn-accent float-right"
+            "fieldHtmlClass": "btn btn-sm btn-accent"
         },
         "__array_item_nonref__": {
             "htmlClass": "border shadow-md p-1"
