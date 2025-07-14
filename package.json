@@ -110,12 +110,16 @@
         "@angular/router": "^18.2.6",
         "brace": "^0.11.1",
         "core-js": "^3.38.1",
+        "daisyui": "^5.0.46",
         "lodash-es": "~4.17.21",
         "nxt-sortablejs": "^18.0.0",
         "rxjs": "^7.0.0",
         "sortablejs": "^1.15.6",
         "tslib": "^2.7.0",
         "zone.js": "^0.14.10"
+    },
+    "overrides": {
+        "tailwindcss": "^4.1.11"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^18.2.7",
