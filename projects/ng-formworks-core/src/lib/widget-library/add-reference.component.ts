@@ -8,16 +8,18 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'add-reference-widget',
-  template: `
-    <button *ngIf="showAddButton"
-      [class]="options?.fieldHtmlClass || ''" class="sortable-filter sortable-fixed"
-      [disabled]="options?.readonly"
-      (click)="addItem($event)">
-      <span *ngIf="options?.icon" [class]="options?.icon"></span>
-      <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
-    </button>`,
+    // tslint:disable-next-line:component-selector
+    selector: 'add-reference-widget',
+    template: `
+    <section [class]="options?.htmlClass || ''" align="end">
+      <button *ngIf="showAddButton"
+        [class]="options?.fieldHtmlClass || ''" class="sortable-filter sortable-fixed"
+        [disabled]="options?.readonly"
+        (click)="addItem($event)">
+        <span *ngIf="options?.icon" [class]="options?.icon"></span>
+        <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
+      </button>
+    </section>`,
     changeDetection: ChangeDetectionStrategy.Default,
 })
 export class AddReferenceComponent implements OnInit {
