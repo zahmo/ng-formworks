@@ -84,7 +84,9 @@ export const cssFrameworkCfgBootstrap5:css_fw.frameworkcfg={
         "range": {},
         "section": {},
         "selectfieldset": {},
-        "select": {},
+        "select": {
+            "fieldHtmlClass":"form-select"
+        },
         "submit": {
             "fieldHtmlClass": "btn btn-primary"
         },
