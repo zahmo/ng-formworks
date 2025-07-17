@@ -14,8 +14,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <div *ngFor="let layoutNode of layout; let i = index" 
        cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
         [class.form-flex-item]="isFlexItem"
-        [style.flex-grow]="getFlexAttribute(layoutNode, 'flex-grow')"
-        [style.flex-shrink]="getFlexAttribute(layoutNode, 'flex-shrink')"
+        [style.grow]="getFlexAttribute(layoutNode, 'grow')"
+        [style.shrink]="getFlexAttribute(layoutNode, 'shrink')"
         [style.flex-basis]="getFlexAttribute(layoutNode, 'flex-basis')"
         [style.align-self]="(layoutNode?.options || {})['align-self']"
         [style.order]="layoutNode?.options?.order"
@@ -160,7 +160,7 @@ export class FlexLayoutRootComponent {
   // Set attributes for flexbox child
   // (container attributes are set in flex-layout-section.component)
   getFlexAttribute(node: any, attribute: string) {
-    const index = ['flex-grow', 'flex-shrink', 'flex-basis'].indexOf(attribute);
+    const index = ['grow', 'shrink', 'flex-basis'].indexOf(attribute);
     return ((node.options || {}).flex || '').split(/\s+/)[index] ||
       (node.options || {})[attribute] || ['1', '1', 'auto'][index];
   }
