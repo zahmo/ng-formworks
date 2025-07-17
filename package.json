@@ -108,6 +108,9 @@
         "tslib": "^2.7.0",
         "zone.js": "^0.13.3"
     },
+    "overrides": {
+        "tailwindcss": "^4.1.11"
+    },
     "devDependencies": {
         "@angular-devkit/build-angular": "^16.2.16",
         "@angular/cli": "^16.2.16",
