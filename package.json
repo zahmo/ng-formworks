@@ -112,7 +112,8 @@
         "zone.js": "^0.13.3"
     },
     "overrides": {
-        "tailwindcss": "^4.1.11"
+        "tailwindcss": "^4.1.11",
+        "sass": "~1.71.1"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^16.2.16",
