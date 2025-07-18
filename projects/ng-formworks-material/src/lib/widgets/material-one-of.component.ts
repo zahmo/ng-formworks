@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, viewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { hasNonNullValue, hasOwn, JsonPointer, JsonSchemaFormService, path2ControlKey } from '@ng-formworks/core';
 import { isEqual, isObject } from 'lodash';
@@ -11,15 +11,16 @@ import { MaterialTabsComponent } from './material-tabs.component';
     // tslint:disable-next-line:component-selector
     selector: 'material-one-of-widget',
     template: `<h4>{{this.options?.description}}</h4>
-    <material-tabs-widget #tabs [layoutNode]="layoutNode()" 
-    [layoutIndex]="layoutIndex()" 
-    [dataIndex]="dataIndex()" >
+    <material-tabs-widget #tabs [layoutNode]="layoutNode" 
+    [layoutIndex]="layoutIndex" 
+    [dataIndex]="dataIndex" >
     </material-tabs-widget>`,
     standalone: false
 })
 export class MaterialOneOfComponent implements OnInit {
 
-  readonly tabs = viewChild('tabs', { read: MaterialTabsComponent });
+  @ViewChild('tabs', { read: MaterialTabsComponent })
+  tabs: ElementRef;
 
   formControl: AbstractControl;
   controlName: string;
@@ -51,8 +52,8 @@ export class MaterialOneOfComponent implements OnInit {
     //let formValue=this.jsf.getFormControlValue(this);
     let foundInd=-1;
     //seach for non null value
-    if(this.layoutNode().items){
-      this.layoutNode().items.forEach((layoutItem,ind)=>{
+    if(this.layoutNode.items){
+      this.layoutNode.items.forEach((layoutItem,ind)=>{
         let formValue=JsonPointer.get(this.jsf.formValues,layoutItem.dataPointer);
           if(layoutItem.oneOfPointer){
             let controlKey=path2ControlKey(layoutItem.oneOfPointer);

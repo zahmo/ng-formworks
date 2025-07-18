@@ -73,10 +73,10 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
         </ng-template>
       </mat-select>
       <mat-select *ngIf="boundControl && options?.multiple"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
         [attr.name]="controlName"
         [disabled]="controlDisabled || options?.readonly"
-        [id]="'control' + layoutNode()?._id"
+        [id]="'control' + layoutNode?._id"
         [multiple]="options?.multiple"
         [placeholder]="options?.notitle ? options?.placeholder : options?.title"
         [required]="options?.required"
