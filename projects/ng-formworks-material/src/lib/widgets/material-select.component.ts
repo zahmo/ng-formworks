@@ -20,6 +20,10 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
       
       </ng-container>  
       <mat-select *ngIf="boundControl && !options?.multiple"
+      <ng-container *ngIf="boundControl">
+      
+      </ng-container>  
+      <mat-select *ngIf="boundControl && !options?.multiple"
         [formControl]="formControl"
         [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
         [attr.name]="controlName"
