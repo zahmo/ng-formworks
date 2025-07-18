@@ -1,4 +1,4 @@
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { hasNonNullValue, hasOwn, JsonPointer, JsonSchemaFormService, path2ControlKey } from '@ng-formworks/core';
 import { isEqual, isObject } from 'lodash';
@@ -11,9 +11,9 @@ import { isEqual, isObject } from 'lodash';
     // tslint:disable-next-line:component-selector
     selector: 'daisyui-one-of-widget',
     template: `<h4>{{this.options?.description}}</h4>
-    <daisyui-tabs-widget #tabs [layoutNode]="layoutNode()" 
-    [layoutIndex]="layoutIndex()" 
-    [dataIndex]="dataIndex()" >
+    <daisyui-tabs-widget #tabs [layoutNode]="layoutNode" 
+    [layoutIndex]="layoutIndex" 
+    [dataIndex]="dataIndex" >
     </daisyui-tabs-widget>`,
     standalone: false
 })
@@ -26,12 +26,12 @@ export class DaisyUIOneOfComponent implements OnInit,OnDestroy {
   controlDisabled = false;
   boundControl = false;
   options: any;
-  readonly layoutNode = input<any>(undefined);
-  readonly layoutIndex = input<number[]>(undefined);
-  readonly dataIndex = input<number[]>(undefined);
+  @Input() layoutNode;
+  @Input() layoutIndex;
+  @Input() dataIndex;
 
   ngOnInit() {
-    this.options = this.layoutNode().options || {};
+    this.options = this.layoutNode.options || {};
     this.options.tabMode="oneOfMode";
     this.options.selectedTab=this.findSelectedTab();
     //this.options.description=this.options.description||"choose one of";
@@ -44,8 +44,8 @@ export class DaisyUIOneOfComponent implements OnInit,OnDestroy {
         //let formValue=this.jsf.getFormControlValue(this);
         let foundInd=-1;
         //seach for non null value
-        if(this.layoutNode().items){
-          this.layoutNode().items.forEach((layoutItem,ind)=>{
+        if(this.layoutNode.items){
+          this.layoutNode.items.forEach((layoutItem,ind)=>{
             let formValue=JsonPointer.get(this.jsf.formValues,layoutItem.dataPointer);
               if(layoutItem.oneOfPointer){
                 let controlKey=path2ControlKey(layoutItem.oneOfPointer);

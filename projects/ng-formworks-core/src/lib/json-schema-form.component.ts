@@ -130,7 +130,7 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
 
   @Input() theme: string; // Theme
 
-  readonly ajvOptions = input<any>(undefined); // ajvOptions
+  @Input() ajvOptions; // ajvOptions
 
   private ajvInstanceName:string;
 
@@ -428,8 +428,8 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
    * Initialize ajv from 'ajvOptions'
    */
     private initializeAjv() {
-      const form = this.form();
-      const ajvOptions=cloneDeep(this.ajvOptions())||cloneDeep(form.ajvOptions);
+      const form = this.form;
+      const ajvOptions=cloneDeep(this.ajvOptions)||cloneDeep(form.ajvOptions);
       if(ajvOptions){
         this.ajvInstanceName=this.jsf.createAndRegisterAjvInstance(ajvOptions).name;
       }
