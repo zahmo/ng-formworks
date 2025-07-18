@@ -63,12 +63,12 @@ import { buildTitleMap, isArray } from '../shared';
         </ng-template>
       </select>
       <select *ngIf="boundControl && options?.multiple"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.required]="options?.required"
         [class]="options?.fieldHtmlClass || ''"
         [disabled]="controlDisabled"
-        [id]="'control' + layoutNode()?._id"
+        [id]="'control' + layoutNode?._id"
         [multiple]="options?.multiple"
         [name]="controlName"
         [(ngModel)]="controlValue"

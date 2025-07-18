@@ -11,9 +11,9 @@ import { hasNonNullValue, hasOwn, JsonPointer, path2ControlKey } from '../shared
     // tslint:disable-next-line:component-selector
     selector: 'one-of-widget',
     template: `<h4>{{this.options?.description}}</h4>
-    <tabs-widget #tabs [layoutNode]="layoutNode()" 
-    [layoutIndex]="layoutIndex()" 
-    [dataIndex]="dataIndex()" >
+    <tabs-widget #tabs [layoutNode]="layoutNode" 
+    [layoutIndex]="layoutIndex" 
+    [dataIndex]="dataIndex" >
     </tabs-widget>`,
     standalone: false
 })
@@ -46,8 +46,8 @@ export class OneOfComponent implements OnInit {
       //let formValue=this.jsf.getFormControlValue(this);
       let foundInd=-1;
       //seach for non null value
-      if(this.layoutNode().items){
-        this.layoutNode().items.forEach((layoutItem,ind)=>{
+      if(this.layoutNode.items){
+        this.layoutNode.items.forEach((layoutItem,ind)=>{
           let formValue=JsonPointer.get(this.jsf.formValues,layoutItem.dataPointer);
             if(layoutItem.oneOfPointer){
               let controlKey=path2ControlKey(layoutItem.oneOfPointer);

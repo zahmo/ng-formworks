@@ -642,7 +642,7 @@ this.ajv.addFormat("duration", {
     if (!isObject(ctx)) {
       return false;
     }
-    const layoutNode=ctx.layoutNode();
+    const layoutNode=ctx.layoutNode;
     if (isEmpty(ctx.options)) {
       ctx.options = !isEmpty((ctx.layoutNode || {}).options)
         ? ctx.layoutNode.options
@@ -833,7 +833,7 @@ this.ajv.addFormat("duration", {
 
     // Re-add an item for each checked box
     const refPointer = removeRecursiveReferences(
-      ctx.layoutNode().dataPointer + '/-',
+      ctx.layoutNode.dataPointer + '/-',
       this.dataRecursiveRefMap,
       this.arrayMap
     );
@@ -857,14 +857,14 @@ this.ajv.addFormat("duration", {
     ) {
       return null;
     }
-    return getControl(this.formGroup, this.getDataPointer(ctx),false,ctx.layoutNode()?.schemaPointer);
+    return getControl(this.formGroup, this.getDataPointer(ctx),false,ctx.layoutNode?.schemaPointer);
   }
 
   setFormControl(ctx: any,control:AbstractControl): AbstractControl {
     if (
       !ctx || !ctx.layoutNode ||
-      !isDefined(ctx.layoutNode().dataPointer) ||
-      ctx.layoutNode().type === '$ref'
+      !isDefined(ctx.layoutNode.dataPointer) ||
+      ctx.layoutNode.type === '$ref'
     ) {
       return null;
     }
@@ -887,7 +887,7 @@ this.ajv.addFormat("duration", {
     if (!ctx.layoutNode || !isDefined(ctx.layoutNode.dataPointer)) {
       return null;
     }
-    return getControl(this.formGroup, this.getDataPointer(ctx), true,ctx.layoutNode()?.schemaPointer);
+    return getControl(this.formGroup, this.getDataPointer(ctx), true,ctx.layoutNode?.schemaPointer);
   }
 
   getFormControlName(ctx: any): string {
