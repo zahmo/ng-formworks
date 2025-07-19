@@ -102,6 +102,7 @@
         "@angular/platform-browser": "^15.2.9",
         "@angular/platform-browser-dynamic": "^15.2.10",
         "@angular/router": "^15.2.10",
+        "@tailwindcss/postcss": "^4.1.11",
         "brace": "^0.11.1",
         "core-js": "^3.38.1",
         "daisyui": "^5.0.46",
