@@ -1,6 +1,6 @@
 {
     "name": "@ng-formworks/core",
-    "version": "15.5.8",
+    "version": "15.8.0",
     "description": "Angular ng-formworks - JSON Schema Form builder core",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "keywords": [
