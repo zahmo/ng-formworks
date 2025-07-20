@@ -1,4 +1,4 @@
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
@@ -10,7 +10,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     template: ``,
     standalone: false
 })
-export class MaterialFileComponent implements OnInit {
+export class MaterialFileComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
   formControl: AbstractControl;
@@ -30,5 +30,9 @@ export class MaterialFileComponent implements OnInit {
 
   updateValue(event) {
     this.jsf.updateValue(this, event.target.value);
+  }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 }

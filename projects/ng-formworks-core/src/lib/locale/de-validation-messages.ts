@@ -26,13 +26,15 @@ export const deValidationMessages: any = { // Default German error messages
       case 'uuid':
         return 'Keine gültige UUID (z. B. "12345678-9ABC-DEF0-1234-56789ABCDEF0")';
       case 'color':
-        return 'Kein gültiger Farbwert (z. B. "#FFFFFF" oder "rgb(255, 255, 255)")';
+        return 'Kein gültiger Farbwert (z. B. "#FFFFFF")';
       case 'json-pointer':
         return 'Kein gültiger JSON-Pointer (z. B. "/pointer/to/something")';
       case 'relative-json-pointer':
         return 'Kein gültiger relativer JSON-Pointer (z. B. "2/pointer/to/something")';
       case 'regex':
         return 'Kein gültiger regulärer Ausdruck (z. B. "(1-)?\\d{3}-\\d{3}-\\d{4}")';
+      case 'duration':
+          return "Muss eine gültige ISO 8601-Dauer sein (z. B. 'PT1H30M')";     
       default:
         return 'Muss diesem Format entsprechen: ' + error.requiredFormat;
     }

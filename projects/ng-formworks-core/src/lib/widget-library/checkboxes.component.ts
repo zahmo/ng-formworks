@@ -1,7 +1,7 @@
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { buildTitleMap } from '../shared';
-import { Component, OnInit, input, inject } from '@angular/core';
 import { JsonSchemaFormService, TitleMapItem } from '../json-schema-form.service';
+import { buildTitleMap } from '../shared';
 
 
 @Component({
@@ -58,7 +58,7 @@ import { JsonSchemaFormService, TitleMapItem } from '../json-schema-form.service
     </div>`,
     standalone: false
 })
-export class CheckboxesComponent implements OnInit {
+export class CheckboxesComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
   formControl: AbstractControl;
@@ -101,4 +101,13 @@ export class CheckboxesComponent implements OnInit {
       this.jsf.updateArrayCheckboxList(this, this.checkboxList);
     }
   }
+
+  //TODO review this
+  ngOnDestroy () {
+        //this.jsf.updateValue(this, null);
+        let nullVal=[];
+        this.formControl.reset(nullVal)
+        this.controlValue=null;
+  }
+
 }

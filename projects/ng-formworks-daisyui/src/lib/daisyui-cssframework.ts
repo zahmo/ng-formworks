@@ -19,7 +19,7 @@ export const cssFrameworkCfgDaisyUI:css_fw.frameworkcfg={
             
         ],
         "$ref": {
-            "fieldHtmlClass": "btn btn-sm btn-accent float-right"
+            "fieldHtmlClass": "btn btn-sm btn-accent"
         },
         "__array_item_nonref__": {
             "htmlClass": "border shadow-md p-1"
@@ -62,7 +62,7 @@ export const cssFrameworkCfgDaisyUI:css_fw.frameworkcfg={
         },
         "checkboxbuttons": {
             "fieldHtmlClass": "w-px",
-            "labelHtmlClass": "tabs tabs-boxed",
+            "labelHtmlClass": "tabs tabs-box",
             "htmlClass": "btn-group",
             "itemLabelHtmlClass": "btn",
             "activeClass": "btn-info"
@@ -91,7 +91,7 @@ export const cssFrameworkCfgDaisyUI:css_fw.frameworkcfg={
         },
         "radiobuttons": {
             "fieldHtmlClass": "w-px",
-            "labelHtmlClass": "tabs tabs-boxed",
+            "labelHtmlClass": "tabs tabs-box",
             "htmlClass": "btn-group",
             "itemLabelHtmlClass": "btn",
             "activeClass": "btn-info"
@@ -122,16 +122,25 @@ export const cssFrameworkCfgDaisyUI:css_fw.frameworkcfg={
             "fieldHtmlClass": "input input-md input-bordered w-full"
         },
         "tabs": {
-            "labelHtmlClass": "tabs-md tabs-boxed",
+            "labelHtmlClass": "tabs-md tabs-box",
             "htmlClass": "",
             "itemLabelHtmlClass": "tab",
-            "activeClass": "tab-active"
+            "activeClass": "tab-active",
+            "widget_radioClass":"radio"
         },
         "tabarray": {
-            "labelHtmlClass": "tabs tabs-boxed",
+            "labelHtmlClass": "tabs tabs-box",
             "htmlClass": "",
             "itemLabelHtmlClass": "tab",
-            "activeClass": "tab-active"
+            "activeClass": "tab-active",
+            "widget_radioClass":"radio"
+        },
+        "one-of": {
+            "labelHtmlClass": "tabs tabs-box",
+            "htmlClass": "",
+            "itemLabelHtmlClass": "tab",
+            "activeClass": "tab-active",
+            "widget_radioClass":"radio"
         },
         "textarea": {
             "fieldHtmlClass": "textarea textarea-bordered w-full"
@@ -143,9 +152,9 @@ export const cssFrameworkCfgDaisyUI:css_fw.frameworkcfg={
 }
 //need to classify which classnames are controlled by DaisyU and which
 //are controlled by tailwind
-//-ones controlled by tailwind will have prefix tw-{{class name}}
-//-ones controlled by daisyui will have prefix tw-dui-{{class name}}
-export function getCssFrameworkCfgPrefixed(cssFrameworkCfg:css_fw.frameworkcfg,prefixDUI="tw-dui",prefixTW="tw"):css_fw.frameworkcfg{
+//-ones controlled by tailwind will have prefix tw:{{class name}}
+//-ones controlled by daisyui will have prefix tw:dui-{{class name}}
+export function getCssFrameworkCfgPrefixed(cssFrameworkCfg:css_fw.frameworkcfg,prefixDUI="tw:dui-",prefixTW="tw:"):css_fw.frameworkcfg{
     
     let classNamesIgnored=[
         
@@ -157,8 +166,8 @@ export function getCssFrameworkCfgPrefixed(cssFrameworkCfg:css_fw.frameworkcfg,p
     //TODO use regexs
     //-regex won't work the actual prefix classname needs to be 
     //available as string literals as tailwind seems to scans for the
-    //actual names so for ex: 'tw-' + 'bg-primary' wont be picked up,
-    //has to be 'tw-bg-primary'
+    //actual names so for ex: 'tw:' + 'bg-primary' wont be picked up,
+    //has to be 'tw:bg-primary'
 
     //NB this is not used in code, but need during the taiwind scanning 
     //to output the class names
@@ -169,26 +178,26 @@ export function getCssFrameworkCfgPrefixed(cssFrameworkCfg:css_fw.frameworkcfg,p
         'w-px',
         'border',
         'max-w-xs','rounded-full','form-control','inline-flex',
-        'tw-w-full','tw-mb-1','tw-shadow-md','tw-p-1',
-        'tw-sr-only','tw-text-2xl', 'tw-opacity-50',
-        'tw-float-right',
-        'tw-w-px',
-        'tw-max-w-xs','tw-rounded-full','tw-form-control','tw-inline-flex',
-        'tw-border'
+        'tw:w-full','tw:mb-1','tw:shadow-md','tw:p-1',
+        'tw:sr-only','tw:text-2xl', 'tw:opacity-50',
+        'tw:float-right',
+        'tw:w-px',
+        'tw:max-w-xs','tw:rounded-full','tw:form-control','tw:inline-flex',
+        'tw:border'
         
     ];
 
     let classNamesDUI=[
         'btn', 'btn-sm', 'btn-accent','btn-info','btn-group',
         'input', 'input-md' ,'input-bordered',
-        'checkbox','tab','tabs', 'tabs-boxed','tabs-md',"tab-active",
+        'checkbox','tab','tabs', 'tabs-box','tabs-md',"tab-active",
         'radio','radio-inline',
         'range', 'range-info',
         'select', 'select-md', 'select-bordered',
         'textarea','textarea-bordered'
         
     ];
-    let replaceClasses=(classList:string[]|string,prefDUI:string,prefTW:string,ignoredClasses:string[])=>{
+    let replaceClasses=(classList:string[]|string,prefDUI:string,prefTW:string,ignoredClasses:string[],prefSepDUI="",prefSepTw="")=>{
         if(!Array.isArray(classList)){
             classList=classList.split(" ");
         }
@@ -197,9 +206,9 @@ export function getCssFrameworkCfgPrefixed(cssFrameworkCfg:css_fw.frameworkcfg,p
                 return cname;
             }
             if(classNamesDUI.indexOf(cname)>=0){
-                return prefDUI+"-"+cname;
+                return prefDUI+prefSepDUI+cname;
             }
-            return prefTW+"-"+cname;
+            return prefTW+prefSepTw+cname;
         });
     }
     

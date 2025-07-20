@@ -1,4 +1,9 @@
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import isEqual from 'lodash/isEqual';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { JsonSchemaFormatNames, jsonSchemaFormatTests } from './format-regex.constants';
+import { forEachCopy } from './utility.functions';
 import {
   _executeAsyncValidators,
   _executeValidators,
@@ -19,12 +24,7 @@ import {
   toJavaScriptType,
   toObservable,
   xor
-  } from './validator.functions';
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { forEachCopy } from './utility.functions';
-import { forkJoin } from 'rxjs';
-import { JsonSchemaFormatNames, jsonSchemaFormatTests } from './format-regex.constants';
-import { map } from 'rxjs/operators';
+} from './validator.functions';
 
 
 
@@ -332,7 +332,7 @@ export class JsonValidators {
    * This validator currently checks the following formsts:
    *   date, time, date-time, email, hostname, ipv4, ipv6,
    *   uri, uri-reference, uri-template, url, uuid, color,
-   *   json-pointer, relative-json-pointer, regex
+   *   json-pointer, relative-json-pointer,duration, regex
    *
    * Fast format regular expressions copied from AJV:
    * https://github.com/epoberezkin/ajv/blob/master/lib/compile/formats.js
@@ -347,9 +347,15 @@ export class JsonValidators {
       let isValid: boolean;
       const currentValue: string|Date = control.value;
       if (isString(currentValue)) {
+        //TODO fix-Reg exp last index problem
+        //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test
+        //before every call to .test it needs to be reset
+        //use either formatTest.lastIndex = 0; // Reset the lastIndex before each test
+        //or new RegExp(formatTest.source, formatTest.flags);
+        
         const formatTest: Function|RegExp = jsonSchemaFormatTests[requiredFormat];
         if (typeof formatTest === 'object') {
-          isValid = (<RegExp>formatTest).test(<string>currentValue);
+          isValid = new RegExp((<RegExp>formatTest).source,(<RegExp>formatTest).flags).test(<string>currentValue);
         } else if (typeof formatTest === 'function') {
           isValid = (<Function>formatTest)(<string>currentValue);
         } else {

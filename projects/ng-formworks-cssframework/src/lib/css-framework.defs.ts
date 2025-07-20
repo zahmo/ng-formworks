@@ -16,6 +16,7 @@ export namespace css_fw{
         htmlClass?:string|string[]
         itemLabelHtmlClass?:string|string[]
         activeClass?:string|string[]
+        [key: `widget_${string}`]: string|string[]; //allows for properties prefixed with widget
     }
 
     export type widgetstyles={
@@ -61,6 +62,7 @@ export namespace css_fw{
         text?:csscategories,
         tabs?:csscategories,
         tabarray?:csscategories,
+        'one-of'?:csscategories,
         textarea?:csscategories,
         default:csscategories
     }

@@ -26,13 +26,15 @@ export const zhValidationMessages: any = { // Chinese error messages
       case 'uuid':
         return '必须为 uuid, 比如 "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
       case 'color':
-        return '必须为颜色值, 比如 "#FFFFFF" 或者 "rgb(255, 255, 255)"';
+        return '必须为颜色值, 比如 "#FFFFFF"';
       case 'json-pointer':
         return '必须为 JSON Pointer, 比如 "/pointer/to/something"';
       case 'relative-json-pointer':
         return '必须为相对的 JSON Pointer, 比如 "2/pointer/to/something"';
       case 'regex':
         return '必须为正则表达式, 比如 "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "必须是有效的 ISO 8601 持续时间（例如：'PT1H30M'）";      
       default:
         return '必须为格式正确的 ' + error.requiredFormat;
     }

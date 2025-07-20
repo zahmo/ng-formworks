@@ -1,15 +1,17 @@
+import { isEmpty } from 'lodash';
 import cloneDeep from 'lodash/cloneDeep';
+import omit from 'lodash/omit';
 import { JsonPointer } from './jsonpointer.functions';
 import { mergeSchemas } from './merge-schemas.function';
 import { forEach, hasOwn, mergeFilteredObject } from './utility.functions';
 import {
-    getType,
-    hasValue,
-    inArray,
-    isArray,
-    isNumber,
-    isObject,
-    isString
+  getType,
+  hasValue,
+  inArray,
+  isArray,
+  isNumber,
+  isObject,
+  isString
 } from './validator.functions';
 
 
@@ -316,7 +318,11 @@ export function getInputType(schema, layoutNode: any = null) {
     }
   }
   if (hasOwn(schema, '$ref')) { return '$ref'; }
-  if (isArray(schema.oneOf) || isArray(schema.anyOf)) { return 'one-of'; }
+  //if (isArray(schema.anyOf)) { return 'any-of'; }//treated as allOf
+  if (isArray(schema.oneOf) ) { return 'one-of'; }//{ return 'tabarray'; }
+  if (hasOwn(schema, 'if')) { return 'if'; }
+  if (hasOwn(schema, 'then')) { return 'then'; }
+  if (hasOwn(schema, 'else')) { return 'else'; }
   console.error(`getInputType error: Unable to determine input type for ${schemaType}`);
   console.error('schema', schema);
   if (layoutNode) { console.error('layoutNode', layoutNode); }
@@ -742,6 +748,20 @@ export function getSubSchema(
   }, true, <string>pointer);
 }
 
+
+export function omitKeys<T extends object>(objects: T[], keysToOmit: (keyof T)[]): Omit<T, keyof T>[] {
+  return objects.map((obj) => omit(obj, keysToOmit));
+}
+
+
+
+export function combineAllOfITE(schema){
+  if(schema && schema.allOf){
+    const allITE=schema.allOf.map(item=>{return item.if && {if:item.if}})
+  }
+  
+}
+
 /**
  * 'combineAllOf' function
  *
@@ -753,11 +773,24 @@ export function getSubSchema(
  */
 export function combineAllOf(schema) {
   if (!isObject(schema) || !isArray(schema.allOf)) { return schema; }
-  let mergedSchema = mergeSchemas(...schema.allOf);
+  const allITE=schema.allOf.map(item=>{return item.if && item})
+  .filter(item => !isEmpty(item));
+  //adaped to accomodate ITE by merging all non ITE field
+  //then readding the allOf key with only ITE
+  let schemaITEOmitted=omitKeys(schema.allOf,['if','then','else']);
+  let mergedSchema = mergeSchemas(...schemaITEOmitted);
+  //mergeSchemas(...schema.allOf);
   if (Object.keys(schema).length > 1) {
     const extraKeys = { ...schema };
     delete extraKeys.allOf;
-    mergedSchema = mergeSchemas(mergedSchema, extraKeys);
+    //TODO Test-changed order to preserve originial order
+    mergedSchema = mergeSchemas(extraKeys,mergedSchema);
+    //mergeSchemas(mergedSchema, extraKeys);
+    //need to put it back if ITE 
+    if(allITE && allITE.length>0){
+      mergedSchema.allOf=mergedSchema.allOf||[];
+      mergedSchema.allOf.push(...allITE);
+    }
   }
   return mergedSchema;
 }
@@ -786,3 +819,38 @@ export function fixRequiredArrayProperties(schema) {
   }
   return schema;
 }
+
+ /**
+  * 'convertJSONSchemaIfToCondition' function
+  * converts something like   
+  * "if": {
+  *   "properties": {
+  *     "animal": {
+  *       "const": "Cat"
+  *     },
+  *     "habitat":{
+  *        "const": "City"
+  *      }
+  *   }
+  * }
+  * to "model.animal=='Cat' && habitat=='City" contion
+  * @param schema:any 
+  * @param negate:boolean=false
+  * @returns 
+
+  */
+export function convertJSONSchemaIfToCondition(schema:any,negate=false){
+     let conditionFun="";
+     let condition={};
+     let notOp=negate?"!":"";
+      if(schema.if){
+        Object.keys(schema.if.properties).forEach((ifProp,ind)=>{
+          let amper=ind>0?"&":"";
+          //Note the model value is first converted to string and so is the condition
+          //so that booleans and numbers can also be compared 
+          conditionFun+=`${amper}model.${ifProp}+""=='${schema.if.properties[ifProp].const}'`
+        })
+      }
+      condition["functionBody"]=`return ${notOp}(${conditionFun})`
+      return condition;
+  }

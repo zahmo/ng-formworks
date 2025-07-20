@@ -19,7 +19,7 @@ export const cssFrameworkCfgBootstrap3:css_fw.frameworkcfg={
             {"name":"bootstrap3_default","text":"Bootstrap3 default"}
         ],
         "$ref": {
-            "fieldHtmlClass": "btn pull-right btn-info"
+            "fieldHtmlClass": "btn btn-info"
         },
         "__array_item_nonref__": {
             "htmlClass": "list-group-item"
@@ -94,12 +94,20 @@ export const cssFrameworkCfgBootstrap3:css_fw.frameworkcfg={
         "tabs": {
             "labelHtmlClass": "nav nav-tabs",
             "htmlClass": "tab-content",
-            "fieldHtmlClass": "tab-pane"
+            "fieldHtmlClass": "tab-pane",
+            "widget_radioClass":"radio"
         },
         "tabarray": {
             "labelHtmlClass": "nav nav-tabs",
             "htmlClass": "tab-content",
-            "fieldHtmlClass": "tab-pane"
+            "fieldHtmlClass": "tab-pane",
+            "widget_radioClass":"radio"
+        },
+        "one-of": {
+            "labelHtmlClass": "nav nav-tabs",
+            "htmlClass": "tab-content",
+            "fieldHtmlClass": "tab-pane",
+            "widget_radioClass":"radio"
         },
         "textarea": {},
         "default": {

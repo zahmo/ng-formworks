@@ -17,7 +17,7 @@ export const cssFrameworkCfgBootstrap5:css_fw.frameworkcfg={
             {"name":"light","text":"Light"}
         ],
         "$ref": {
-            "fieldHtmlClass": "btn float-end btn-info"
+            "fieldHtmlClass": "btn btn-info"
         },
         "__array_item_nonref__": {
             "htmlClass": "list-group-item"
@@ -73,18 +73,20 @@ export const cssFrameworkCfgBootstrap5:css_fw.frameworkcfg={
             "htmlClass": "btn-group",
             "itemLabelHtmlClass": "btn"
         },
-        "radio": { "fieldHtmlClass": "radio" },
+        "radio": { "fieldHtmlClass": "form-check-input" },
         "radios": {
-            "fieldHtmlClass": "radio"
+            "fieldHtmlClass": "form-check-input"
         },
         "radios-inline": {
-            "htmlClass": "radio",
-            "itemLabelHtmlClass": "radio-inline"
+            "htmlClass": "form-check form-check-inline",
+            "itemLabelHtmlClass": "form-check-label"
         },
         "range": {},
         "section": {},
         "selectfieldset": {},
-        "select": {},
+        "select": {
+            "fieldHtmlClass":"form-select"
+        },
         "submit": {
             "fieldHtmlClass": "btn btn-primary"
         },
@@ -92,12 +94,20 @@ export const cssFrameworkCfgBootstrap5:css_fw.frameworkcfg={
         "tabs": {
             "labelHtmlClass": "nav nav-tabs",
             "htmlClass": "tab-content",
-            "fieldHtmlClass": "tab-pane"
+            "fieldHtmlClass": "tab-pane",
+            "widget_radioClass":"form-check-input"
         },
         "tabarray": {
             "labelHtmlClass": "nav nav-tabs",
             "htmlClass": "tab-content",
-            "fieldHtmlClass": "tab-pane"
+            "fieldHtmlClass": "tab-pane",
+            "widget_radioClass":"form-check-input"
+        },
+        "one-of":{
+            "labelHtmlClass": "nav nav-tabs",
+            "htmlClass": "tab-content",
+            "fieldHtmlClass": "tab-pane",
+            "widget_radioClass":"form-check-input"
         },
         "textarea": {},
         "default": {

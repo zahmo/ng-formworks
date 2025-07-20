@@ -1,5 +1,5 @@
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Component, OnInit, input, inject } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -20,7 +20,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       [value]="controlValue">`,
     standalone: false
 })
-export class HiddenComponent implements OnInit {
+export class HiddenComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
   formControl: AbstractControl;
@@ -35,4 +35,9 @@ export class HiddenComponent implements OnInit {
   ngOnInit() {
     this.jsf.initializeControl(this);
   }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
+  }
+
 }

@@ -1,4 +1,4 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, inject, input, OnInit } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
@@ -9,9 +9,11 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     template: `
     <div cdkDropList (cdkDropListDropped)="drop($event)" 
     [class.flex-inherit]="true"
+    [cdkDropListSortPredicate]="sortPredicate"
     >
       <div *ngFor="let layoutNode of layout(); let i = index" 
        cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
+       
         [class.form-flex-item]="isFlexItem()"
         [style.flex-grow]="getFlexAttribute(layoutNode, 'flex-grow')"
         [style.flex-shrink]="getFlexAttribute(layoutNode, 'flex-shrink')"
@@ -105,7 +107,7 @@ export class FlexLayoutRootComponent implements OnInit {
   readonly layout = input<any[]>(undefined);
   readonly isFlexItem = input(false);
   ngOnInit() {
-    console.log("debug FlexLayoutRootComponent:"+this);
+
   }
   removeItem(item) {
     this.jsf.removeItem(item);
@@ -140,6 +142,21 @@ export class FlexLayoutRootComponent implements OnInit {
     //must set moveLayout to false as nxtSortable already moves it
     this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
   }
+
+    /**
+   * Predicate function that disallows '$ref' item sorts
+   * NB declared as a var instead of a function 
+   * like sortPredicate(index: number, item: CdkDrag<number>){..}
+   * since 'this' is bound to the draglist and doesn't reference the
+   * FlexLayoutRootComponent instance
+   */
+    //TODO also need to think of other types such as button which can be
+    //created by an arbitrary layout
+    sortPredicate=(index: number, item: CdkDrag<number>)=> {
+      let layoutItem=this.layout()[index];
+      let result=layoutItem.type != '$ref';
+      return result;
+    }
 
   // Set attributes for flexbox child
   // (container attributes are set in flex-layout-section.component)

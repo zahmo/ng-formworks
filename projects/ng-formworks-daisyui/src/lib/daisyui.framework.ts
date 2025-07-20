@@ -1,9 +1,10 @@
 import { Inject, Injectable, Optional, inject } from '@angular/core';
 import { CssFramework, CssframeworkService } from '@ng-formworks/cssframework';
-import { cssFrameworkCfgDaisyUI, getCssFrameworkCfgPrefixed } from './daisui-cssframework';
+import { cssFrameworkCfgDaisyUI, getCssFrameworkCfgPrefixed } from './daisyui-cssframework';
 import { DaisyUIFrameworkComponent } from './daisyui-framework.component';
 import { DaisyUIFrameworkComponentPrefixed } from './daisyui-framework.prefixed.component';
 import { DUIOPTIONS } from './tokens.defs';
+import { DaisyUIOneOfComponent } from './widgets/daisyui-one-of.component';
 import { DaisyUITabsComponent } from './widgets/daisyui-tabs.component';
 
 
@@ -40,6 +41,7 @@ framework=DaisyUIFrameworkComponent;
     this.widgets= {
 
       'tabs': DaisyUITabsComponent,
+      'one-of':DaisyUIOneOfComponent
     
     };
   }

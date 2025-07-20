@@ -26,13 +26,15 @@ export const enValidationMessages: any = { // Default English error messages
       case 'uuid':
         return 'Must be a uuid, like "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
       case 'color':
-        return 'Must be a color, like "#FFFFFF" or "rgb(255, 255, 255)"';
+        return 'Must be a color, like "#FFFFFF"';
       case 'json-pointer':
         return 'Must be a JSON Pointer, like "/pointer/to/something"';
       case 'relative-json-pointer':
         return 'Must be a relative JSON Pointer, like "2/pointer/to/something"';
       case 'regex':
         return 'Must be a regular expression, like "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "Must be a valid ISO 8601 duration (e.g., 'PT1H30M')";
       default:
         return 'Must be a correctly formatted ' + error.requiredFormat;
     }

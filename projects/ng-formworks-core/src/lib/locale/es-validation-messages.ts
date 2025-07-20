@@ -24,13 +24,15 @@ export const esValidationMessages: any = { // Default Spanish error messages
       case 'uuid':
         return 'Debe ser un UUID, ej "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
       case 'color':
-        return 'Debe ser un color, ej "#FFFFFF" or "rgb(255, 255, 255)"';
+        return 'Debe ser un color, ej "#FFFFFF"';
       case 'json-pointer':
         return 'Debe ser un JSON Pointer, ej "/pointer/to/something"';
       case 'relative-json-pointer':
         return 'Debe ser un JSON Pointer relativo, ej "2/pointer/to/something"';
       case 'regex':
         return 'Debe ser una expresión regular, ej "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "Debe ser una duración válida en formato ISO 8601 (p. ej., 'PT1H30M')";     
       default:
         return 'Debe tener el formato correcto ' + error.requiredFormat;
     }

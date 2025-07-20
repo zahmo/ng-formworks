@@ -26,13 +26,15 @@ export const frValidationMessages: any = { // French error messages
       case 'uuid':
         return 'Doit être un UUID, tel que "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
       case 'color':
-        return 'Doit être une couleur, tel que "#FFFFFF" or "rgb(255, 255, 255)"';
+        return 'Doit être une couleur, tel que "#FFFFFF"';
       case 'json-pointer':
         return 'Doit être un JSON Pointer, tel que "/pointer/to/something"';
       case 'relative-json-pointer':
         return 'Doit être un relative JSON Pointer, tel que "2/pointer/to/something"';
       case 'regex':
         return 'Doit être une expression régulière, tel que "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+      case 'duration':
+        return "Doit être une durée valide au format ISO 8601 (par ex., 'PT1H30M')";
       default:
         return 'Doit être avoir le format correct: ' + error.requiredFormat;
     }

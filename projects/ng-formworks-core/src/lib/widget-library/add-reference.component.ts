@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -6,13 +6,15 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     // tslint:disable-next-line:component-selector
     selector: 'add-reference-widget',
     template: `
-    <button *ngIf="showAddButton"
-      [class]="options?.fieldHtmlClass || ''"
-      [disabled]="options?.readonly"
-      (click)="addItem($event)">
-      <span *ngIf="options?.icon" [class]="options?.icon"></span>
-      <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
-    </button>`,
+    <section [class]="options?.htmlClass || ''" align="end">
+      <button *ngIf="showAddButton"
+        [class]="options?.fieldHtmlClass || ''" class="sortable-filter sortable-fixed"
+        [disabled]="options?.readonly"
+        (click)="addItem($event)">
+        <span *ngIf="options?.icon" [class]="options?.icon"></span>
+        <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
+      </button>
+    </section>`,
     changeDetection: ChangeDetectionStrategy.Default,
     standalone: false
 })
