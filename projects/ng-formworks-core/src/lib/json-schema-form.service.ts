@@ -708,7 +708,7 @@ this.ajv.addFormat("duration", {
       const value=JsonPointer.has(this.formValues,dataPointer)
       ? JsonPointer.get(this.formValues,dataPointer)
       :ctx.options?.default
-      ctx.formControl?.setValue(value)
+      ctx.formControl?.patchValue(value)
     }
     return ctx.boundControl;
   }
