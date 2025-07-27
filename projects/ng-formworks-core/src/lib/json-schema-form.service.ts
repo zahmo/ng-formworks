@@ -676,7 +676,7 @@ this.ajv.addFormat("duration", {
     ctx.formControl = this.getFormControl(ctx);
     //introduced to check if the node  is part of ITE conditional
     //then change or add the control
-    if(layoutNode?.schemaPointer){
+    if(layoutNode?.schemaPointer && layoutNode.isITEItem){
       //before changing control, need to set the new data type for data formatting
       const schemaType=this.dataMap.get(layoutNode?.dataPointer).get("schemaType");
       if(schemaType!=layoutNode.dataType){
@@ -729,8 +729,9 @@ this.ajv.addFormat("duration", {
     //if this is a ITE conditional field, the value would not have been
     //set, as the control would only be initialized when the condition is true 
     if(ctx.options?.condition){
-      const value=JsonPointer.has(this.formValues,layoutNode.dataPointer)
-      ? JsonPointer.get(this.formValues,layoutNode.dataPointer)
+      const dataPointer = this.getDataPointer(ctx);
+      const value=JsonPointer.has(this.formValues,dataPointer)
+      ? JsonPointer.get(this.formValues,dataPointer)
       :ctx.options?.default
       ctx.formControl?.setValue(value)
     }
@@ -882,7 +883,8 @@ this.ajv.addFormat("duration", {
     ) {
       return null;
     }
-    return getControl(this.formGroup, this.getDataPointer(ctx),false,ctx.layoutNode()?.schemaPointer);
+    const schemaPointer=ctx.layoutNode()?.isITEItem?ctx.layoutNode()?.schemaPointer:null;
+    return getControl(this.formGroup, this.getDataPointer(ctx),false,schemaPointer);
   }
 
   setFormControl(ctx: WidgetContext,control:AbstractControl): AbstractControl {
@@ -912,7 +914,8 @@ this.ajv.addFormat("duration", {
     if (!ctx || !ctx.layoutNode || !isDefined(ctx.layoutNode().dataPointer)) {
       return null;
     }
-    return getControl(this.formGroup, this.getDataPointer(ctx), true,ctx.layoutNode()?.schemaPointer);
+    const schemaPointer=ctx.layoutNode()?.isITEItem?ctx.layoutNode()?.schemaPointer:null;
+    return getControl(this.formGroup, this.getDataPointer(ctx), true,schemaPointer);
   }
 
   getFormControlName(ctx: WidgetContext): string {
