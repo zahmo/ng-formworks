@@ -304,7 +304,7 @@ export function buildFormGroupTemplate(
 
         jsf.formOptions.fieldsRequired = setRequiredFields(schema, controls);
       }
-      return { controlType, controls, validators };
+      return { controlType, controls, validators,schemaPointer };
 
     case 'FormArray':
       controls = [];
@@ -405,7 +405,7 @@ export function buildFormGroupTemplate(
           }
         }
       }
-      return { controlType, controls, validators };
+      return { controlType, controls, validators,schemaPointer };
 
     case '$ref':
       const schemaRef = JsonPointer.compile(schema.$ref);
@@ -430,7 +430,7 @@ export function buildFormGroupTemplate(
         value: setValues && isPrimitive(nodeValue) ? nodeValue : null,
         disabled: nodeOptions.get('disabled') || false
       };
-      return { controlType, value, validators };
+      return { controlType, value, validators,schemaPointer };
 
     //TODO may make an IFThenElse widget or integrate it with the section
     //widget  
@@ -450,17 +450,18 @@ export function buildFormGroupTemplate(
             //NB same property can be in both then and else
             //so key must be the unique path to control
             Object.keys(thenTFGTemplate.controls).forEach(key => {
-              let controlKey = thenTFGTemplate.controls[key].schemaPointer || `${schemaPointer}${keySchemaPointer}/${key}`;
+              let controlKey = thenTFGTemplate.controls[key].schemaPointer 
+              ////thenTFGTemplate.controls[key].schemaPointer || `${schemaPointer}${keySchemaPointer}/${key}`;
               controlKey = path2ControlKey(controlKey);
               let cItem = Object.assign({}, thenTFGTemplate.controls[key]);
-              cItem.schemaPointer = `${schemaPointer}${keySchemaPointer}/${key}`;
+              ////cItem.schemaPointer = `${schemaPointer}${keySchemaPointer}/${key}`;
               controls[controlKey] = cItem;
 
             })
           }
         });
       }
-      return { controlType, controls, validators };
+      return { controlType, controls, validators,schemaPointer };
     default:
       return null;
   }
@@ -670,7 +671,7 @@ export function formatFormData(
       } else if (typeof value !== 'object' || isDate(value) ||
         (value === null && returnEmptyFields)
       ) {
-        if (genericPointer.substring(0, 2) == "/$") {
+        if (genericPointer.indexOf("/$")>=0) {
           return formattedData;
         }
         console.error('formatFormData error: ' +
@@ -740,7 +741,10 @@ export function getControl(
       subGroup = subGroup[subGroup.length - 1];
     } else if (hasOwn(subGroup, key)) {
       subGroup = subGroup[key];
-    } else {
+    } else if (schemaPointer && hasOwn(subGroup, path2ControlKey(schemaPointer ))) {
+      subGroup = subGroup[path2ControlKey(schemaPointer )];
+    } 
+    else {
       console.error(`getControl error: Unable to find "${key}" item in FormGroup.`);
       console.error(dataPointer);
       console.error(formGroup);
