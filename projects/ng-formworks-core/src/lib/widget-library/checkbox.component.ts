@@ -22,7 +22,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         type="checkbox">
       <input *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
-        [checked]="isChecked ? 'checked' : null"
+        [checked]="isChecked"
         [class]="(options?.fieldHtmlClass || '') + (isChecked ?
           (' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')) :
           (' ' + (options?.style?.unselected || '')))"
@@ -59,7 +59,8 @@ export class CheckboxComponent implements OnInit {
     this.options = this.layoutNode.options || {};
     this.jsf.initializeControl(this);
     if (this.controlValue === null || this.controlValue === undefined) {
-      this.controlValue = this.options.title;
+      this.controlValue = false;
+      this.jsf.updateValue(this, this.falseValue);
     }
   }
 
