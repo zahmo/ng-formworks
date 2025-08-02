@@ -240,7 +240,8 @@ export function buildFormGroupTemplate(
               if (foundKeys && foundKeys.length > 0) {
                 const keySchemaPointer = `/${ofType}/${ind}`;
                 //console.log(`found:${keySchemaPointer}`);
-                let newNodeValue=JsonPointer.get(nodeValue, keySchemaPointer);
+                let newNodeValue=JsonPointer.get(nodeValue, dataPointer);
+                //JsonPointer.get(nodeValue, keySchemaPointer);
                 if(ofType=="oneOf"){
                   newNodeValue=nodeValue;
                 }
@@ -276,10 +277,17 @@ export function buildFormGroupTemplate(
                     const pointerPath=key.startsWith('$oneOf')?controlItem.schemaPointer:keySchemaPointer
                     let oneOfItemSchema=JsonPointer.get(schema,pointerPath);
                     let oneOfItemValue={};
-                    oneOfItemValue[key]=controlItem.value?.value;
-                    if(controlItem.value && !jsf.ajv.validate(oneOfItemSchema,oneOfItemValue)){
-                      controlItem.value.value=null;
-                    } 
+                    oneOfItemValue[key]=oneOfItemSchema.properties[key]?.default
+                    // controlItem.value?.value;
+                    if(hasOwn(controlItem,"value")){
+                      if(!jsf.ajv.validate(oneOfItemSchema,oneOfItemValue)){
+                        controlItem.value.value=null;
+                      }else{
+  
+                        controlItem.value.value=oneOfItemValue[key];
+                      }   
+                    }
+
                     //controls[controlKey] = controlItem;
 
                     //allOfFGTemplate.controls[key].schemaPointer ||`${schemaPointer}${keySchemaPointer}/${key}`;
