@@ -2,7 +2,6 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
-
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'root-widget',
@@ -116,6 +115,63 @@ export class RootComponent implements OnInit, OnDestroy{
   private sortableOptionsSubscription: Subscription;
   sortableInit(sortable) {
     this.sortableObj = sortable;
+    ///NB issue caused by sortablejs when it its destroyed
+    //this mainly affects checkboxes coupled with conditions
+    //-the value is rechecked
+    //-see https://github.com/SortableJS/Sortable/issues/1052#issuecomment-369613072
+    /* attempt to monkey patch sortable js 
+    const originalMethod = sortable._nulling;
+    let zone=this.zone;
+    sortable._nulling=function() {
+      console.log(`pluginEvent 2 ${pluginEvent}`)
+            zone.runOutsideAngular(() => {
+              console.log(`pluginEvent3 ${pluginEvent}`)
+      pluginEvent('nulling', this);
+  
+      rootEl =
+      dragEl =
+      parentEl =
+      ghostEl =
+      nextEl =
+      cloneEl =
+      lastDownEl =
+      cloneHidden =
+  
+      tapEvt =
+      touchEvt =
+  
+      moved =
+      newIndex =
+      newDraggableIndex =
+      oldIndex =
+      oldDraggableIndex =
+  
+      lastTarget =
+      lastDirection =
+  
+      putSortable =
+      activeGroup =
+      Sortable.dragged =
+      Sortable.ghost =
+      Sortable.clone =
+      Sortable.active = null;
+  
+    
+        let el = this.el;
+        savedInputChecked.forEach(function (checkEl) {
+          if (el.contains(checkEl)) {
+            checkEl.checked = true;
+          }
+        });
+    
+        savedInputChecked.length =
+        lastDx =
+        lastDy = 0;
+
+      })
+
+    }.bind(sortable)
+    */
   }
 
   isDraggable(node: any): boolean {
@@ -144,7 +200,6 @@ export class RootComponent implements OnInit, OnDestroy{
     return ((node.options || {}).flex || '').split(/\s+/)[index] ||
       (node.options || {})[attribute] || ['1', '1', 'auto'][index];
   }
-
 
   showWidget(layoutNode: any): boolean {
     return this.jsf.evaluateCondition(layoutNode, this.dataIndex);
