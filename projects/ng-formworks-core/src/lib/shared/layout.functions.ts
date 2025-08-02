@@ -199,7 +199,7 @@ export function buildLayout_original(jsf, widgetLibrary) {
         schemaPointer = JsonPointer.toSchemaPointer(shortDataPointer, jsf.schema);
         nodeDataMap.set('schemaPointer', schemaPointer);
       }
-      nodeDataMap.set('disabled', !!newNode.options.disabled);
+      
       nodeSchema = JsonPointer.get(jsf.schema, schemaPointer);
       if (nodeSchema) {
         if (!hasOwn(newNode, 'type')) {
@@ -218,7 +218,7 @@ export function buildLayout_original(jsf, widgetLibrary) {
         newNode.dataType =
           nodeSchema.type || (hasOwn(nodeSchema, '$ref') ? '$ref' : null);
         updateInputOptions(newNode, nodeSchema, jsf);
-
+        nodeDataMap.set('disabled', !!newNode.options.disabled);
         // Present checkboxes as single control, rather than array
         if (newNode.type === 'checkboxes' && hasOwn(nodeSchema, 'items')) {
           updateInputOptions(newNode, nodeSchema.items, jsf);
@@ -738,6 +738,7 @@ export function buildLayoutFromSchema(
   if (!jsf.dataMap.has(shortDataPointer)) {
     jsf.dataMap.set(shortDataPointer, new Map());
   }
+  updateInputOptions(newNode, schema, jsf);
   const nodeDataMap = jsf.dataMap.get(shortDataPointer);
   if (!nodeDataMap.has('inputType')) {
     nodeDataMap.set('schemaPointer', schemaPointer);
@@ -745,7 +746,7 @@ export function buildLayoutFromSchema(
     nodeDataMap.set('widget', newNode.widget);
     nodeDataMap.set('disabled', !!newNode.options.disabled);
   }
-  updateInputOptions(newNode, schema, jsf);
+  //updateInputOptions(newNode, schema, jsf);
   if (!newNode.options.title && newNode.name && !/^\d+$/.test(newNode.name)) {
     newNode.options.title = fixTitle(newNode.name);
   }
@@ -817,7 +818,7 @@ export function buildLayoutFromSchema(
               jsf, widgetLibrary, ofItem,
               schemaPointer + keySchemaPointer,
               dataPointer,
-              false, null, null, forRefLibrary, dataPointerPrefix
+              false, null, null, true/*forRefLibrary*/, dataPointerPrefix
             );
             if (innerItem) {
               //newSection.push(innerItem);
@@ -831,7 +832,10 @@ export function buildLayoutFromSchema(
                 })
 
               }
+              //TODO review-will never reach here if forRefLibrary==true
               if (isArray(innerItem)) {
+                let outerOneOfItemTpl=cloneDeep(newNode);
+                outerOneOfItemTpl
                 innerItem.forEach(item => {
                   const l2SchemaPointer = hasOwn(ofItem,'properties') ?
                   '/properties/' +item.name:item.name;
@@ -839,13 +843,23 @@ export function buildLayoutFromSchema(
                     ////item.oneOfPointer =  schemaPointer + keySchemaPointer + l2SchemaPointer;
                     //schemaPointer + keySchemaPointer + item.dataPointer;
                     ////item.schemaPointer=item.oneOfPointer; 
+
+                    /*
                     outerOneOfItem.items=outerOneOfItem.items||[];
                     outerOneOfItem.items.push(item);
+                    */
+                    outerOneOfItemTpl.items=outerOneOfItemTpl.items||[];
+                    outerOneOfItemTpl.items.push(item);
+                    
                   }else{
                     newSection.push(item);
                   }
-                  
+
                 });
+                if(outerOneOfItem){
+                  outerOneOfItem.items=outerOneOfItem.items||[];
+                  outerOneOfItem.items.push(outerOneOfItemTpl);
+                }
                 //TODO test-might not work for more than 2 levels of nesting
               }else {
                 if(outerOneOfItem){
