@@ -276,14 +276,27 @@ export function buildFormGroupTemplate(
                     //as form control name will be the full(escaped) path 
                     const pointerPath=key.startsWith('$oneOf')?controlItem.schemaPointer:keySchemaPointer
                     let oneOfItemSchema=JsonPointer.get(schema,pointerPath);
-                    let oneOfItemValue={};
-                    oneOfItemValue[key]=oneOfItemSchema.properties[key]?.default
-                    // controlItem.value?.value;
+                    let oneOfItemValue;
+                    if(oneOfItemSchema.properties && jsf.formValues===undefined){
+                      //check if no form data values were supplied
+                      //then set it to default otherwise to its nodevalue
+                      oneOfItemValue=oneOfItemSchema.default
+                      oneOfItemValue[key]=oneOfItemSchema.properties[key]?.default;
+                    }
+                    if(oneOfItemSchema.properties && jsf.formValues!=undefined){
+                      oneOfItemValue =nodeValue||{};
+                      oneOfItemValue[key]=nodeValue[key];
+                    }
+                    if(!oneOfItemSchema.properties && jsf.formValues==undefined){
+                      oneOfItemValue=oneOfItemSchema.default;
+                    }
+                    if(oneOfItemSchema.properties && jsf.formValues!=undefined){
+                        oneOfItemValue =nodeValue;
+                    }
                     if(hasOwn(controlItem,"value")){
                       if(!jsf.ajv.validate(oneOfItemSchema,oneOfItemValue)){
                         controlItem.value.value=null;
                       }else{
-  
                         controlItem.value.value=oneOfItemValue[key];
                       }   
                     }
