@@ -48,9 +48,9 @@ export const cssFrameworkCfgBootstrap5:css_fw.frameworkcfg={
         "button": {
             "fieldHtmlClass": "btn btn-sm btn-primary"
         },
-        "checkbox": { "fieldHtmlClass": "checkbox" },
+        "checkbox": { "fieldHtmlClass": "form-check-input" },
         "checkboxes": {
-            "fieldHtmlClass": "checkbox"
+            "fieldHtmlClass": "form-check-input"
         },
         "checkboxbuttons": {
             "fieldHtmlClass": "visually-hidden",
@@ -58,8 +58,8 @@ export const cssFrameworkCfgBootstrap5:css_fw.frameworkcfg={
             "itemLabelHtmlClass": "btn"
         },
         "checkboxes-inline": {
-            "htmlClass": "checkbox",
-            "itemLabelHtmlClass": "checkbox-inline"
+            "htmlClass": "form-check-input",
+            "itemLabelHtmlClass": "form-check-inline"
         },
         "date": {},
         "datetime-local": {},
