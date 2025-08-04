@@ -908,7 +908,9 @@ this.ajv.addFormat("duration", {
     ) {
       return null;
     }
-    const control = getControl(this.formGroup, this.getDataPointer(ctx));
+    const schemaPointer=ctx.layoutNode()?.isITEItem?ctx.layoutNode()?.schemaPointer:null;
+    const oneOfPointer=ctx.layoutNode()?.oneOfPointer;
+    const control = getControl(this.formGroup, this.getDataPointer(ctx),false,schemaPointer||oneOfPointer);
     return control ? control.value : null;
   }
 
