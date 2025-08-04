@@ -76,8 +76,7 @@ export class MaterialOneOfComponent implements OnInit,OnDestroy {
                 let fieldName=parts[parts.length-1];
                 let controlValue=this.jsf.formGroup.controls[controlName].value;
                 if(isObject(formValue) && hasOwn(formValue,fieldName) && 
-                formValue[fieldName]==controlValue
-               //formValue[fieldName]||controlValue
+                isEqual(formValue[fieldName],controlValue)
               ){
                   foundInd=ind;
                 }else //if(formValue || controlValue){
