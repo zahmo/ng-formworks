@@ -731,16 +731,12 @@ this.ajv.addFormat("duration", {
     }
     //if this is a ITE conditional field, the value would not have been
     //set, as the control would only be initialized when the condition is true 
-    if(ctx.options?.condition){
+    if(ctx.options?.condition || layoutNode?.oneOfPointer){
       const dataPointer = this.getDataPointer(ctx);
       const value=JsonPointer.has(this.formValues,dataPointer)
       ? JsonPointer.get(this.formValues,dataPointer)
       :ctx.options?.default
       ctx.formControl?.patchValue(value)
-    }
-
-    if(layoutNode?.oneOfPointer && layoutNode.options && hasOwn(layoutNode.options,"default")){
-      ctx.formControl?.setValue(layoutNode.options.default);
     }
     return ctx.boundControl;
   }
