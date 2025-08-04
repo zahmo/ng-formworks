@@ -822,7 +822,7 @@ export function buildLayoutFromSchema(
               jsf, widgetLibrary, ofItem,
               schemaPointer + keySchemaPointer,
               dataPointer,
-              false, null, null, true/*forRefLibrary*/, dataPointerPrefix
+              false, null, null, ofType=="oneOf"/*forRefLibrary*/, dataPointerPrefix
             );
             if (innerItem) {
               //newSection.push(innerItem);
