@@ -1,7 +1,7 @@
 import { Component, inject, input, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { hasNonNullValue, hasOwn, JsonPointer, JsonSchemaFormService, path2ControlKey } from '@ng-formworks/core';
-import { isEqual, isObject } from 'lodash';
+import { isEqual, isObject, pick } from 'lodash';
 import { MaterialTabsComponent } from './material-tabs.component';
 
 
@@ -75,12 +75,30 @@ export class MaterialOneOfComponent implements OnInit,OnDestroy {
                 let parts=controlName.split('$');
                 let fieldName=parts[parts.length-1];
                 let controlValue=this.jsf.formGroup.controls[controlName].value;
-                if(isObject(formValue) && hasOwn(formValue,fieldName) && 
-                isEqual(formValue[fieldName],controlValue)
+                let controlSchema=JsonPointer.get(this.jsf.schema,parts.join("/"));
+                let schemaPointer=parts.join("/");
+                let dPointer=schemaPointer.replace(/(anyOf|allOf|oneOf|none)\/[\d]+\//g, '')
+                .replace(/(if|then|else|properties)\//g, '');
+                //JsonPointer.toDataPointer(parts.join("/"),this.jsf.schema);
+                let dVal=JsonPointer.get(this.jsf.formValues,dPointer);
+                let compareVal=dVal;//formValue;
+                //compare only values that are in the subschema properties
+                if(controlSchema && controlSchema.properties){
+                  compareVal=isObject(dVal) && hasOwn(dVal,fieldName)?
+                  pick(dVal[fieldName],Object.keys(controlSchema.properties))
+                  :pick(dVal,Object.keys(controlSchema.properties))
+                }
+                /*
+                if(isObject(compareVal) && hasOwn(compareVal,fieldName) && 
+                isEqual(compareVal[fieldName],controlValue)
               ){
                   foundInd=ind;
                 }else //if(formValue || controlValue){
-                if(isEqual(formValue,controlValue)){
+                if(isEqual(compareVal,controlValue)){
+                  foundInd=ind;
+                }
+                */
+                if(isEqual(compareVal,controlValue)){
                   foundInd=ind;
                 }
               })
