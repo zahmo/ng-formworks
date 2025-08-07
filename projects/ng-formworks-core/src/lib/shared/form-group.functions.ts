@@ -275,29 +275,45 @@ export function buildFormGroupTemplate(
                     //if key is a $oneOf key then it was inserted at the root of the controls
                     //as form control name will be the full(escaped) path 
                     const pointerPath=key.startsWith('$oneOf')?controlItem.schemaPointer:keySchemaPointer
-                    let oneOfItemSchema=JsonPointer.get(schema,pointerPath);
-                    let oneOfItemValue;
+                    let oneOfItemSchema=JsonPointer.get(jsf.schema,controlItem.schemaPointer);
+                    //JsonPointer.get(schema,pointerPath);
+                    let dPointer=controlItem.schemaPointer.replace(/(anyOf|allOf|oneOf|none)\/[\d]+\//g, '')
+                    .replace(/(if|then|else|properties)\//g, '');
+                    //JsonPointer.toDataPointer(controlItem.schemaPointer,jsf.schema);
+                    let dVal=JsonPointer.get(nodeValue,dPointer);
+                    let fkey=key;
+                    let oneOfItemValue=dVal;
+                    /*
+                    if(hasOwn(oneOfItemSchema,"if") && controlItem.schemaPointer
+                    && controlItem.schemaPointer.indexOf(keySchemaPointer)==0){
+                      let parts=controlItem.schemaPointer
+                      .split(keySchemaPointer).join('').split("/")
+                      let thenOrElse=parts[1];
+                      fkey=parts[parts.length-1];
+                      oneOfItemSchema=oneOfItemSchema[thenOrElse];
+                    }
+                   
                     if(oneOfItemSchema.properties && jsf.formValues===undefined){
                       //check if no form data values were supplied
                       //then set it to default otherwise to its nodevalue
                       oneOfItemValue=oneOfItemSchema.default
-                      oneOfItemValue[key]=oneOfItemSchema.properties[key]?.default;
+                      oneOfItemValue[fkey]=oneOfItemSchema.properties[fkey]?.default;
                     }
                     if(oneOfItemSchema.properties && jsf.formValues!=undefined){
-                      oneOfItemValue =nodeValue||{};
-                      oneOfItemValue[key]=nodeValue[key];
+                      oneOfItemValue ={};
+                      //nodeValue||{};
+                      oneOfItemValue[fkey]=nodeValue&&nodeValue[fkey];
                     }
                     if(!oneOfItemSchema.properties && jsf.formValues==undefined){
                       oneOfItemValue=oneOfItemSchema.default;
                     }
-                    if(oneOfItemSchema.properties && jsf.formValues!=undefined){
-                        oneOfItemValue =nodeValue;
-                    }
+                      */
                     if(hasOwn(controlItem,"value")){
                       if(!jsf.ajv.validate(oneOfItemSchema,oneOfItemValue)){
                         controlItem.value.value=null;
                       }else{
-                        controlItem.value.value=oneOfItemValue[key];
+                        ///controlItem.value.value=oneOfItemValue[fkey];
+                        controlItem.value.value=oneOfItemSchema.properties?oneOfItemValue[fkey]:oneOfItemValue;
                       }   
                     }
 
@@ -306,7 +322,7 @@ export function buildFormGroupTemplate(
                     //allOfFGTemplate.controls[key].schemaPointer ||`${schemaPointer}${keySchemaPointer}/${key}`;
                     //allOfFGTemplate.controls[key].schemaPointer || schemaPointer + keySchemaPointer;
   
-                    controls[key] = cloneDeep(allOfFGTemplate.controls[key]);
+                    ///////controls[key] = cloneDeep(allOfFGTemplate.controls[key]);
                     //add schemacontrol to root 
                     //controls[controlKey]=controlItem
                     controls[`_${ofType}`]=controls[`_${ofType}`]||{};
@@ -470,12 +486,39 @@ export function buildFormGroupTemplate(
             );
             //NB same property can be in both then and else
             //so key must be the unique path to control
+           
+            //let ifItemSchema=JsonPointer.get(schema,keySchemaPointer);
+            //let ifItemValue;
             Object.keys(thenTFGTemplate.controls).forEach(key => {
               let controlKey = thenTFGTemplate.controls[key].schemaPointer 
+              ////let controlItem=cloneDeep(thenTFGTemplate.controls[key]);
               ////thenTFGTemplate.controls[key].schemaPointer || `${schemaPointer}${keySchemaPointer}/${key}`;
               controlKey = path2ControlKey(controlKey);
               let cItem = Object.assign({}, thenTFGTemplate.controls[key]);
               ////cItem.schemaPointer = `${schemaPointer}${keySchemaPointer}/${key}`;
+               /*
+              if(ifItemSchema.properties && jsf.formValues===undefined){
+                //check if no form data values were supplied
+                //then set it to default otherwise to its nodevalue
+                ifItemValue=ifItemSchema.default
+                ifItemValue[key]=ifItemSchema.properties[key]?.default;
+              }
+              if(ifItemSchema.properties && jsf.formValues!=undefined){
+                ifItemValue ={};
+                //nodeValue||{};
+                ifItemValue[key]=nodeValue&&nodeValue[key];
+              }
+              if(!ifItemSchema.properties && jsf.formValues==undefined){
+                ifItemValue=ifItemSchema.default;
+              }
+              if(hasOwn(cItem,"value")){
+                if(!jsf.ajv.validate(ifItemSchema,ifItemValue)){
+                  cItem.value.value=null;
+                }else{
+                  cItem.value.value=ifItemValue[key];
+                }   
+              }
+              */
               controls[controlKey] = cItem;
 
             })
