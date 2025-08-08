@@ -199,7 +199,7 @@ export function buildLayout_original(jsf, widgetLibrary) {
         schemaPointer = JsonPointer.toSchemaPointer(shortDataPointer, jsf.schema);
         nodeDataMap.set('schemaPointer', schemaPointer);
       }
-      nodeDataMap.set('disabled', !!newNode.options.disabled);
+      
       nodeSchema = JsonPointer.get(jsf.schema, schemaPointer);
       if (nodeSchema) {
         if (!hasOwn(newNode, 'type')) {
@@ -218,7 +218,7 @@ export function buildLayout_original(jsf, widgetLibrary) {
         newNode.dataType =
           nodeSchema.type || (hasOwn(nodeSchema, '$ref') ? '$ref' : null);
         updateInputOptions(newNode, nodeSchema, jsf);
-
+        nodeDataMap.set('disabled', !!newNode.options.disabled);
         // Present checkboxes as single control, rather than array
         if (newNode.type === 'checkboxes' && hasOwn(nodeSchema, 'items')) {
           updateInputOptions(newNode, nodeSchema.items, jsf);
@@ -673,6 +673,37 @@ export function buildLayoutFromSchema(
   removable: boolean = null, forRefLibrary = false, dataPointerPrefix = '',
   jsonSchema?
 ) {
+  function applyITEConditions(builtLayout,schPointer,keySchemaPointer,negateClause,parentLayout?){
+    if (builtLayout) {
+      if(parentLayout && parentLayout.isITEItem && parentLayout.options.condition){
+        return;
+      }
+      if (isArray(builtLayout)) {
+        builtLayout.forEach(item => {
+          item.isITEItem=true;
+          item.options.condition = convertJSONSchemaIfToCondition(schema,item, negateClause);
+          applyITEConditions(item,schPointer,keySchemaPointer,negateClause,builtLayout)
+          //item.schemaPointer = schPointer + keySchemaPointer + item.dataPointer;
+          //item.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
+          //newSection.push(item);
+        });
+      }else if(hasOwn(builtLayout,"items")){
+        applyITEConditions(builtLayout.items,schPointer,keySchemaPointer,negateClause,builtLayout)
+        // builtLayout.items.forEach(item => {
+        //   item.isITEItem=true;
+        //   item.options.condition = convertJSONSchemaIfToCondition(schema,item, negateClause);
+        //   applyITEConditions(item,schPointer,keySchemaPointer,negateClause)
+        // });
+      }else {
+
+        builtLayout.isITEItem=true;
+        //builtLayout.schemaPointer = `${schPointer}${keySchemaPointer}/${builtLayout.name}`;
+      
+        builtLayout.options.condition = convertJSONSchemaIfToCondition(schema,builtLayout, negateClause);
+        //newSection.push(builtLayout)
+      }
+    }
+  }
   const jsSchema=jsonSchema||jsf.schema;
   const schema = JsonPointer.get(jsSchema, schemaPointer);
   //JsonPointer.get(jsf.schema, schemaPointer);
@@ -711,6 +742,7 @@ export function buildLayoutFromSchema(
   if (!jsf.dataMap.has(shortDataPointer)) {
     jsf.dataMap.set(shortDataPointer, new Map());
   }
+  updateInputOptions(newNode, schema, jsf);
   const nodeDataMap = jsf.dataMap.get(shortDataPointer);
   if (!nodeDataMap.has('inputType')) {
     nodeDataMap.set('schemaPointer', schemaPointer);
@@ -718,7 +750,7 @@ export function buildLayoutFromSchema(
     nodeDataMap.set('widget', newNode.widget);
     nodeDataMap.set('disabled', !!newNode.options.disabled);
   }
-  updateInputOptions(newNode, schema, jsf);
+  //updateInputOptions(newNode, schema, jsf);
   if (!newNode.options.title && newNode.name && !/^\d+$/.test(newNode.name)) {
     newNode.options.title = fixTitle(newNode.name);
   }
@@ -753,6 +785,7 @@ export function buildLayoutFromSchema(
             false, null, null, forRefLibrary, dataPointerPrefix
           );
           if (innerItem) {
+            innerItem.schemaPointer=schemaPointer + keySchemaPointer;
             if (isInputRequired(schema, '/' + key)) {
               innerItem.options.required = true;
               jsf.fieldsRequired = true;
@@ -789,7 +822,7 @@ export function buildLayoutFromSchema(
               jsf, widgetLibrary, ofItem,
               schemaPointer + keySchemaPointer,
               dataPointer,
-              false, null, null, forRefLibrary, dataPointerPrefix
+              false, null, null, ofType=="oneOf"/*forRefLibrary*/, dataPointerPrefix
             );
             if (innerItem) {
               //newSection.push(innerItem);
@@ -797,31 +830,45 @@ export function buildLayoutFromSchema(
                 innerItem.items.forEach(innerItemLevel2=>{
                   const l2SchemaPointer = hasOwn(ofItem,'properties') ?
                   '/properties/' +innerItemLevel2.name:innerItemLevel2.name;
-                  innerItemLevel2.oneOfPointer =  schemaPointer + keySchemaPointer + l2SchemaPointer;
-                  innerItemLevel2.schemaPointer=innerItemLevel2.oneOfPointer; 
+                  //innerItemLevel2.oneOfPointer =  schemaPointer + keySchemaPointer + l2SchemaPointer;
+                 // innerItemLevel2.schemaPointer=innerItemLevel2.schemaPointer; 
+                 innerItemLevel2.oneOfPointer=innerItemLevel2.schemaPointer
                 })
 
               }
+              //TODO review-will never reach here if forRefLibrary==true
               if (isArray(innerItem)) {
+                let outerOneOfItemTpl=cloneDeep(newNode);
+                outerOneOfItemTpl
                 innerItem.forEach(item => {
                   const l2SchemaPointer = hasOwn(ofItem,'properties') ?
                   '/properties/' +item.name:item.name;
                   if(outerOneOfItem){
-                    item.oneOfPointer =  schemaPointer + keySchemaPointer + l2SchemaPointer;
+                    ////item.oneOfPointer =  schemaPointer + keySchemaPointer + l2SchemaPointer;
                     //schemaPointer + keySchemaPointer + item.dataPointer;
-                    item.schemaPointer=item.oneOfPointer; 
+                    ////item.schemaPointer=item.oneOfPointer; 
+
+                    /*
                     outerOneOfItem.items=outerOneOfItem.items||[];
                     outerOneOfItem.items.push(item);
+                    */
+                    outerOneOfItemTpl.items=outerOneOfItemTpl.items||[];
+                    outerOneOfItemTpl.items.push(item);
+                    
                   }else{
                     newSection.push(item);
                   }
-                  
+
                 });
+                if(outerOneOfItem){
+                  outerOneOfItem.items=outerOneOfItem.items||[];
+                  outerOneOfItem.items.push(outerOneOfItemTpl);
+                }
                 //TODO test-might not work for more than 2 levels of nesting
               }else {
                 if(outerOneOfItem){
                   innerItem.oneOfPointer = schemaPointer + keySchemaPointer;// + innerItem.dataPointer;
-                  innerItem.schemaPointer=innerItem.oneOfPointer; 
+                  ////innerItem.schemaPointer=innerItem.oneOfPointer; 
                   outerOneOfItem.items=outerOneOfItem.items||[];
                   outerOneOfItem.items.push(innerItem);
                 }else{
@@ -846,16 +893,17 @@ export function buildLayoutFromSchema(
               false, null, null, forRefLibrary, dataPointerPrefix
             );
             if (innerItem) {
-
+              applyITEConditions(innerItem,schemaPointer,keySchemaPointer,negateClause)
               if (isArray(innerItem)) {
                 innerItem.forEach(item => {
-                  item.schemaPointer = schemaPointer + keySchemaPointer + item.dataPointer;
-                  item.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
+                  //item.schemaPointer = schemaPointer + keySchemaPointer + item.dataPointer;
+                  //item.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
                   newSection.push(item);
                 });
-              } else {
-                innerItem.schemaPointer = schemaPointer + keySchemaPointer + innerItem.dataPointer;
-                innerItem.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
+              }
+               else {
+                //innerItem.schemaPointer = schemaPointer + keySchemaPointer + innerItem.dataPointer;
+                //innerItem.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
                 newSection.push(innerItem)
               }
             }
@@ -1110,17 +1158,17 @@ export function buildLayoutFromSchema(
           false, null, null, forRefLibrary, dataPointerPrefix
         );
         if (innerItem) {
-
+          applyITEConditions(innerItem,schemaPointer,keySchemaPointer,negateClause)
           if (isArray(innerItem)) {
             innerItem.forEach(item => {
-              item.schemaPointer = schemaPointer + keySchemaPointer + item.dataPointer;
-              item.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
+              //item.schemaPointer = schemaPointer + keySchemaPointer + item.dataPointer;
+              //item.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
               newSection.push(item);
               newNode = newSection
             });
           } else {
-            innerItem.schemaPointer = schemaPointer + keySchemaPointer + innerItem.dataPointer;
-            innerItem.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
+            //innerItem.schemaPointer = schemaPointer + keySchemaPointer + innerItem.dataPointer;
+            //innerItem.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
             newNode = innerItem
           }
         }

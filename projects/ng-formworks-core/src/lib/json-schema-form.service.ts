@@ -38,7 +38,7 @@ import {
   toTitleCase
 } from './shared';
 
-import _isEqual from 'lodash/isEqual';
+import { default as _isEqual, default as isEqual } from 'lodash/isEqual';
 import { setControl } from './shared/form-group.functions';
 
 
@@ -676,7 +676,8 @@ this.ajv.addFormat("duration", {
     ctx.formControl = this.getFormControl(ctx);
     //introduced to check if the node  is part of ITE conditional
     //then change or add the control
-    if(layoutNode?.schemaPointer){
+    if(layoutNode?.schemaPointer && layoutNode.isITEItem || 
+      (layoutNode?.schemaPointer && layoutNode?.oneOfPointer) ){
       //before changing control, need to set the new data type for data formatting
       const schemaType=this.dataMap.get(layoutNode?.dataPointer).get("schemaType");
       if(schemaType!=layoutNode.dataType){
@@ -728,11 +729,25 @@ this.ajv.addFormat("duration", {
     }
     //if this is a ITE conditional field, the value would not have been
     //set, as the control would only be initialized when the condition is true 
-    if(ctx.options?.condition){
-      const value=JsonPointer.has(this.formValues,layoutNode.dataPointer)
-      ? JsonPointer.get(this.formValues,layoutNode.dataPointer)
-      :ctx.options?.default
-      ctx.formControl?.setValue(value)
+    //TODO-review need to decide which of the data sets between data,formValues and default 
+    //to use for the value
+    if(ctx.options?.condition || layoutNode?.oneOfPointer){
+      const dataPointer = this.getDataPointer(ctx);
+      const controlValue=ctx.formControl.value;
+      const dataValue=JsonPointer.has(this.data,dataPointer)?
+      JsonPointer.get(this.data,dataPointer):undefined;
+      const formValue=JsonPointer.has(this.formValues,dataPointer)?
+      JsonPointer.get(this.formValues,dataPointer):undefined;
+      const schemaDefault=ctx.options?.default;
+      //if initial formValues was supplied and controlValue matches formValue then likely
+      //control was initially created with the formValue then set value to data value
+      
+      //if no formValues was supplied and controlValue matches schemaDefault then likely
+      //control was initially created with the default then set value to data value
+      const value=this.formValues && isEqual(formValue,controlValue)?dataValue
+      :!this.formValues && isEqual(schemaDefault,controlValue)?dataValue
+      :schemaDefault;
+      ctx.formControl?.patchValue(value)
     }
     return ctx.boundControl;
   }
@@ -882,7 +897,9 @@ this.ajv.addFormat("duration", {
     ) {
       return null;
     }
-    return getControl(this.formGroup, this.getDataPointer(ctx),false,ctx.layoutNode()?.schemaPointer);
+    const schemaPointer=ctx.layoutNode()?.isITEItem?ctx.layoutNode()?.schemaPointer:null;
+    const oneOfPointer=ctx.layoutNode()?.oneOfPointer;
+    return getControl(this.formGroup, this.getDataPointer(ctx),false,schemaPointer||oneOfPointer);
   }
 
   setFormControl(ctx: WidgetContext,control:AbstractControl): AbstractControl {
@@ -904,7 +921,9 @@ this.ajv.addFormat("duration", {
     ) {
       return null;
     }
-    const control = getControl(this.formGroup, this.getDataPointer(ctx));
+    const schemaPointer=ctx.layoutNode()?.isITEItem?ctx.layoutNode()?.schemaPointer:null;
+    const oneOfPointer=ctx.layoutNode()?.oneOfPointer;
+    const control = getControl(this.formGroup, this.getDataPointer(ctx),false,schemaPointer||oneOfPointer);
     return control ? control.value : null;
   }
 
@@ -912,7 +931,9 @@ this.ajv.addFormat("duration", {
     if (!ctx || !ctx.layoutNode || !isDefined(ctx.layoutNode().dataPointer)) {
       return null;
     }
-    return getControl(this.formGroup, this.getDataPointer(ctx), true,ctx.layoutNode()?.schemaPointer);
+    const schemaPointer=ctx.layoutNode()?.isITEItem?ctx.layoutNode()?.schemaPointer:null;
+    const oneOfPointer=ctx.layoutNode()?.oneOfPointer;
+    return getControl(this.formGroup, this.getDataPointer(ctx), true,schemaPointer||oneOfPointer);
   }
 
   getFormControlName(ctx: WidgetContext): string {

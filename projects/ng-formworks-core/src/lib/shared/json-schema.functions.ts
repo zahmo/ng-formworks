@@ -839,16 +839,42 @@ export function fixRequiredArrayProperties(schema) {
   * @returns 
 
   */
-export function convertJSONSchemaIfToCondition(schema:any,negate=false){
+export function convertJSONSchemaIfToCondition(schema:any,layoutNode:any,negate=false){
      let conditionFun="";
      let condition={};
      let notOp=negate?"!":"";
+     // expects "dataPointer" to be like "/a/b/c"
+    //TODO-test
+      //dataPointer can be something like /cities/-/name
+      //must end up like model.cities[arrayIndices].name
+      //also check can possibly be nested array like  /cities/-/sites/-/siteName
+      //in this case must probably end up like 
+      // /cities/arrayIndices[0]/sites/arrayIndices[1]/siteName
+      //but it seems evaluatCondition support only one level for now
+      //and uses arrayIndices as the last index only -check?
+     let parentPath=layoutNode.dataPointer?layoutNode.dataPointer
+     .split("/")
+     .slice(1,-1)
+     .map((part,ind)=>{
+        let sep=ind==0?"":".";
+        let ret=part=="-"?"[arrayIndices]":sep+part;
+        return ret;
+      })
+     .join("")
+     :"";
+     let modelPath=parentPath?`model.${parentPath}`:"model";
+     let checkPath=modelPath.split(".")
+     .reduce((accumulator, currentPart, index) => {
+      const currentExpression = index === 0 ? currentPart : `${accumulator}.${currentPart}`;
+      return index === 0 ? currentExpression : `${accumulator} && ${currentExpression}`;
+    }, '');
       if(schema.if){
         Object.keys(schema.if.properties).forEach((ifProp,ind)=>{
           let amper=ind>0?"&":"";
           //Note the model value is first converted to string and so is the condition
           //so that booleans and numbers can also be compared 
-          conditionFun+=`${amper}model.${ifProp}+""=='${schema.if.properties[ifProp].const}'`
+          
+          conditionFun+=`${amper} ${checkPath} && ${modelPath}.${ifProp}+""=='${schema.if.properties[ifProp].const}'`
         })
       }
       condition["functionBody"]=`return ${notOp}(${conditionFun})`

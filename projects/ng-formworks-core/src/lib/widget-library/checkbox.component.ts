@@ -2,6 +2,10 @@ import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
+///NB issue caused by sortablejs when it its destroyed
+//this mainly affects checkboxes coupled with conditions
+//-the value is rechecked
+//-see https://github.com/SortableJS/Sortable/issues/1052#issuecomment-369613072
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -22,7 +26,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         type="checkbox">
       <input *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [checked]="isChecked ? 'checked' : null"
+        [checked]="isChecked"
         [class]="(options?.fieldHtmlClass || '') + (isChecked ?
           (' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')) :
           (' ' + (options?.style?.unselected || '')))"
@@ -58,7 +62,8 @@ export class CheckboxComponent implements OnInit,OnDestroy {
     this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this);
     if (this.controlValue === null || this.controlValue === undefined) {
-      this.controlValue = this.options.title;
+      this.controlValue = false;
+      this.jsf.updateValue(this, this.falseValue);
     }
   }
 

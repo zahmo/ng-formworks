@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import {
   cleanValueOfQuotes,
   copy,
@@ -9,8 +10,7 @@ import {
   isNotEqual,
   isNotExpression
 } from './utility.functions';
-import {Injectable} from '@angular/core';
-import {isArray, isDefined, isEmpty, isMap, isNumber, isObject, isString} from './validator.functions';
+import { isArray, isDefined, isEmpty, isMap, isNumber, isObject, isString } from './validator.functions';
 
 /**
  * 'JsonPointer' class
