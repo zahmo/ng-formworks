@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
@@ -47,7 +47,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     styles: [` mat-error { font-size: 75%; } `],
     standalone: false
 })
-export class MaterialSliderComponent implements OnInit {
+export class MaterialSliderComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
   formControl: AbstractControl;
@@ -87,6 +87,10 @@ export class MaterialSliderComponent implements OnInit {
   updateValue(event) {
     this.options.showErrors = true;
     this.jsf.updateValue(this, event.value);
+  }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 
 }
