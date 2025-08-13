@@ -883,7 +883,7 @@ export function buildLayoutFromSchema(
             const keySchemaPointer = `/${con}`;
             const negateClause = con == "else";
             const innerItem = buildLayoutFromSchema(
-              jsf, widgetLibrary, nodeValue.then,
+              jsf, widgetLibrary, nodeValue[con],
               schemaPointer + keySchemaPointer,
               dataPointer,
               false, null, null, forRefLibrary, dataPointerPrefix
@@ -1148,7 +1148,7 @@ export function buildLayoutFromSchema(
         const keySchemaPointer = `/${con}`;
         const negateClause = con == "else";
         const innerItem = buildLayoutFromSchema(
-          jsf, widgetLibrary, nodeValue.then,
+          jsf, widgetLibrary, nodeValue[con],
           schemaPointer + keySchemaPointer,
           dataPointer,
           false, null, null, forRefLibrary, dataPointerPrefix
