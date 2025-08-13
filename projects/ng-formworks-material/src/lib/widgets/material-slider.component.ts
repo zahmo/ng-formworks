@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
@@ -47,7 +47,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [innerHTML]="options?.errorMessage"></mat-error>`,
     styles: [` mat-error { font-size: 75%; } `],
 })
-export class MaterialSliderComponent implements OnInit {
+export class MaterialSliderComponent implements OnInit,OnDestroy {
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
@@ -90,6 +90,10 @@ export class MaterialSliderComponent implements OnInit {
   updateValue(event) {
     this.options.showErrors = true;
     this.jsf.updateValue(this, event.value);
+  }
+
+  ngOnDestroy () {
+    this.jsf.updateValue(this, null);
   }
 
 }
