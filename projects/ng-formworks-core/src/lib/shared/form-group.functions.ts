@@ -240,7 +240,8 @@ export function buildFormGroupTemplate(
               if (foundKeys && foundKeys.length > 0) {
                 const keySchemaPointer = `/${ofType}/${ind}`;
                 //console.log(`found:${keySchemaPointer}`);
-                let newNodeValue=JsonPointer.get(nodeValue, dataPointer);
+                let newNodeValue=nodeValue;
+                //JsonPointer.get(nodeValue, dataPointer);
                 //JsonPointer.get(nodeValue, keySchemaPointer);
                 if(ofType=="oneOf"){
                   newNodeValue=nodeValue;
@@ -277,10 +278,17 @@ export function buildFormGroupTemplate(
                     const pointerPath=key.startsWith('$oneOf')?controlItem.schemaPointer:keySchemaPointer
                     let oneOfItemSchema=JsonPointer.get(jsf.schema,controlItem.schemaPointer);
                     //JsonPointer.get(schema,pointerPath);
-                    let dPointer=controlItem.schemaPointer.replace(/(anyOf|allOf|oneOf|none)\/[\d]+\//g, '')
-                    .replace(/(if|then|else|properties)\//g, '');
+                    let dPointer=  controlItem.schemaPointer.replace(/(anyOf|allOf|oneOf|none)\/[\d]+\//g, '')
+                    .replace(/(if|then|else|properties)\//g, '').replace(/\/items\//g,'/-/');
+                    dPointer=dPointer.indexOf(dataPointer)==0
+                    ?dPointer.substring(dataPointer.length):dPointer;
+                    //dataPointer+"/"+controlItem.schemaPointer.split("/").slice(-1)[0];
+                    ////controlItem.schemaPointer.replace(/(anyOf|allOf|oneOf|none)\/[\d]+\//g, '')
+                    ////.replace(/(if|then|else|properties)\//g, '').replace(/\/items\//g,'/-/');
                     //JsonPointer.toDataPointer(controlItem.schemaPointer,jsf.schema);
-                    let dVal=JsonPointer.get(nodeValue,dPointer);
+                    //console.log(`dataPointer:${dataPointer}\ndPointer:${dPointer}`)
+                    let dVal=//JsonPointer.get(jsf.formValues,dPointer);
+                    JsonPointer.get(nodeValue,dPointer);
                     let fkey=key;
                     let oneOfItemValue=dVal;
                     /*
@@ -773,7 +781,8 @@ export function getControl(
       // If dataPointer input is not a valid JSON pointer, check to
       // see if it is instead a valid object path, using dot notaion
       if (typeof dataPointer === 'string') {
-        const formControl = formGroup.get(path2ControlKey(schemaPointer || "")) || formGroup.get(dataPointer);
+        const controlPath=!!schemaPointer?path2ControlKey(schemaPointer):dataPointer
+        const formControl = formGroup.get(controlPath);
         if (formControl) { return formControl; }
       }
       console.error(`getControl error: Invalid JSON Pointer: ${dataPointer}`);
@@ -791,7 +800,8 @@ export function getControl(
   if (typeof formGroup.get === 'function' &&
     dataPointerArray.every(key => key.indexOf('.') === -1)
   ) {
-    const formControl = formGroup.get(path2ControlKey(schemaPointer || "")) || formGroup.get(dataPointerArray.join('.'));
+    const controlPath=!!schemaPointer?path2ControlKey(schemaPointer):dataPointerArray.join('.');
+    const formControl =  formGroup.get(controlPath);
     if (formControl) { return formControl; }
   }
 
@@ -801,14 +811,14 @@ export function getControl(
   let subGroup = formGroup;
   for (const key of dataPointerArray) {
     if (hasOwn(subGroup, 'controls')) { subGroup = subGroup.controls; }
-    if (isArray(subGroup) && (key === '-')) {
+    if (schemaPointer && hasOwn(subGroup, path2ControlKey(schemaPointer ))) {
+      subGroup = subGroup[path2ControlKey(schemaPointer )];
+      return subGroup;
+    } else if (isArray(subGroup) && (key === '-')) {
       subGroup = subGroup[subGroup.length - 1];
     } else if (hasOwn(subGroup, key)) {
       subGroup = subGroup[key];
-    } else if (schemaPointer && hasOwn(subGroup, path2ControlKey(schemaPointer ))) {
-      subGroup = subGroup[path2ControlKey(schemaPointer )];
-    } 
-    else {
+    } else {
       console.error(`getControl error: Unable to find "${key}" item in FormGroup.`);
       console.error(dataPointer);
       console.error(formGroup);
