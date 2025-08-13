@@ -73,7 +73,7 @@ export class DaisyUIOneOfComponent implements OnInit,OnDestroy {
                       let controlSchema=JsonPointer.get(this.jsf.schema,parts.join("/"));
                       let schemaPointer=parts.join("/");
                       let dPointer=schemaPointer.replace(/(anyOf|allOf|oneOf|none)\/[\d]+\//g, '')
-                      .replace(/(if|then|else|properties)\//g, '');
+                      .replace(/(if|then|else|properties)\//g, '').replace(/\/items\//g,'/-/');
                       //JsonPointer.toDataPointer(parts.join("/"),this.jsf.schema);
                       let dVal=JsonPointer.get(this.jsf.formValues,dPointer);
                       let compareVal=dVal;//formValue;
