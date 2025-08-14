@@ -497,39 +497,18 @@ export function buildFormGroupTemplate(
            
             //let ifItemSchema=JsonPointer.get(schema,keySchemaPointer);
             //let ifItemValue;
-            Object.keys(thenTFGTemplate.controls).forEach(key => {
-              let controlKey = thenTFGTemplate.controls[key].schemaPointer 
-              ////let controlItem=cloneDeep(thenTFGTemplate.controls[key]);
-              ////thenTFGTemplate.controls[key].schemaPointer || `${schemaPointer}${keySchemaPointer}/${key}`;
-              controlKey = path2ControlKey(controlKey);
-              let cItem = Object.assign({}, thenTFGTemplate.controls[key]);
-              ////cItem.schemaPointer = `${schemaPointer}${keySchemaPointer}/${key}`;
-               /*
-              if(ifItemSchema.properties && jsf.formValues===undefined){
-                //check if no form data values were supplied
-                //then set it to default otherwise to its nodevalue
-                ifItemValue=ifItemSchema.default
-                ifItemValue[key]=ifItemSchema.properties[key]?.default;
-              }
-              if(ifItemSchema.properties && jsf.formValues!=undefined){
-                ifItemValue ={};
-                //nodeValue||{};
-                ifItemValue[key]=nodeValue&&nodeValue[key];
-              }
-              if(!ifItemSchema.properties && jsf.formValues==undefined){
-                ifItemValue=ifItemSchema.default;
-              }
-              if(hasOwn(cItem,"value")){
-                if(!jsf.ajv.validate(ifItemSchema,ifItemValue)){
-                  cItem.value.value=null;
-                }else{
-                  cItem.value.value=ifItemValue[key];
-                }   
-              }
-              */
-              controls[controlKey] = cItem;
+            if(hasOwn(thenTFGTemplate,'controls')){
+              Object.keys(thenTFGTemplate.controls).forEach(key => {
+                let controlKey = thenTFGTemplate.controls[key].schemaPointer;
+                if(controlKey){
+                  controlKey = path2ControlKey(controlKey);
+                  let cItem = Object.assign({}, thenTFGTemplate.controls[key]);
+  
+                  controls[controlKey] = cItem;
+                }  
+              })
+            }
 
-            })
           }
         });
       }
