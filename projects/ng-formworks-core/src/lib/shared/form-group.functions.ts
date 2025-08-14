@@ -171,7 +171,7 @@ export function buildFormGroupTemplate(
               const keySchemaPointer = `/${con}`;
 
               let thenFGTemplate = buildFormGroupTemplate(
-                jsf, nodeValue, false,//JsonPointer.get(nodeValue, keySchemaPointer), setValues,
+                jsf, nodeValue, setValues,//false,//JsonPointer.get(nodeValue, keySchemaPointer), setValues,
                 schemaPointer + keySchemaPointer,
                 dataPointer,
                 templatePointer + `/controls/${con}`
@@ -487,7 +487,7 @@ export function buildFormGroupTemplate(
           if (hasOwn(schema, con)) {
             const keySchemaPointer = `/${con}`;
             let thenTFGTemplate = buildFormGroupTemplate(
-              jsf, nodeValue, false,
+              jsf, nodeValue, setValues,//false,
               schemaPointer + keySchemaPointer,
               dataPointer,
               templatePointer + `/controls/${con}`
