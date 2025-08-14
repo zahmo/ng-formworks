@@ -837,8 +837,32 @@ export function fixRequiredArrayProperties(schema) {
   * @param schema:any 
   * @param negate:boolean=false
   * @returns 
-
   */
+ //TODO also handle ifs with mixed conditional such as allOf/oneOf etc
+ /*
+
+   "if": {
+    "allOf": [
+      {
+        "properties": {
+          "animalType": {
+            "enum": ["Cat", "Fish"]
+          }
+        }
+      },
+      {
+        "properties": {
+          "color": {
+            "const": "orange"
+          }
+        }
+      }
+    ]
+  }
+
+
+
+ */
 export function convertJSONSchemaIfToCondition(schema:any,layoutNode:any,negate=false){
      let conditionFun="";
      let condition={};
@@ -863,18 +887,27 @@ export function convertJSONSchemaIfToCondition(schema:any,layoutNode:any,negate=
      .join("")
      :"";
      let modelPath=parentPath?`model.${parentPath}`:"model";
-     let checkPath=modelPath.split(".")
-     .reduce((accumulator, currentPart, index) => {
-      const currentExpression = index === 0 ? currentPart : `${accumulator}.${currentPart}`;
-      return index === 0 ? currentExpression : `${accumulator} && ${currentExpression}`;
-    }, '');
+     let checkPath=modelPath.split('.')
+      .map((_, index, array) => {
+      return array.slice(0, index + 1).join('.');  // Build each part of the path dynamically
+    }).join(' && ');  // Join the parts with '&&'
+    
+    //  .reduce((accumulator, currentPart, index) => {
+    //   const currentExpression = index === 0 ? currentPart : `${accumulator}.${currentPart}`;
+    //   return index === 0 ? currentExpression : `${accumulator} && ${currentExpression}`;
+    // }, '');
       if(schema.if){
         Object.keys(schema.if.properties).forEach((ifProp,ind)=>{
           let amper=ind>0?"&":"";
           //Note the model value is first converted to string and so is the condition
           //so that booleans and numbers can also be compared 
-          
-          conditionFun+=`${amper} ${checkPath} && ${modelPath}.${ifProp}+""=='${schema.if.properties[ifProp].const}'`
+          //changed to an includesList to handle cases such as 
+          const includesList=hasOwn(schema.if.properties[ifProp],"const")?[schema.if.properties[ifProp].const]
+          :hasOwn(schema.if.properties[ifProp],"enum")?schema.if.properties[ifProp].enum
+          :[]
+          const includesListAsStr=includesList.map(val=>{return `"${val}"`});
+          conditionFun+=`${amper} ${checkPath} && [${includesListAsStr}].includes(${modelPath}.${ifProp}+"")`
+          //conditionFun+=`${amper} ${checkPath} && ${modelPath}.${ifProp}+""=='${schema.if.properties[ifProp].const}'`
         })
       }
       condition["functionBody"]=`return ${notOp}(${conditionFun})`
