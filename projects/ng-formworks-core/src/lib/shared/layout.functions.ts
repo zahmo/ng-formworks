@@ -1164,16 +1164,18 @@ export function buildLayoutFromSchema(
               //item.schemaPointer = schemaPointer + keySchemaPointer + item.dataPointer;
               //item.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
               newSection.push(item);
-              newNode = newSection
+             /////// newNode = newSection
             });
           } else {
             //innerItem.schemaPointer = schemaPointer + keySchemaPointer + innerItem.dataPointer;
             //innerItem.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
-            newNode = innerItem
+            ///////newNode = innerItem
+            newSection.push(innerItem);
           }
         }
       }
     })
+    newNode = newSection;
   }
 
   return newNode;
