@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
-
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'root-widget',
@@ -115,6 +114,7 @@ export class RootComponent implements OnInit, OnDestroy{
   private sortableOptionsSubscription: Subscription;
   sortableInit(sortable) {
     this.sortableObj = sortable;
+    //Sortable.utils.on(this.sortableObj.el,"nulling",(s)=>{console.log("event nulling sortablejs")})
     ///NB issue caused by sortablejs when it its destroyed
     //this mainly affects checkboxes coupled with conditions
     //-the value is rechecked
