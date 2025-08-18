@@ -1,10 +1,10 @@
+import { Injectable } from '@angular/core';
+import { hasOwn } from '../shared/utility.functions';
 import { AddReferenceComponent } from './add-reference.component';
 import { ButtonComponent } from './button.component';
 import { CheckboxComponent } from './checkbox.component';
 import { CheckboxesComponent } from './checkboxes.component';
 import { FileComponent } from './file.component';
-import { hasOwn } from '../shared/utility.functions';
-import { Injectable } from '@angular/core';
 import { InputComponent } from './input.component';
 import { MessageComponent } from './message.component';
 import { NoneComponent } from './none.component';
@@ -13,9 +13,10 @@ import { OneOfComponent } from './one-of.component';
 import { RadiosComponent } from './radios.component';
 import { RootComponent } from './root.component';
 import { SectionComponent } from './section.component';
-import { SelectComponent } from './select.component';
 import { SelectFrameworkComponent } from './select-framework.component';
 import { SelectWidgetComponent } from './select-widget.component';
+import { SelectComponent } from './select.component';
+import { SelectCheckboxComponent } from './selectcheckbox.component';
 import { SubmitComponent } from './submit.component';
 import { TabsComponent } from './tabs.component';
 import { TemplateComponent } from './template.component';
@@ -123,6 +124,8 @@ export class WidgetLibraryService {
 
   // Widgets included for compatibility with other libraries
     'textline': 'text',
+
+    'selectcheckbox': SelectCheckboxComponent,
 
   // Recommended 3rd-party add-on widgets (TODO: create wrappers for these...)
     // 'ng2-select': Select control replacement - http://valor-software.com/ng2-select/
