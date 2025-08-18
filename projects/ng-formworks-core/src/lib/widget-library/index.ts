@@ -15,6 +15,7 @@ import { SectionComponent } from './section.component';
 import { SelectFrameworkComponent } from './select-framework.component';
 import { SelectWidgetComponent } from './select-widget.component';
 import { SelectComponent } from './select.component';
+import { SelectCheckboxComponent } from './selectcheckbox.component';
 import { SubmitComponent } from './submit.component';
 import { TabComponent } from './tab.component';
 import { TabsComponent } from './tabs.component';
@@ -27,7 +28,7 @@ export const BASIC_WIDGETS = [
   MessageComponent, NoneComponent, NumberComponent, RadiosComponent,
   RootComponent, SectionComponent, SelectComponent, SelectFrameworkComponent,
   SelectWidgetComponent, SubmitComponent, TabComponent, TabsComponent,
-  TemplateComponent, TextareaComponent
+  TemplateComponent, TextareaComponent,SelectCheckboxComponent
 ];
 
 export { AddReferenceComponent } from './add-reference.component';
@@ -49,6 +50,7 @@ export { SectionComponent } from './section.component';
 export { SelectFrameworkComponent } from './select-framework.component';
 export { SelectWidgetComponent } from './select-widget.component';
 export { SelectComponent } from './select.component';
+export { SelectCheckboxComponent } from './selectcheckbox.component';
 export { SubmitComponent } from './submit.component';
 export { TabComponent } from './tab.component';
 export { TabsComponent } from './tabs.component';
