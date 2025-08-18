@@ -74,6 +74,7 @@ export class MaterialDesignFramework extends CssFramework {
     'submit': 'button',
     'tagsinput': 'chip-list',
     'wizard': 'stepper',
+    'selectcheckbox':'checkbox'
   };
 
   constructor(){
