@@ -1,4 +1,4 @@
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { FrameworkLibraryService } from '../framework-library/framework-library.service';
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -13,12 +13,12 @@ import { buildTitleMap, isArray } from '../shared';
     <div 
       [class]="options?.htmlClass || ''">
       <select *ngIf="boundControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.required]="options?.required"
         [class]=" frameworkStyles[activeFramework].selectClass"
         [multiple]="true"
-        [id]="'control' + layoutNode()?._id"
+        [id]="'control' + layoutNode?._id"
         [name]="controlName"
         [ngModel]="selectValue"   
         >
@@ -37,13 +37,13 @@ import { buildTitleMap, isArray } from '../shared';
         </ng-template>
       </select>
       <select *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+        [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.required]="options?.required"
         [class]="frameworkStyles[activeFramework].selectClass +' select-box'"
         [multiple]="true"
         [disabled]="controlDisabled"
-        [id]="'control' + layoutNode()?._id"
+        [id]="'control' + layoutNode?._id"
         [name]="controlName"
         (change)="updateValue($event)">
         <ng-template ngFor let-selectItem [ngForOf]="selectList">
@@ -164,9 +164,9 @@ export class SelectCheckboxComponent implements OnInit, OnDestroy {
   selectListFlatGroup: any[] = [];
   selectValue: any;
   isArray = isArray;
-  readonly layoutNode = input<any>(undefined);
-  readonly layoutIndex = input<number[]>(undefined);
-  readonly dataIndex = input<number[]>(undefined);
+  @Input() layoutNode: any;
+  @Input() layoutIndex: number[];
+  @Input() dataIndex: number[];
 
  frameworkStyles={
     daisyui:{selectClass:"select-box",optionClass:"checkbox tw:dui-checkbox",optionChecked:"active",optionUnchecked:""},
@@ -180,13 +180,13 @@ export class SelectCheckboxComponent implements OnInit, OnDestroy {
  activeFramework:string;
 
   ngOnInit() {
-    this.options = this.layoutNode().options || {};
+    this.options = this.layoutNode.options || {};
     this.activeFramework= this.jsfFLService.activeFramework.name;
     this.selectList = buildTitleMap(
       //this.options.titleMap || this.options.enumNames,
       //TODO review-title is set to null in the setTitle() method of CssFrameworkComponent
       this.options.enumNames || (this.options?.title && [this.options?.title]) 
-      || [this.layoutNode().name],
+      || [this.layoutNode.name],
       //this.options.enum, 
       [true],
       //make required true to avoid creating 'none' select option
