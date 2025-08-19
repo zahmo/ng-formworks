@@ -189,7 +189,8 @@ export class SelectCheckboxComponent implements OnInit, OnDestroy {
       || [this.layoutNode().name],
       //this.options.enum, 
       [true],
-      !!this.options.required, !!this.options.flatList
+      //make required true to avoid creating 'none' select option
+      true, !!this.options.flatList
     );
 
 
