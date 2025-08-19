@@ -1,6 +1,6 @@
 {
     "name": "@ng-formworks/cssframework",
-    "version": "19.6.2",
+    "version": "20.6.3",
     "description": "Angular ng-formworks - JSON Schema Form builder cssframework",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "keywords": [
@@ -12,11 +12,18 @@
         "Angular 16",
         "Angular17",
         "Angular 17",
+        "Angular18",
         "Angular 18",
+        "Angular19",
+        "Angular 19",
+        "Angular20",
+        "Angular 20",
         "ng15",
         "ng16",
         "ng17",
         "ng18",
+        "ng19",
+        "ng20",
         "JSON Schema",
         "form",
         "forms",
@@ -39,12 +46,12 @@
     },
     "private": false,
     "peerDependencies": {
-        "@angular/common": "^19.0.0",
-        "@angular/core": "^19.0.0"
+        "@angular/common": "^20.0.0",
+        "@angular/core": "^20.0.0"
     },
     "dependencies": {
         "tslib": "^2.7.0",
-        "@ng-formworks/core": "~19.6.2"
+        "@ng-formworks/core": "~20.6.3"
     },
     "devDependencies": {
         "@types/lodash-es": "^4.17.6"

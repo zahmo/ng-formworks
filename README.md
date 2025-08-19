@@ -11,7 +11,7 @@ ng-formworks targets angular 15+ and also adds extra frameworks and theming supp
 <p  align="center">
 
 
-<a  href="https://angular.io/"><img  src="https://img.shields.io/badge/angular-15,_16,_17,_18,_19-red.svg?logo=Angular&logoColor=red&labelColor=white&style=plastic"  alt="Angular Versions"></a>
+<a  href="https://angular.io/"><img  src="https://img.shields.io/badge/angular-15,_16,_17,_18,_19,_20-red.svg?logo=Angular&logoColor=red&labelColor=white&style=plastic"  alt="Angular Versions"></a>
 <a  href="https://github.com/zahmo/ng-formworks/actions?query=workflow%3ACI+branch%3Amain"><img  src="https://github.com/zahmo/ng-formworks/workflows/CI/badge.svg"  alt="CI Status"></a> <a  href="https://www.npmjs.com/package/@ng-formworks/core"><img  src="https://img.shields.io/npm/dm/@ng-formworks/core.svg?style=plastic"  alt="npm number of downloads"></a><a  href="https://github.com/zahmo/ng-formworks/blob/master/LICENSE"><img  src="https://img.shields.io/github/license/zahmo/ng-formworks.svg?style=social"  alt="LICENSE IMT"></a><a  href="https://app.netlify.com/sites/ng-formworks/deploys"><img  src="https://api.netlify.com/api/v1/badges/6c5b5a1d-db7c-4d0e-8ac1-a4840d8812f0/deploy-status"  alt="Netlify Status"></a>
 
 
@@ -37,6 +37,7 @@ Below is a table of the corresponding ng-formworks versions that's needed for th
 
 | Angular | ng-formworks |  installation (for Material Design)
 |--|--|--|
+| 20.x.x |20.x.x|```npm  install @ng-formworks/core@^20.0.0 @ng-formworks/cssframework@^20.0.0 @ng-formworks/material@^20.0.0```|
 | 19.x.x |19.x.x|```npm  install @ng-formworks/core@^19.0.0 @ng-formworks/cssframework@^19.0.0 @ng-formworks/material@^19.0.0```|
 | 18.x.x |18.x.x|```npm  install @ng-formworks/core@^18.0.0 @ng-formworks/cssframework@^18.0.0 @ng-formworks/material@^18.0.0```|
 | 17.x.x |17.x.x|```npm  install @ng-formworks/core@^17.0.0 @ng-formworks/cssframework@^17.0.0 @ng-formworks/material@^17.0.0```|

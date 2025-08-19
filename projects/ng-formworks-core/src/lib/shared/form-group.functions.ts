@@ -171,7 +171,7 @@ export function buildFormGroupTemplate(
               const keySchemaPointer = `/${con}`;
 
               let thenFGTemplate = buildFormGroupTemplate(
-                jsf, nodeValue, false,//JsonPointer.get(nodeValue, keySchemaPointer), setValues,
+                jsf, nodeValue, setValues,//false,//JsonPointer.get(nodeValue, keySchemaPointer), setValues,
                 schemaPointer + keySchemaPointer,
                 dataPointer,
                 templatePointer + `/controls/${con}`
@@ -240,7 +240,8 @@ export function buildFormGroupTemplate(
               if (foundKeys && foundKeys.length > 0) {
                 const keySchemaPointer = `/${ofType}/${ind}`;
                 //console.log(`found:${keySchemaPointer}`);
-                let newNodeValue=JsonPointer.get(nodeValue, dataPointer);
+                let newNodeValue=nodeValue;
+                //JsonPointer.get(nodeValue, dataPointer);
                 //JsonPointer.get(nodeValue, keySchemaPointer);
                 if(ofType=="oneOf"){
                   newNodeValue=nodeValue;
@@ -277,10 +278,17 @@ export function buildFormGroupTemplate(
                     const pointerPath=key.startsWith('$oneOf')?controlItem.schemaPointer:keySchemaPointer
                     let oneOfItemSchema=JsonPointer.get(jsf.schema,controlItem.schemaPointer);
                     //JsonPointer.get(schema,pointerPath);
-                    let dPointer=controlItem.schemaPointer.replace(/(anyOf|allOf|oneOf|none)\/[\d]+\//g, '')
-                    .replace(/(if|then|else|properties)\//g, '');
+                    let dPointer=  controlItem.schemaPointer.replace(/(anyOf|allOf|oneOf|none)\/[\d]+\//g, '')
+                    .replace(/(if|then|else|properties)\//g, '').replace(/\/items\//g,'/-/');
+                    dPointer=dPointer.indexOf(dataPointer)==0
+                    ?dPointer.substring(dataPointer.length):dPointer;
+                    //dataPointer+"/"+controlItem.schemaPointer.split("/").slice(-1)[0];
+                    ////controlItem.schemaPointer.replace(/(anyOf|allOf|oneOf|none)\/[\d]+\//g, '')
+                    ////.replace(/(if|then|else|properties)\//g, '').replace(/\/items\//g,'/-/');
                     //JsonPointer.toDataPointer(controlItem.schemaPointer,jsf.schema);
-                    let dVal=JsonPointer.get(nodeValue,dPointer);
+                    //console.log(`dataPointer:${dataPointer}\ndPointer:${dPointer}`)
+                    let dVal=//JsonPointer.get(jsf.formValues,dPointer);
+                    JsonPointer.get(nodeValue,dPointer);
                     let fkey=key;
                     let oneOfItemValue=dVal;
                     /*
@@ -479,7 +487,7 @@ export function buildFormGroupTemplate(
           if (hasOwn(schema, con)) {
             const keySchemaPointer = `/${con}`;
             let thenTFGTemplate = buildFormGroupTemplate(
-              jsf, nodeValue, false,
+              jsf, nodeValue, setValues,//false,
               schemaPointer + keySchemaPointer,
               dataPointer,
               templatePointer + `/controls/${con}`
@@ -489,39 +497,18 @@ export function buildFormGroupTemplate(
            
             //let ifItemSchema=JsonPointer.get(schema,keySchemaPointer);
             //let ifItemValue;
-            Object.keys(thenTFGTemplate.controls).forEach(key => {
-              let controlKey = thenTFGTemplate.controls[key].schemaPointer 
-              ////let controlItem=cloneDeep(thenTFGTemplate.controls[key]);
-              ////thenTFGTemplate.controls[key].schemaPointer || `${schemaPointer}${keySchemaPointer}/${key}`;
-              controlKey = path2ControlKey(controlKey);
-              let cItem = Object.assign({}, thenTFGTemplate.controls[key]);
-              ////cItem.schemaPointer = `${schemaPointer}${keySchemaPointer}/${key}`;
-               /*
-              if(ifItemSchema.properties && jsf.formValues===undefined){
-                //check if no form data values were supplied
-                //then set it to default otherwise to its nodevalue
-                ifItemValue=ifItemSchema.default
-                ifItemValue[key]=ifItemSchema.properties[key]?.default;
-              }
-              if(ifItemSchema.properties && jsf.formValues!=undefined){
-                ifItemValue ={};
-                //nodeValue||{};
-                ifItemValue[key]=nodeValue&&nodeValue[key];
-              }
-              if(!ifItemSchema.properties && jsf.formValues==undefined){
-                ifItemValue=ifItemSchema.default;
-              }
-              if(hasOwn(cItem,"value")){
-                if(!jsf.ajv.validate(ifItemSchema,ifItemValue)){
-                  cItem.value.value=null;
-                }else{
-                  cItem.value.value=ifItemValue[key];
-                }   
-              }
-              */
-              controls[controlKey] = cItem;
+            if(hasOwn(thenTFGTemplate,'controls')){
+              Object.keys(thenTFGTemplate.controls).forEach(key => {
+                let controlKey = thenTFGTemplate.controls[key].schemaPointer;
+                if(controlKey){
+                  controlKey = path2ControlKey(controlKey);
+                  let cItem = Object.assign({}, thenTFGTemplate.controls[key]);
+  
+                  controls[controlKey] = cItem;
+                }  
+              })
+            }
 
-            })
           }
         });
       }
@@ -773,7 +760,8 @@ export function getControl(
       // If dataPointer input is not a valid JSON pointer, check to
       // see if it is instead a valid object path, using dot notaion
       if (typeof dataPointer === 'string') {
-        const formControl = formGroup.get(path2ControlKey(schemaPointer || "")) || formGroup.get(dataPointer);
+        const controlPath=!!schemaPointer?path2ControlKey(schemaPointer):dataPointer
+        const formControl = formGroup.get(controlPath);
         if (formControl) { return formControl; }
       }
       console.error(`getControl error: Invalid JSON Pointer: ${dataPointer}`);
@@ -791,7 +779,8 @@ export function getControl(
   if (typeof formGroup.get === 'function' &&
     dataPointerArray.every(key => key.indexOf('.') === -1)
   ) {
-    const formControl = formGroup.get(path2ControlKey(schemaPointer || "")) || formGroup.get(dataPointerArray.join('.'));
+    const controlPath=!!schemaPointer?path2ControlKey(schemaPointer):dataPointerArray.join('.');
+    const formControl =  formGroup.get(controlPath);
     if (formControl) { return formControl; }
   }
 
@@ -801,14 +790,14 @@ export function getControl(
   let subGroup = formGroup;
   for (const key of dataPointerArray) {
     if (hasOwn(subGroup, 'controls')) { subGroup = subGroup.controls; }
-    if (isArray(subGroup) && (key === '-')) {
+    if (schemaPointer && hasOwn(subGroup, path2ControlKey(schemaPointer ))) {
+      subGroup = subGroup[path2ControlKey(schemaPointer )];
+      return subGroup;
+    } else if (isArray(subGroup) && (key === '-')) {
       subGroup = subGroup[subGroup.length - 1];
     } else if (hasOwn(subGroup, key)) {
       subGroup = subGroup[key];
-    } else if (schemaPointer && hasOwn(subGroup, path2ControlKey(schemaPointer ))) {
-      subGroup = subGroup[path2ControlKey(schemaPointer )];
-    } 
-    else {
+    } else {
       console.error(`getControl error: Unable to find "${key}" item in FormGroup.`);
       console.error(dataPointer);
       console.error(formGroup);
