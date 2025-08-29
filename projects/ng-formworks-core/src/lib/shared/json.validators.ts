@@ -364,7 +364,7 @@ export class JsonValidators {
         }
       } else {
         // Allow JavaScript Date objects
-        isValid = ['date', 'time', 'date-time'].includes(requiredFormat) &&
+        isValid = ['date', 'time', 'iso-date-time'].includes(requiredFormat) &&
           Object.prototype.toString.call(currentValue) === '[object Date]';
       }
       return xor(isValid, invert) ?
