@@ -1,0 +1,27 @@
+<mat-card>
+    <div class="input-row">
+        <mat-form-field appearance="outline" class="url-input">
+            <mat-label>URL</mat-label>
+            <input matInput [(ngModel)]="urlInput" (keydown.enter)="loadJsonFromUrl()" placeholder="Enter JSON URL" />
+            <!-- Clear icon -->
+            <mat-icon matSuffix (click)="clearUrlInput()" matTooltip="Clear URL">clear</mat-icon>
+        </mat-form-field>
+
+        <!-- Load from URL button -->
+        <button mat-icon-button color="primary" (click)="loadJsonFromUrl()" matTooltip="Load from URL">
+        <mat-icon>cloud_download</mat-icon>
+      </button>
+
+        <!-- File upload input -->
+        <button mat-icon-button color="accent" (click)="fileInput.click()" matTooltip="Upload JSON File">
+        <mat-icon>upload</mat-icon>
+      </button>
+        <input #fileInput type="file" hidden (change)="onFileUpload($event)" />
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="errorMessage" class="error-message">
+        <mat-icon color="warn">error</mat-icon>
+        {{ errorMessage }}
+    </div>
+</mat-card>
