@@ -115,7 +115,10 @@ export class WidgetLibraryService {
 
   // Widgets included for compatibility with React JSON Schema Form API
     'updown': 'number',
-    'date-time': 'datetime-local',
+    //'date-time': 'datetime-local',
+    //as per ajv date-time requires a timezone but input 
+    //datetime-local doesn't  
+    'iso-date-time':'datetime-local',
     'alt-datetime': 'datetime-local',
     'alt-date': 'date',
 
