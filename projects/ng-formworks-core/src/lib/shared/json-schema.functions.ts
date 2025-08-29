@@ -311,7 +311,10 @@ export function getInputType(schema, layoutNode: any = null) {
       return {
         'color': 'color',
         'date': 'date',
-        'date-time': 'datetime-local',
+        //as per ajv date-time requires a timezone but input 
+        //datetime-local doesn't  
+        //'date-time': 'datetime-local',
+        'iso-date-time':'datetime-local',
         'email': 'email',
         'uri': 'url',
       }[schema.format] || 'text';
