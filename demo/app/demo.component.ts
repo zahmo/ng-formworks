@@ -8,6 +8,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Framework, FrameworkLibraryService, JsonPointer } from '@ng-formworks/core';
 import { Examples } from './example-schemas.model';
+import { JSONLoaderChanges } from './json-loader/json-loader.component';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -94,7 +95,7 @@ export class DemoComponent implements OnInit,AfterViewInit {
   };
   selectedTheme:string;
   themeList:any=[];
-
+  formDataJSONURL:string='';
   
   formDataEncoded:string;
 
@@ -220,12 +221,15 @@ b64ToUtf8(b64) {
         if (params['theme']) {
           this.selectedTheme = params['theme'];
         }
-        if (params['formData']){
+        if (params['formDataJSONURL']) {
+          this.formDataJSONURL = decodeURIComponent(params['formDataJSONURL']);
+        }
+        if (!this.formDataJSONURL && params['formData']){
           this.formDataEncoded=params['formData'];
             let formData=this.fromBase64Decoded(this.formDataEncoded);
             this.jsonFormSchema = JSON.stringify(formData,null,2);
           this.generateForm(this.jsonFormSchema);
-        }else{
+        }else if(!this.formDataJSONURL){
           this.loadSelectedExample();
         }
         
@@ -322,19 +326,20 @@ b64ToUtf8(b64) {
       this.selectedSetName = selectedSetName;
       this.selectedExample = selectedExample;
       this.selectedExampleName = selectedExampleName;
-      this.router.navigateByUrl(
-        '/?set=' + selectedSet +
-        '&example=' + selectedExample +
-        '&framework=' + this.selectedFramework +
-        '&language=' + this.selectedLanguage+
-        '&theme=' + this.selectedTheme+
-        '&formData='+this.formDataEncoded
-
-      );
+      let navUrl=this.newUrlParameters({
+        set:selectedSet,
+        example:selectedExample,
+        framework:this.selectedFramework,
+        language:this.selectedLanguage,
+        theme:this.selectedTheme,
+        formData:this.formDataEncoded
+      });
+      this.router.navigateByUrl(`/${navUrl.search}`);
       this.liveFormData = {};
       this.submittedFormData = null;
       this.formIsValid = null;
       this.formValidationErrors = null;
+      this.formDataJSONURL="";
     }
     const exampleURL = `assets/example-schemas/${this.selectedExample}.json`;
     this.http
@@ -346,7 +351,17 @@ b64ToUtf8(b64) {
   }
 
   loadSelectedLanguage() {
-    window.location.href = `${window.location.pathname}?set=${this.selectedSet}&example=${this.selectedExample}&framework=${this.selectedFramework}&language=${this.selectedLanguage}&theme=${this.selectedTheme}`;
+    let navUrl=this.newUrlParameters({
+      set:this.selectedSet,
+      example:this.selectedExample,
+      framework:this.selectedFramework,
+      language:this.selectedLanguage,
+      theme:this.selectedTheme,
+      formData:this.formDataEncoded,
+      ...(this.formDataJSONURL && { formDataJSONURL: encodeURIComponent(this.formDataJSONURL) }), // conditionalProperty is added if 'condition' is true
+      ...(!this.formDataJSONURL && { formData: this.formDataEncoded}) 
+    });
+    window.location.href = navUrl.toString()
   }
 
 
@@ -430,6 +445,15 @@ appendUrlParameters(params) {
     
     return currentUrl;
 }
+newUrlParameters(params) {
+  // Get the current URL
+  const currentUrl = new URL(window.location.href);
+  currentUrl.search="";
+  for (const [key, value] of Object.entries<string>(params)) {
+    currentUrl.searchParams.set(key, value);
+  }
+  return currentUrl;
+}
 
   copyUrlToClipBoard(e){
     let formData=this.jsonFormObject;
@@ -439,14 +463,21 @@ appendUrlParameters(params) {
     this.formDataEncoded=this.asBase64Encoded(formData);
 
 //need to replace new line chars 
-    let url=this.appendUrlParameters({
+    const urlParams=!this.formDataJSONURL?{
       set:this.selectedSet,
       example:this.selectedExample,
       framework:this.selectedFramework,
       language:this.selectedLanguage,
       theme:this.selectedTheme,
       formData:this.formDataEncoded
-    })
+    }:{
+      framework:this.selectedFramework,
+      language:this.selectedLanguage,
+      theme:this.selectedTheme,
+      formDataJSONURL:encodeURIComponent(this.formDataJSONURL)
+    }
+
+    let url=this.appendUrlParameters(urlParams);
     //document.location.protocol+"//"+ document.location.host+"/"+path.replace(/\n/g, '');
     navigator.clipboard.writeText(url.toString()).then(copyRes=>{
 
@@ -463,6 +494,33 @@ appendUrlParameters(params) {
         }
         );
     })
+  }
+
+  onJsonLoaderDataChange(jsonLoaderData: JSONLoaderChanges) {
+    if(jsonLoaderData && jsonLoaderData.jsonData){
+      this.jsonFormSchema = JSON.stringify(jsonLoaderData.jsonData,null,2);
+      if(jsonLoaderData.url){
+        this.formDataJSONURL=jsonLoaderData.url
+        let navUrl=this.newUrlParameters({
+          framework:this.selectedFramework,
+          language:this.selectedLanguage,
+          theme:this.selectedTheme,
+          formDataJSONURL:encodeURIComponent(this.formDataJSONURL)
+        });
+        this.router.navigateByUrl(`/${navUrl.search}`);
+      }
+      if(jsonLoaderData.srcType=="FILE"){
+        this.formDataJSONURL="";
+        let navUrl=this.newUrlParameters({
+          framework:this.selectedFramework,
+          language:this.selectedLanguage,
+          theme:this.selectedTheme
+        });
+        this.router.navigateByUrl(`/${navUrl.search}`);
+      }
+      this.generateForm(this.jsonFormSchema);
+    }
+
   }
 
 
