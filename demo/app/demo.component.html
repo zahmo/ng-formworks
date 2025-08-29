@@ -26,49 +26,64 @@
             <a href="http://ulion.github.io/jsonform/playground/">JSON Form</a>.
         </span><br> Choose an example, or create your own, and check out the generated form.<br><br>
 
-        <span class="menu-label">Current example:</span>
-        <button mat-raised-button color="primary" [matMenuTriggerFor]="exampleMenu">
-            <mat-icon>menu</mat-icon> {{selectedSetName}} {{selectedExampleName}}
-        </button>
-        <mat-menu #exampleMenu="matMenu" class="example-menu">
-            <button mat-menu-item class="mat-medium" *ngFor="let example of examples['ng-jsf'].schemas" (click)="loadSelectedExample('ng-jsf', '', example.file, example.name)">
-                {{example.name}}
-            </button>
+        <div fxLayout="row" fxLayoutAlign="space-around start" fxLayout_lt-sm="column">
+            <div>
+                <span class="menu-label">Select example:</span>
+                <button mat-raised-button color="primary" [matMenuTriggerFor]="exampleMenu">
+                    <mat-icon>menu</mat-icon> {{selectedSetName}} {{selectedExampleName}}
+                </button>
+                <mat-menu #exampleMenu="matMenu" class="example-menu">
+                    <button mat-menu-item class="mat-medium" *ngFor="let example of examples['ng-jsf'].schemas" (click)="loadSelectedExample('ng-jsf', '', example.file, example.name)">
+                        {{example.name}}
+                    </button>
 
-            <button mat-menu-item class="mat-medium" [matMenuTriggerFor]="ngCombMenu">
-                <span>JSON Schema combination examples</span>
-            </button>
-            <mat-menu #ngCombMenu="matMenu" class="example-menu">
-                <button mat-menu-item class="mat-medium" *ngFor="let example of examples['ng-jsf-comb'].schemas" (click)="loadSelectedExample('ng-jsf-comb', 'Combination:', example.file, example.name)">
-                    {{example.name}}
-                </button>
-            </mat-menu>
+                    <button mat-menu-item class="mat-medium" [matMenuTriggerFor]="ngCombMenu">
+                        <span>JSON Schema combination examples</span>
+                    </button>
+                    <mat-menu #ngCombMenu="matMenu" class="example-menu">
+                        <button mat-menu-item class="mat-medium" *ngFor="let example of examples['ng-jsf-comb'].schemas" (click)="loadSelectedExample('ng-jsf-comb', 'Combination:', example.file, example.name)">
+                            {{example.name}}
+                        </button>
+                    </mat-menu>
 
-            <button mat-menu-item class="mat-medium" [matMenuTriggerFor]="asfMenu">
-                <span>Angular Schema Form (AngularJS) examples</span>
-            </button>
-            <mat-menu #asfMenu="matMenu" class="example-menu">
-                <button mat-menu-item class="mat-medium" *ngFor="let example of examples.asf.schemas" (click)="loadSelectedExample('asf', 'Angular Schema Form:', example.file, example.name)">
-                    {{example.name}}
-                </button>
-            </mat-menu>
-            <button mat-menu-item class="mat-medium" [matMenuTriggerFor]="rjsfMenu">
-                <span>React JSON Schema Form examples</span>
-            </button>
-            <mat-menu #rjsfMenu="matMenu" class="example-menu">
-                <button mat-menu-item class="mat-medium" *ngFor="let example of examples.rjsf.schemas" (click)="loadSelectedExample('rjsf', 'React JSON Schema Form:', example.file, example.name)">
-                    {{example.name}}
-                </button>
-            </mat-menu>
-            <button mat-menu-item class="mat-medium" [matMenuTriggerFor]="jsfMenu">
-                <span>JSONForm (jQuery) examples</span>
-            </button>
-            <mat-menu #jsfMenu="matMenu" class="example-menu">
-                <button mat-menu-item class="mat-medium" *ngFor="let example of examples.jsf.schemas" (click)="loadSelectedExample('jsf', 'JSONForm:', example.file, example.name)">
-                    {{example.name}}
-                </button>
-            </mat-menu>
-        </mat-menu>
+                    <button mat-menu-item class="mat-medium" [matMenuTriggerFor]="asfMenu">
+                        <span>Angular Schema Form (AngularJS) examples</span>
+                    </button>
+                    <mat-menu #asfMenu="matMenu" class="example-menu">
+                        <button mat-menu-item class="mat-medium" *ngFor="let example of examples.asf.schemas" (click)="loadSelectedExample('asf', 'Angular Schema Form:', example.file, example.name)">
+                            {{example.name}}
+                        </button>
+                    </mat-menu>
+                    <button mat-menu-item class="mat-medium" [matMenuTriggerFor]="rjsfMenu">
+                        <span>React JSON Schema Form examples</span>
+                    </button>
+                    <mat-menu #rjsfMenu="matMenu" class="example-menu">
+                        <button mat-menu-item class="mat-medium" *ngFor="let example of examples.rjsf.schemas" (click)="loadSelectedExample('rjsf', 'React JSON Schema Form:', example.file, example.name)">
+                            {{example.name}}
+                        </button>
+                    </mat-menu>
+                    <button mat-menu-item class="mat-medium" [matMenuTriggerFor]="jsfMenu">
+                        <span>JSONForm (jQuery) examples</span>
+                    </button>
+                    <mat-menu #jsfMenu="matMenu" class="example-menu">
+                        <button mat-menu-item class="mat-medium" *ngFor="let example of examples.jsf.schemas" (click)="loadSelectedExample('jsf', 'JSONForm:', example.file, example.name)">
+                            {{example.name}}
+                        </button>
+                    </mat-menu>
+                </mat-menu>
+
+            </div>
+            <span class="menu-label">or load sample from url/upload json:</span>
+            <div class="flex-spacer">
+                <app-json-loader [urlInput]="formDataJSONURL" (jsonDataChange)="onJsonLoaderDataChange($event)"></app-json-loader>
+            </div>
+        </div>
+
+
+
+
+
+
     </div>
 </div>
 <div fxLayout="row" fxLayoutAlign="space-around start" fxLayout_lt-sm="column" fxLayoutAlign.lt-sm="flex-start center">
