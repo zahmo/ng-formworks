@@ -22,16 +22,17 @@ import { buildTitleMap, isArray } from '../shared';
         [attr.required]="options?.required"
         [class]="options?.fieldHtmlClass || ''"
         [id]="'control' + layoutNode()?._id"
-        [name]="controlName">
+        [name]="controlName"
+        (selectionChange)="updateValue($event)">
         <ng-template ngFor let-selectItem [ngForOf]="selectList">
           <option *ngIf="!isArray(selectItem?.items)"
-            [value]="selectItem?.value">
+            [ngValue]="selectItem?.value">
             <span [innerHTML]="selectItem?.name"></span>
           </option>
           <optgroup *ngIf="isArray(selectItem?.items)"
             [label]="selectItem?.group">
             <option *ngFor="let subItem of selectItem.items"
-              [value]="subItem?.value">
+              [ngValue]="subItem?.value">
               <span [innerHTML]="subItem?.name"></span>
             </option>
           </optgroup>
@@ -45,18 +46,19 @@ import { buildTitleMap, isArray } from '../shared';
         [disabled]="controlDisabled"
         [id]="'control' + layoutNode()?._id"
         [name]="controlName"
+        [value]="controlValue"
         (change)="updateValue($event)">
         <ng-template ngFor let-selectItem [ngForOf]="selectList">
           <option *ngIf="!isArray(selectItem?.items)"
             [selected]="selectItem?.value === controlValue"
-            [value]="selectItem?.value">
+            [ngValue]="selectItem?.value">
             <span [innerHTML]="selectItem?.name"></span>
           </option>
           <optgroup *ngIf="isArray(selectItem?.items)"
             [label]="selectItem?.group">
             <option *ngFor="let subItem of selectItem.items"
               [attr.selected]="subItem?.value === controlValue"
-              [value]="subItem?.value">
+              [ngValue]="subItem?.value">
               <span [innerHTML]="subItem?.name"></span>
             </option>
           </optgroup>
@@ -76,14 +78,14 @@ import { buildTitleMap, isArray } from '../shared';
         <ng-template ngFor let-selectItem [ngForOf]="selectList">
           <option *ngIf="!isArray(selectItem?.items)"
             [selected]="selectItem?.value === controlValue"
-            [value]="selectItem?.value">
+            [ngValue]="selectItem?.value">
             <span [innerHTML]="selectItem?.name"></span>
           </option>
           <optgroup *ngIf="isArray(selectItem?.items)"
             [label]="selectItem?.group">
             <option *ngFor="let subItem of selectItem.items"
               [attr.selected]="subItem?.value === controlValue"
-              [value]="subItem?.value">
+              [ngValue]="subItem?.value">
               <span [innerHTML]="subItem?.name"></span>
             </option>
           </optgroup>
@@ -132,20 +134,20 @@ export class SelectComponent implements OnInit, OnDestroy {
   updateValue(event) {
     this.options.showErrors = true;
     if (this.options.multiple) {
-      if (this.controlValue?.includes(null)) {
+      if (event.value?.includes(null)) {
         this.deselectAll();
         //this.control.setValue([]);  // Reset the form control to an empty array
         //this.selectList=JSON.parse(JSON.stringify(this.selectList));
         this.jsf.updateArrayMultiSelectList(this, []);
       } else {
         this.selectListFlatGroup.forEach(selItem => {
-          selItem.checked = this.controlValue?.indexOf(selItem.value) >= 0 ? true : false;
+          selItem.checked = event.value.indexOf(selItem.value) >= 0 ? true : false;
         })
         this.jsf.updateArrayMultiSelectList(this, this.selectListFlatGroup);
       }
       return;
     }
-    this.jsf.updateValue(this, this.controlValue);
+    this.jsf.updateValue(this, event.value);
   }
 
   ngOnDestroy() {
