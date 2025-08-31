@@ -22,8 +22,7 @@ import { buildTitleMap, isArray } from '../shared';
         [attr.required]="options?.required"
         [class]="options?.fieldHtmlClass || ''"
         [id]="'control' + layoutNode?._id"
-        [name]="controlName"
-        (selectionChange)="updateValue($event)">
+        [name]="controlName">
         <ng-template ngFor let-selectItem [ngForOf]="selectList">
           <option *ngIf="!isArray(selectItem?.items)"
             [ngValue]="selectItem?.value">
@@ -46,7 +45,6 @@ import { buildTitleMap, isArray } from '../shared';
         [disabled]="controlDisabled"
         [id]="'control' + layoutNode?._id"
         [name]="controlName"
-        [value]="controlValue"
         (change)="updateValue($event)">
         <ng-template ngFor let-selectItem [ngForOf]="selectList">
           <option *ngIf="!isArray(selectItem?.items)"
@@ -136,20 +134,20 @@ export class SelectComponent implements OnInit {
   updateValue(event) {
     this.options.showErrors = true;
     if (this.options.multiple) {
-      if (event.value?.includes(null)) {
+      if (this.controlValue?.includes(null)) {
         this.deselectAll();
         //this.control.setValue([]);  // Reset the form control to an empty array
         //this.selectList=JSON.parse(JSON.stringify(this.selectList));
         this.jsf.updateArrayMultiSelectList(this, []);
       } else {
         this.selectListFlatGroup.forEach(selItem => {
-          selItem.checked = event.value.indexOf(selItem.value) >= 0 ? true : false;
+          selItem.checked = this.controlValue?.indexOf(selItem.value) >= 0 ? true : false;
         })
         this.jsf.updateArrayMultiSelectList(this, this.selectListFlatGroup);
       }
       return;
     }
-    this.jsf.updateValue(this, event.value);
+    this.jsf.updateValue(this, this.controlValue);
   }
 
   ngOnDestroy() {
