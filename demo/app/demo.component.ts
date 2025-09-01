@@ -105,6 +105,8 @@ export class DemoComponent implements OnInit,AfterViewInit {
   selectedTheme:string;
   themeList:any=[];
   formDataJSONURL:string='';
+  exampleJSON:string;
+  loadedJSON:string;
   
   formDataEncoded:string;
 
@@ -224,6 +226,11 @@ b64ToUtf8(b64) {
             let formData=this.fromBase64Decoded(this.formDataEncoded);
             this.jsonFormSchema = JSON.stringify(formData,null,2);
           this.generateForm(this.jsonFormSchema);
+        }else if(this.formDataJSONURL && params['formData']){
+          //case handled by onJsonLoaderDataChange
+          this.formDataEncoded=params['formData'];
+          let formData=this.fromBase64Decoded(this.formDataEncoded);
+          this.jsonFormSchema = JSON.stringify(formData,null,2);
         }else if(!this.formDataJSONURL){
           this.loadSelectedExample();
         }
@@ -327,8 +334,8 @@ b64ToUtf8(b64) {
         example:selectedExample,
         framework:this.selectedFramework,
         language:this.selectedLanguage,
-        theme:this.selectedTheme,
-        formData:this.formDataEncoded
+        theme:this.selectedTheme
+        //formData:this.formDataEncoded
       });
       this.router.navigateByUrl(`/${navUrl.search}`);
       this.liveFormData = {};
@@ -341,6 +348,7 @@ b64ToUtf8(b64) {
     this.http
       .get(exampleURL, { responseType: 'text' })
       .subscribe(schema => {
+        this.exampleJSON=schema;
         this.jsonFormSchema = schema;
         this.generateForm(this.jsonFormSchema);
       });
@@ -370,6 +378,7 @@ b64ToUtf8(b64) {
     this.formActive = false;
     this.liveFormData = {};
     this.submittedFormData = null;
+    
 
     // Most examples should be written in pure JSON,
     // but if an example schema includes a function,
@@ -453,11 +462,31 @@ newUrlParameters(params) {
 
   copyUrlToClipBoard(e){
     let formData=this.jsonFormObject;
+    let exampleJSON_data=this.exampleJSON&&JSON.parse(this.exampleJSON);
+    let loadedJSON_data=this.loadedJSON && JSON.parse(this.loadedJSON);
+    let liveFormData_str=JSON.stringify(this.liveFormData);
     if(this.liveFormData && Object.keys(this.liveFormData).length > 0){
       formData.data=this.liveFormData;
+
+      if(exampleJSON_data){
+        exampleJSON_data.data=exampleJSON_data.data||{};
+        exampleJSON_data.data=liveFormData_str!=JSON.stringify(exampleJSON_data.data)
+        ?exampleJSON_data.data:JSON.parse(liveFormData_str);
+        
+      }
+      if(loadedJSON_data){
+        loadedJSON_data.data=loadedJSON_data.data||{};
+        loadedJSON_data.data=liveFormData_str!=JSON.stringify(loadedJSON_data.data)
+        ?loadedJSON_data.data:JSON.parse(liveFormData_str);
+      }
+    
     }
     this.formDataEncoded=this.asBase64Encoded(formData);
 
+    let exampleDataChanged=this.exampleJSON &&
+    (JSON.stringify(formData)!=JSON.stringify(exampleJSON_data));
+    let loadedDataChanged=this.formDataJSONURL &&
+    (JSON.stringify(formData)!=JSON.stringify(loadedJSON_data));
 //need to replace new line chars 
     const urlParams=!this.formDataJSONURL?{
       set:this.selectedSet,
@@ -465,12 +494,14 @@ newUrlParameters(params) {
       framework:this.selectedFramework,
       language:this.selectedLanguage,
       theme:this.selectedTheme,
-      formData:this.formDataEncoded
+      ...(exampleDataChanged && { formData: this.formDataEncoded}) 
+
     }:{
       framework:this.selectedFramework,
       language:this.selectedLanguage,
       theme:this.selectedTheme,
-      formDataJSONURL:encodeURIComponent(this.formDataJSONURL)
+      formDataJSONURL:encodeURIComponent(this.formDataJSONURL),
+      ...(loadedDataChanged && { formData: this.formDataEncoded}) 
     }
 
     let url=this.appendUrlParameters(urlParams);
@@ -514,6 +545,14 @@ newUrlParameters(params) {
         });
         this.router.navigateByUrl(`/${navUrl.search}`);
       }
+      if(this.formDataEncoded){
+        let formData=this.fromBase64Decoded(this.formDataEncoded);
+        this.jsonFormSchema = JSON.stringify({
+          ...jsonLoaderData.jsonData,  // Spread all properties from jsonData
+          data: formData.data||jsonLoaderData.jsonData.data  // Override the data property with formData's data
+        },null,2);
+      }
+      this.loadedJSON=JSON.stringify(jsonLoaderData.jsonData,null,2);
       this.generateForm(this.jsonFormSchema);
     }
 
