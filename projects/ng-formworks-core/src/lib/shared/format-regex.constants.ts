@@ -11,6 +11,11 @@ export const jsonSchemaFormatTests = {
   // "2000-03-14T01:59:26.535" (needs "Z") or "2000-03-14T01:59" (needs ":00Z")
   'date-time': /^\d\d\d\d-[0-1]\d-[0-3]\d[t\s][0-2]\d:[0-5]\d(?::[0-5]\d)?(?:\.\d+)?(?:z|[+-]\d\d:\d\d)?$/i,
 
+  // "2000-03-14T01:59:26.535" (doesn't need "Z") or "2000-03-14T01:59" (needs ":00Z")
+  //'iso-date-time':^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|([+-]\d{2}:\d{2}))?$
+  //for now same as 'date-time' until better tested
+  'iso-date-time': /^\d\d\d\d-[0-1]\d-[0-3]\d[t\s][0-2]\d:[0-5]\d(?::[0-5]\d)?(?:\.\d+)?(?:z|[+-]\d\d:\d\d)?$/i,
+
   // email (sources from jsen validator):
   // http://stackoverflow.com/questions/201323/using-a-regular-expression-to-validate-an-email-address#answer-8829363
   // http://www.w3.org/TR/html5/forms.html#valid-e-mail-address (search for 'willful violation')
