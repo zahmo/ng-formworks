@@ -17,6 +17,7 @@ which version of ng-formworks:
 * [ ] 17.x.x
 * [ ] 18.x.x
 * [ ] 19.x.x
+* [ ] 20.x.x
 
 which version of Angular:
 
@@ -25,6 +26,7 @@ which version of Angular:
 * [ ] 17
 * [ ] 18
 * [ ] 19
+* [ ] 20
 
 which framework:
 
@@ -53,6 +55,7 @@ of ng-formworks that you are using.
     - version 17: https://zahmo.github.io/ng-formworks/17
     - version 18: https://zahmo.github.io/ng-formworks/18
     - version 19: https://zahmo.github.io/ng-formworks/19
+    - version 20: https://zahmo.github.io/ng-formworks/20
     
 2. From the Dropdowns section 'Selected Framework and Options',
     - Select the Framework related to your issue
@@ -64,8 +67,11 @@ of ng-formworks that you are using.
 4. Enter the Form (if part of the issue) into the 'Input JSON Schema and Form Layout' field,
 making sure that the JSON data is correctly closed. If all is correct there should be no 'SyntaxError' or similar messages displaying and the 'Generated Form' section
 should output a form.
+or alternatively 
+use the form url field to load form from a url or upload an existing form
 
-5. Populate the Generated Form (if applicable to the issue)
+5. Populate the Generated Form (if applicable to the issue),
+skip this if using a url to load the form.
 
 6. Click the 'Share form URL' button, this should copy the URL of the form to your clipboard (you may have to give the browser permission depending on your OS/Browser).
 
