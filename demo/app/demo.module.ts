@@ -21,6 +21,7 @@ import { DUIOPTIONS, DaisyUIFrameworkModule } from '@ng-formworks/daisyui';
 import { MaterialDesignFrameworkModule } from '@ng-formworks/material';
 
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Bootstrap5FrameworkModule } from '@ng-formworks/bootstrap5';
@@ -49,9 +50,10 @@ import { JsonLoaderComponent } from './json-loader/json-loader.component';
         DaisyUIFrameworkModule,
         Bootstrap5FrameworkModule,
         CssFrameworkModule,
+        HttpClientModule,
         JsonSchemaFormModule], providers: [{ provide: REMOVE_STYLES_ON_COMPONENT_DESTROY, useValue: true }
         //uncomment to disable daisyui class name prefixing
         ,
-        { provide: DUIOPTIONS, useValue: { classPrefix: environment.cssClassPrefix } }, provideHttpClient(withInterceptorsFromDi())] })
+        { provide: DUIOPTIONS, useValue: { classPrefix: environment.cssClassPrefix } }] })
 
 export class DemoModule { }
