@@ -25,13 +25,13 @@ import { buildTitleMap, isArray } from '../shared';
         [name]="controlName">
         <ng-template ngFor let-selectItem [ngForOf]="selectList">
           <option *ngIf="!isArray(selectItem?.items)"
-            [value]="selectItem?.value">
+            [ngValue]="selectItem?.value">
             <span [innerHTML]="selectItem?.name"></span>
           </option>
           <optgroup *ngIf="isArray(selectItem?.items)"
             [label]="selectItem?.group">
             <option *ngFor="let subItem of selectItem.items"
-              [value]="subItem?.value">
+              [ngValue]="subItem?.value">
               <span [innerHTML]="subItem?.name"></span>
             </option>
           </optgroup>
@@ -49,14 +49,14 @@ import { buildTitleMap, isArray } from '../shared';
         <ng-template ngFor let-selectItem [ngForOf]="selectList">
           <option *ngIf="!isArray(selectItem?.items)"
             [selected]="selectItem?.value === controlValue"
-            [value]="selectItem?.value">
+            [ngValue]="selectItem?.value">
             <span [innerHTML]="selectItem?.name"></span>
           </option>
           <optgroup *ngIf="isArray(selectItem?.items)"
             [label]="selectItem?.group">
             <option *ngFor="let subItem of selectItem.items"
               [attr.selected]="subItem?.value === controlValue"
-              [value]="subItem?.value">
+              [ngValue]="subItem?.value">
               <span [innerHTML]="subItem?.name"></span>
             </option>
           </optgroup>
@@ -76,14 +76,14 @@ import { buildTitleMap, isArray } from '../shared';
         <ng-template ngFor let-selectItem [ngForOf]="selectList">
           <option *ngIf="!isArray(selectItem?.items)"
             [selected]="selectItem?.value === controlValue"
-            [value]="selectItem?.value">
+            [ngValue]="selectItem?.value">
             <span [innerHTML]="selectItem?.name"></span>
           </option>
           <optgroup *ngIf="isArray(selectItem?.items)"
             [label]="selectItem?.group">
             <option *ngFor="let subItem of selectItem.items"
               [attr.selected]="subItem?.value === controlValue"
-              [value]="subItem?.value">
+              [ngValue]="subItem?.value">
               <span [innerHTML]="subItem?.name"></span>
             </option>
           </optgroup>

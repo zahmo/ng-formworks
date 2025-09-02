@@ -1,6 +1,6 @@
 {
     "name": "@ng-formworks/core",
-    "version": "20.6.3",
+    "version": "20.6.5",
     "description": "Angular ng-formworks - JSON Schema Form builder core",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "keywords": [
@@ -49,7 +49,7 @@
         "lodash-es": "~4.17.21",
         "ajv": "^8.12.0",
         "tslib": "^2.7.0",
-        "nxt-sortablejs": "^20.0.4",
+        "nxt-sortablejs": "^20.0.0",
         "sortablejs": "^1.15.6"
     },
     "peerDependencies": {
