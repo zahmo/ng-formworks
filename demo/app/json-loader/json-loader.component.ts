@@ -1,4 +1,4 @@
-import { Component, model, OnInit, output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 export type JSONLoaderChanges={
   srcType:'URL'|'FILE'
@@ -16,18 +16,18 @@ export type JSONLoaderChanges={
 export class JsonLoaderComponent implements OnInit{
 
   //switch for ang vers<17
-  //@Output() jsonDataChange = new EventEmitter<JSONLoaderChanges>();  // Emit changes to the parent
-  readonly jsonDataChange = output<JSONLoaderChanges>()
+  @Output() jsonDataChange = new EventEmitter<JSONLoaderChanges>();  // Emit changes to the parent
+  //readonly jsonDataChange = output<JSONLoaderChanges>()
   jsonData: any = null;
   errorMessage: string = '';
-  urlInput = model<string>('');
+  //urlInput = model<string>('');
   //switch for ang vers<17
-  //@Input() urlInput:string 
+  @Input() urlInput:string 
 
   getUrlInputValue(){
      //switch for ang vers<17
-    //return this.urlInput;
-    return this.urlInput();
+    return this.urlInput;
+    //return this.urlInput();
   }
 
   ngOnInit(): void {
@@ -63,7 +63,7 @@ export class JsonLoaderComponent implements OnInit{
     }
   }
   clearUrlInput(): void {
-    this.urlInput.set("");
+    this.urlInput="";
     this.jsonDataChange.emit({
       srcType:'URL',
       url:this.getUrlInputValue(),
