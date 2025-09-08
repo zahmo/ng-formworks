@@ -735,7 +735,7 @@ this.ajv.addFormat("duration", {
     //to use for the value
     if(ctx.options?.condition || layoutNode?.oneOfPointer){
       const dataPointer = this.getDataPointer(ctx);
-      const controlValue=ctx.formControl.value;
+      const controlValue=ctx.formControl?.value;
       const dataValue=JsonPointer.has(this.data,dataPointer)?
       JsonPointer.get(this.data,dataPointer):undefined;
       const formValue=JsonPointer.has(this.formValues,dataPointer)?
