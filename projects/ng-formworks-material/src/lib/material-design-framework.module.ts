@@ -24,6 +24,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { MatDialogModule } from '@angular/material/dialog';
+import { JsonFormsAngularMaterialModule } from '@jsonforms/angular-material';
 import {
     Framework,
     FrameworkLibraryService,
@@ -33,9 +35,10 @@ import {
 } from '@ng-formworks/core';
 import { CssFrameworkModule } from '@ng-formworks/cssframework';
 import { SortablejsModule } from 'nxt-sortablejs';
+import { MATERIAL_RENDERERS } from './jsonforms-renderers';
+import { MaterialDesignJsonFormsFramework } from './material-design-jsonforms.framework';
 import { MaterialDesignFramework } from './material-design.framework';
 import { MATERIAL_FRAMEWORK_COMPONENTS } from './widgets/public_api';
-
 
 /**
  * unused @angular/material modules:
@@ -51,7 +54,8 @@ export const ANGULAR_MATERIAL_MODULES = [
   MatRadioModule, MatSelectModule, MatSliderModule, MatSlideToggleModule,
   MatStepperModule, MatTabsModule, MatTooltipModule,
   MatToolbarModule, MatMenuModule, MatToolbarModule,
-  DragDropModule
+  DragDropModule,JsonFormsAngularMaterialModule,
+  MatDialogModule
 ];
 
 @NgModule({
@@ -73,6 +77,7 @@ export const ANGULAR_MATERIAL_MODULES = [
     ],
     declarations: [
         ...MATERIAL_FRAMEWORK_COMPONENTS,
+        ...MATERIAL_RENDERERS
     ],
     exports: [
         JsonSchemaFormModule,
@@ -83,6 +88,7 @@ export const ANGULAR_MATERIAL_MODULES = [
         FrameworkLibraryService,
         WidgetLibraryService,
         { provide: Framework, useClass: MaterialDesignFramework, multi: true },
+        { provide: Framework, useClass: MaterialDesignJsonFormsFramework, multi: true },
     ]
 })
 export class MaterialDesignFrameworkModule {
