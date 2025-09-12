@@ -63,7 +63,15 @@ export const JSON_SCHEMA_FORM_VALUE_ACCESSOR: any = {
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'json-schema-form',
-    templateUrl: './json-schema-form.component.html',
+    template: `
+    <form [autocomplete]="jsf?.formOptions?.autocomplete ? 'on' : 'off'" class="json-schema-form" (ngSubmit)="submitForm()">
+      <root-widget [layout]="jsf?.layout"></root-widget>
+    </form>
+    <div *ngIf="debug() || jsf?.formOptions?.debug">
+      Debug output:
+      <pre>{{debugOutput}}</pre>
+    </div>
+`,
     changeDetection: ChangeDetectionStrategy.OnPush,
     // Adding 'JsonSchemaFormService' here, instead of in the module,
     // creates a separate instance of the service for each component
