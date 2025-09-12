@@ -404,3 +404,13 @@ export function hasNonNullValue(obj: Record<string, any>): boolean {
     return !isNil(value);
   });
 }
+
+//adapter function meant to be used in templates
+//and to wrap @Input vars
+export function asSignalCompatible(val:any){
+  if(isObject(val)){
+    return val
+  }
+  return val();
+}
+
