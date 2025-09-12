@@ -10,6 +10,7 @@ import {
 } from '@ng-formworks/core';
 import { CssFrameworkModule } from '@ng-formworks/cssframework';
 import { Bootstrap5FrameworkComponent } from './bootstrap5-framework.component';
+import { Bootstrap5JsonFormsFramework } from './bootstrap5-jsonforms.framework';
 import { Bootstrap5Framework } from './bootstrap5.framework';
 
 @NgModule({
@@ -31,6 +32,7 @@ import { Bootstrap5Framework } from './bootstrap5.framework';
         FrameworkLibraryService,
         WidgetLibraryService,
         { provide: Framework, useClass: Bootstrap5Framework, multi: true },
+        { provide: Framework, useClass: Bootstrap5JsonFormsFramework, multi: true },
     ]
 })
 export class Bootstrap5FrameworkModule {
