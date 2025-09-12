@@ -8,6 +8,7 @@
     "allowedNonPeerDependencies": [
         "lodash-es",
         "@ng-formworks/core",
-        "@ng-formworks/cssframework"
+        "@ng-formworks/cssframework",
+        "@jsonforms/angular-material"
     ]
 }
