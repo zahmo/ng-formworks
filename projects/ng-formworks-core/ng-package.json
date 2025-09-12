@@ -8,6 +8,8 @@
         "lodash-es",
         "ajv",
         "nxt-sortablejs",
-        "sortablejs"
+        "sortablejs",
+        "@jsonforms/angular",
+        "@jsonforms/core"
     ]
 }
