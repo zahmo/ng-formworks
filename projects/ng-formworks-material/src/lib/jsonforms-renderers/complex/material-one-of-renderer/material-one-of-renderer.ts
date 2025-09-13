@@ -51,7 +51,7 @@ import { TabSwitchConfirmDialogComponent } from './tab-switch-confirm-dialog.com
         <mat-radio-button 
           [checked]="selectedIndex === i" 
           [value]="i"
-          >
+          (click)="onRadioClick($event,i)">
         </mat-radio-button>
             <span [innerHTML]="oneOfRenderInfo.label"></span>
         </a>
@@ -177,7 +177,6 @@ onDataChange(event){
   onTabClick(e){
     this.newSelectedIndex = e;
     if (this.isEmpty(this.data)) {
-      
       this.openNewTab(this.newSelectedIndex);
     } else {
       this.openDialog();
@@ -185,6 +184,24 @@ onDataChange(event){
     }
   }
 
+  // This method is called when a radio button is clicked
+  onRadioClick(event: MouseEvent, index: number): void {
+    // Prevent the radio button from being checked if the tab isn't active
+    if (this.selectedIndex !== index) {
+      // event.preventDefault(); // Prevent the default behavior of the radio button
+      // event.stopPropagation();
+      event.preventDefault();
+      // this.newSelectedIndex = index;
+      // if (this.isEmpty(this.data)) {
+        
+      //   this.openNewTab(this.newSelectedIndex);
+      // } else {
+      //   this.openDialog();
+      //   //this.confirmDialogOpen = true;
+      // }
+    }
+  }
+ 
   handleTabChange(event: MatTabChangeEvent) {
     
     if (this.isEmpty(this.data)) {
