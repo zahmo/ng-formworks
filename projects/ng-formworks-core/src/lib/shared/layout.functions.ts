@@ -832,7 +832,8 @@ export function buildLayoutFromSchema(
                   '/properties/' +innerItemLevel2.name:innerItemLevel2.name;
                   //innerItemLevel2.oneOfPointer =  schemaPointer + keySchemaPointer + l2SchemaPointer;
                  // innerItemLevel2.schemaPointer=innerItemLevel2.schemaPointer; 
-                 innerItemLevel2.oneOfPointer=innerItemLevel2.schemaPointer
+                 const ofPointer={anyOf:"anyOfPointer",oneOf:"oneOfPointer"}[ofType];
+                 innerItemLevel2[ofPointer]=ofPointer?innerItemLevel2.schemaPointer:undefined;
                 })
 
               }
@@ -843,6 +844,9 @@ export function buildLayoutFromSchema(
                 innerItem.forEach(item => {
                   const l2SchemaPointer = hasOwn(ofItem,'properties') ?
                   '/properties/' +item.name:item.name;
+                  if(ofType=="anyOf"){
+                    item.anyOfPointer=item.schemaPointer;
+                  }
                   if(outerOneOfItem){
                     ////item.oneOfPointer =  schemaPointer + keySchemaPointer + l2SchemaPointer;
                     //schemaPointer + keySchemaPointer + item.dataPointer;
@@ -867,7 +871,8 @@ export function buildLayoutFromSchema(
                 //TODO test-might not work for more than 2 levels of nesting
               }else {
                 if(outerOneOfItem){
-                  innerItem.oneOfPointer = schemaPointer + keySchemaPointer;// + innerItem.dataPointer;
+                  const ofPointer={anyOf:"anyOfPointer",oneOf:"oneOfPointer"}[ofType];
+                  innerItem[ofPointer]=ofPointer?schemaPointer + keySchemaPointer:undefined;
                   ////innerItem.schemaPointer=innerItem.oneOfPointer; 
                   outerOneOfItem.items=outerOneOfItem.items||[];
                   outerOneOfItem.items.push(innerItem);
