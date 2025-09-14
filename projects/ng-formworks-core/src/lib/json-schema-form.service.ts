@@ -679,7 +679,8 @@ this.ajv.addFormat("duration", {
     //introduced to check if the node  is part of ITE conditional
     //then change or add the control
     if(layoutNode?.schemaPointer && layoutNode.isITEItem || 
-      (layoutNode?.schemaPointer && layoutNode?.oneOfPointer) ){
+      (layoutNode?.schemaPointer && layoutNode?.oneOfPointer) ||
+      layoutNode?.schemaPointer && layoutNode.anyOfPointer  ){
       //before changing control, need to set the new data type for data formatting
       const schemaType=this.dataMap.get(layoutNode?.dataPointer).get("schemaType");
       if(schemaType!=layoutNode.dataType){
@@ -733,7 +734,7 @@ this.ajv.addFormat("duration", {
     //set, as the control would only be initialized when the condition is true 
     //TODO-review need to decide which of the data sets between data,formValues and default 
     //to use for the value
-    if(ctx.options?.condition || layoutNode?.oneOfPointer){
+    if(ctx.options?.condition || layoutNode?.oneOfPointer || layoutNode?.anyOfPointer){
       const dataPointer = this.getDataPointer(ctx);
       const controlValue=ctx.formControl?.value;
       const dataValue=JsonPointer.has(this.data,dataPointer)?
@@ -901,7 +902,8 @@ this.ajv.addFormat("duration", {
     }
     const schemaPointer=ctx.layoutNode()?.isITEItem?ctx.layoutNode()?.schemaPointer:null;
     const oneOfPointer=ctx.layoutNode()?.oneOfPointer;
-    return getControl(this.formGroup, this.getDataPointer(ctx),false,schemaPointer||oneOfPointer);
+    const anyOfPointer=ctx.layoutNode()?.anyOfPointer;
+    return getControl(this.formGroup, this.getDataPointer(ctx),false,schemaPointer||oneOfPointer||anyOfPointer);
   }
 
   setFormControl(ctx: WidgetContext,control:AbstractControl): AbstractControl {
@@ -925,7 +927,8 @@ this.ajv.addFormat("duration", {
     }
     const schemaPointer=ctx.layoutNode()?.isITEItem?ctx.layoutNode()?.schemaPointer:null;
     const oneOfPointer=ctx.layoutNode()?.oneOfPointer;
-    const control = getControl(this.formGroup, this.getDataPointer(ctx),false,schemaPointer||oneOfPointer);
+    const anyOfPointer=ctx.layoutNode()?.anyOfPointer;
+    const control = getControl(this.formGroup, this.getDataPointer(ctx),false,schemaPointer||oneOfPointer||anyOfPointer);
     return control ? control.value : null;
   }
 
@@ -935,7 +938,8 @@ this.ajv.addFormat("duration", {
     }
     const schemaPointer=ctx.layoutNode()?.isITEItem?ctx.layoutNode()?.schemaPointer:null;
     const oneOfPointer=ctx.layoutNode()?.oneOfPointer;
-    return getControl(this.formGroup, this.getDataPointer(ctx), true,schemaPointer||oneOfPointer);
+    const anyOfPointer=ctx.layoutNode()?.anyOfPointer;
+    return getControl(this.formGroup, this.getDataPointer(ctx), true,schemaPointer||oneOfPointer||anyOfPointer);
   }
 
   getFormControlName(ctx: WidgetContext): string {
