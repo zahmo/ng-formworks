@@ -4,6 +4,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewC
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { Location } from '@angular/common';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Framework, FrameworkLibraryService, JsonPointer } from '@ng-formworks/core';
@@ -122,7 +123,8 @@ export class DemoComponent implements OnInit,AfterViewInit {
     private jsfFLService:FrameworkLibraryService,
     public dialog: MatDialog,
     private _snackBar: MatSnackBar,
-    private changeDetector:ChangeDetectorRef
+    private changeDetector:ChangeDetectorRef,
+    private location:Location
   ) { 
 
 
@@ -530,15 +532,21 @@ newUrlParameters(params) {
   onJsonLoaderDataChange(jsonLoaderData: JSONLoaderChanges) {
     if(jsonLoaderData && jsonLoaderData.jsonData){
       this.jsonFormSchema = JSON.stringify(jsonLoaderData.jsonData,null,2);
-      if(jsonLoaderData.url){
+      if(jsonLoaderData.srcType=='URL'){
         this.formDataJSONURL=jsonLoaderData.url
         let navUrl=this.newUrlParameters({
           framework:this.selectedFramework,
           language:this.selectedLanguage,
           theme:this.selectedTheme,
-          formDataJSONURL:encodeURIComponent(this.formDataJSONURL)
+          formDataJSONURL:this.formDataJSONURL&&encodeURIComponent(this.formDataJSONURL)
         });
-        this.router.navigateByUrl(`/${navUrl.search}`);
+        //this.router.navigateByUrl(`/${navUrl.search}`,{skipLocationChange:true});
+        this.location.replaceState(`/`,new URLSearchParams({
+          framework:this.selectedFramework,
+          language:this.selectedLanguage,
+          theme:this.selectedTheme,
+          formDataJSONURL:encodeURIComponent(this.formDataJSONURL)
+        }).toString())
       }
       if(jsonLoaderData.srcType=="FILE"){
         this.formDataJSONURL="";
@@ -547,13 +555,19 @@ newUrlParameters(params) {
           language:this.selectedLanguage,
           theme:this.selectedTheme
         });
-        this.router.navigateByUrl(`/${navUrl.search}`);
+        
+        //this.router.navigateByUrl(`/${navUrl.search}`,{skipLocationChange:true});
+        this.location.replaceState(`/`,new URLSearchParams({
+          framework:this.selectedFramework,
+          language:this.selectedLanguage,
+          theme:this.selectedTheme
+        }).toString())
       }
       if(this.formDataEncoded){
         let formData=this.fromBase64Decoded(this.formDataEncoded);
         this.jsonFormSchema = JSON.stringify({
           ...jsonLoaderData.jsonData,  // Spread all properties from jsonData
-          data: formData.data||jsonLoaderData.jsonData.data  // Override the data property with formData's data
+          //data: formData.data||jsonLoaderData.jsonData.data  // Override the data property with formData's data
         },null,2);
       }
       this.loadedJSON=JSON.stringify(jsonLoaderData.jsonData,null,2);
