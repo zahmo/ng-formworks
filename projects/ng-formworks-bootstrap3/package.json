@@ -1,6 +1,6 @@
 {
     "name": "@ng-formworks/bootstrap3",
-    "version": "18.6.5",
+    "version": "18.6.6",
     "description": "Angular ng-formworks - JSON Schema Form builder using Bootstrap 3 UI",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "keywords": [
@@ -42,8 +42,8 @@
     "private": false,
     "dependencies": {
         "lodash-es": "~4.17.21",
-        "@ng-formworks/core": "~18.6.5",
-        "@ng-formworks/cssframework": "~18.6.5",
+        "@ng-formworks/core": "~18.6.6",
+        "@ng-formworks/cssframework": "~18.6.6",
         "tslib": "^2.7.0"
     },
     "peerDependencies": {
