@@ -1,4 +1,4 @@
-/*! tailwindcss v4.1.12 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
@@ -399,7 +399,6 @@
       content: var(--tw-content);
     }
     &:after {
-      position: absolute;
       position: absolute;
       opacity: 0%;
       background-color: var(--dui-tt-bg);
@@ -1680,7 +1679,6 @@
     }
   }
   .tw\:dui-collapse-content {
-    grid-column-start: 1;
     grid-row-start: 1;
     visibility: hidden;
     grid-column-start: 1;
@@ -2855,7 +2853,7 @@
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border-width: 0;
   }
@@ -3535,7 +3533,6 @@
   }
   .tw\:dui-file-input {
     cursor: pointer;
-    cursor: pointer;
     border: var(--border) solid #0000;
     display: inline-flex;
     appearance: none;
@@ -3554,15 +3551,9 @@
     border-end-start-radius: var(--dui-join-es, var(--radius-field));
     border-end-end-radius: var(--dui-join-ee, var(--radius-field));
     border-color: var(--dui-input-color);
-    box-shadow: 0 1px var(--dui-input-color) inset, 0 -1px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset;
-    @supports (color: color-mix(in lab, red, red)) {
-      box-shadow: 0 1px color-mix(in oklab, var(--dui-input-color) calc(var(--depth) * 10%), #0000) inset, 0 -1px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset;
-    }
+    box-shadow: 0 1px color-mix(in oklab, var(--dui-input-color) calc(var(--depth) * 10%), #0000) inset, 0 -1px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset;
     --dui-size: calc(var(--size-field, 0.25rem) * 10);
-    --dui-input-color: var(--color-base-content);
-    @supports (color: color-mix(in lab, red, red)) {
-      --dui-input-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);
-    }
+    --dui-input-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);
     &::file-selector-button {
       margin-inline-end: calc(0.25rem * 4);
       cursor: pointer;
@@ -6157,14 +6148,12 @@
   .tw\:dui-mask-half-1 {
     mask-size: 200%;
     mask-position: left;
-    mask-position: left;
     &:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
       mask-position: right;
     }
   }
   .tw\:dui-mask-half-2 {
     mask-size: 200%;
-    mask-position: right;
     mask-position: right;
     &:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
       mask-position: left;
