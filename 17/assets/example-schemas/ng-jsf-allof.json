@@ -1,0 +1,44 @@
+{
+    "schema": {
+        "properties": {
+            "name": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "name"
+        ],
+        "allOf": [{
+                "type": "object",
+                "title": "Birthday",
+                "properties": {
+                    "birthday": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "required": [
+                    "birthday"
+                ]
+            },
+            {
+                "type": "object",
+                "title": "age",
+                "properties": {
+                    "age": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "age"
+                ]
+            }
+        ]
+    },
+    "layout": [{
+            "type": "help",
+            "helpvalue": "<h3>Both birthday and age must be entered for the form to be valid</h2>"
+        },
+        "*"
+    ]
+}
