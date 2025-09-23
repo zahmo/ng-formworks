@@ -1,5 +1,5 @@
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 import { buildTitleMap, isArray } from '../shared';
 
@@ -95,7 +95,7 @@ import { buildTitleMap, isArray } from '../shared';
 export class SelectComponent implements OnInit, OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
-  formControl: AbstractControl;
+  formControl: FormControl;
   controlName: string;
   controlValue: any;
   controlDisabled = false;
@@ -105,8 +105,8 @@ export class SelectComponent implements OnInit, OnDestroy {
   selectListFlatGroup: any[] = [];
   isArray = isArray;
   readonly layoutNode = input<any>(undefined);
-  readonly layoutIndex = input<number[]>(undefined);
-  readonly dataIndex = input<number[]>(undefined);
+  readonly layoutIndex = input<number[]>([]);
+  readonly dataIndex = input<number[]>([]);
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};

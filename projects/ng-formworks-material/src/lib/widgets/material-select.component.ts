@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/core';
 
@@ -118,7 +118,7 @@ export class MaterialSelectComponent implements OnInit, OnDestroy {
   matFormFieldDefaultOptions = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
   private jsf = inject(JsonSchemaFormService);
 
-  formControl: AbstractControl;
+  formControl: FormControl;
   controlName: string;
   controlValue: any;
   controlDisabled = false;
@@ -128,8 +128,8 @@ export class MaterialSelectComponent implements OnInit, OnDestroy {
   selectListFlatGroup: any[] = [];
   isArray = isArray;
   readonly layoutNode = input<any>(undefined);
-  readonly layoutIndex = input<number[]>(undefined);
-  readonly dataIndex = input<number[]>(undefined);
+  readonly layoutIndex = input<number[]>([]);
+  readonly dataIndex = input<number[]>([]);
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};

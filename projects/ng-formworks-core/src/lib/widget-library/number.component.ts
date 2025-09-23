@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, input } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
@@ -58,7 +58,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
 export class NumberComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
-  formControl: AbstractControl;
+  formControl: FormControl;
   controlName: string;
   controlValue: any;
   controlDisabled = false;
@@ -69,8 +69,8 @@ export class NumberComponent implements OnInit,OnDestroy {
   allowExponents = false;
   lastValidNumber = '';
   readonly layoutNode = input<any>(undefined);
-  readonly layoutIndex = input<number[]>(undefined);
-  readonly dataIndex = input<number[]>(undefined);
+  readonly layoutIndex = input<number[]>([]);
+  readonly dataIndex = input<number[]>([]);
 
     //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
     get inputAttributes() {

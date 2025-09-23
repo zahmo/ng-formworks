@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
 
 
@@ -59,7 +59,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
 export class MaterialRadiosComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
 
-  formControl: AbstractControl;
+  formControl: FormControl;
   controlName: string;
   controlValue: any;
   controlDisabled = false;
