@@ -1,0 +1,28 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'tabs-testparent',
+  standalone: false,
+  template: `
+    <tabs-template [itemsArray]="products" [selectedTab]="activeTab">
+      <ng-template #tabTitle let-product>
+        <span class="fw-bold">{{ product.name }}</span>
+      </ng-template>
+      <ng-template #tabContent let-product>
+        <h3>{{ product.name }} Details</h3>
+        <p>
+          Price: <strong>{{ product.price | currency }}</strong>
+        </p>
+        <p>{{ product.description }}</p>
+      </ng-template>
+    </tabs-template>
+  `,
+})
+export class TabsTestParentComponent {
+  products = [
+    { id: 1, name: 'Product A', price: 19.99, description: 'Description for Product A.' },
+    { id: 2, name: 'Product B', price: 29.99, description: 'Description for Product B.' },
+    { id: 3, name: 'Product C', price: 39.99, description: 'Description for Product C.' },
+  ];
+  activeTab = 0;
+}

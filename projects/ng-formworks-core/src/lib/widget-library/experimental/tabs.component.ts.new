@@ -1,0 +1,126 @@
+import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { ContextControl } from '../contextcontrol';
+import { JsonSchemaFormService } from '../json-schema-form.service';
+import { TabsTemplateOptions } from './tabs.template';
+
+
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'tabs-widget',
+  template: `
+  <tabs-template [tabsTemplate]="tabsTemplate" [tabContentArray]="layoutNode().items" [selectedTab]="selectedItem" (onTabSelect)="select($event)">
+      <ng-template #tabTitle let-layoutItem let-i="index">
+          {{setTabTitle(layoutItem, i)}}
+      </ng-template>
+      <ng-template #tabContent let-layoutItem let-i="index">
+        <ng-container *ngIf="options?.tabMode=='oneOfMode'">
+          <select-framework-widget *ngIf="selectedItem === i"
+            [class]="(options?.fieldHtmlClass || '') +
+              ' ' + (options?.activeClass || '') +
+              ' ' + (options?.style?.selected || '')"
+            [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
+            [layoutIndex]="(layoutIndex() || []).concat(i)"
+            [layoutNode]="layoutItem"></select-framework-widget>
+        </ng-container> 
+        <ng-container *ngIf="options?.tabMode !='oneOfMode'">
+          <select-framework-widget 
+            [class]="(options?.fieldHtmlClass || '') +
+              ' ' + (options?.activeClass || '') +
+              ' ' + (options?.style?.selected || '')"
+            [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
+            [layoutIndex]="(layoutIndex() || []).concat(i)"
+            [layoutNode]="layoutItem"></select-framework-widget>
+        </ng-container> 
+      </ng-template>
+    </tabs-template>
+    `,
+  styles: [` a { cursor: pointer; } 
+        .ngf-hidden{display:none}
+      `],
+  standalone: false
+})
+export class TabsComponent extends ContextControl implements OnInit {
+  readonly context = input<any>(null);
+  getContext() {
+    return this.context() || this;
+  }
+  tabsTemplate: TabsTemplateOptions = {
+    getUlClassSet: (selectedTab) => {
+      return { "nav nav-tabs": true }
+    },
+    getLiClassSet: (index, selectedTab) => {
+      return {
+        "nav-item": true
+      }
+    },
+    getTabPaneClassSet(index, selectedTab) {
+      return {
+        "tab-pane fade": true,
+        "show active": selectedTab === index
+      }
+    },
+    getTabLinkClassSet(index, selectedTab) {
+      return {
+        "nav-link": true,
+        "active": selectedTab === index
+      }
+    },
+    getTabContentClassSet: (selectedTab) => {
+      return { "tab-content mt-3": true }
+    }
+  }
+
+  private jsf = inject(JsonSchemaFormService);
+
+  constructor() {
+    super();
+  }
+
+  options: any;
+  itemCount: number;
+  selectedItem = 0;
+  showAddTab = true;
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
+  layoutNodeItems: any[];
+
+  ngOnInit() {
+    this.options = this.layoutNode().options || {};
+    if (this.options.selectedTab) {
+      this.selectedItem = this.options.selectedTab;
+    }
+    this.itemCount = this.layoutNode().items.length - 1;
+    this.layoutNodeItems = this.layoutNode().items;
+    this.updateControl();
+  }
+
+  select(index) {
+    const layoutNode = this.layoutNode();
+    if (layoutNode.items[index].type === '$ref') {
+      this.itemCount = layoutNode.items.length;
+      this.jsf.addItem({
+        layoutNode: signal(layoutNode.items[index]),
+        layoutIndex: signal(this.layoutIndex().concat(index)),
+        dataIndex: signal(this.dataIndex().concat(index))
+      });
+      //this.layoutNodeItems=[...this.layoutNode().items];
+      this.updateControl();
+    }
+    this.selectedItem = index;
+  }
+
+  updateControl() {
+    const lastItem = this.layoutNode().items[this.layoutNode().items.length - 1];
+    if (lastItem.type === '$ref' &&
+      this.itemCount >= (lastItem.options.maxItems || 1000)
+    ) {
+      this.showAddTab = false;
+    }
+    //this.cdr.markForCheck();
+  }
+
+  setTabTitle(item: any, index: number): string {
+    return this.jsf.setArrayItemTitle(this, item, index);
+  }
+}

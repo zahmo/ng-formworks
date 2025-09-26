@@ -1,0 +1,12 @@
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
+
+@Component({
+  selector: 'tabcontent-template',
+  standalone: false,
+  template: ``, // This component has no visual template, it's just a container for projected templates.
+})
+export class TabContentTemplateComponent {
+  @Input() item: any;
+  @ContentChild('tabTitle', { static: true }) tabTitleTemplate!: TemplateRef<any>;
+  @ContentChild('tabContent', { static: true }) tabContentTemplate!: TemplateRef<any>;
+}
