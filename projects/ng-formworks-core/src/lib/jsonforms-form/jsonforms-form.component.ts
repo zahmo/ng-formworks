@@ -1,6 +1,7 @@
 import { Component, inject, input, model, OnInit, output } from '@angular/core';
 import { createAjv } from '@jsonforms/core';
 import { FrameworkLibraryService } from '../framework-library/framework-library.service';
+import { coreRenderers } from '../jsonforms-renderers';
 import { isObject } from '../shared/validator.functions';
 @Component({
   selector: 'jsonforms-form',
@@ -64,8 +65,8 @@ export class JsonformsFormComponent implements OnInit{
       //  framework = form.options.framework || framework;
       //}
       const activeFramework:any=this.frameworkLibrary.activeFramework;
-      const renderers = this.renderers()||activeFramework.renderers;
-      this.renderers.set(renderers);
+      const fwrenderers =this.renderers()||activeFramework.renderers||coreRenderers;
+      this.renderers.set(fwrenderers);
       //if (isObject(renderers)) {
         //this.jsf.setOptions({ widgets: widgets });
       //}
