@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { CssFramework, CssframeworkService } from '@ng-formworks/cssframework';
+import { materialRenderers } from './jsonforms-renderers';
 import { cssFrameworkCfgMaterialDesign } from './material-design-cssframework';
 import {
   FlexLayoutRootComponent,
@@ -76,6 +77,10 @@ export class MaterialDesignFramework extends CssFramework {
     'wizard': 'stepper',
     'selectcheckbox':'checkbox'
   };
+
+  renderers = [
+    ...materialRenderers
+  ]
 
   constructor(){
     const cssFWService = inject(CssframeworkService);
