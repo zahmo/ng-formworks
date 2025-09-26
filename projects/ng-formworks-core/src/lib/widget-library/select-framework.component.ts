@@ -34,8 +34,8 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
       //this.widgetContainer.createComponent<any>(this.jsf.framework)
     }
     if (this.newComponent) {
-      for (const input of ['layoutNode', 'layoutIndex', 'dataIndex']) {
-        this.newComponent.instance[input] = this[input];
+      for (const inp of ['layoutNode', 'layoutIndex', 'dataIndex']) {
+        this.newComponent.instance[inp] = this[inp];
       }
     }
   }
