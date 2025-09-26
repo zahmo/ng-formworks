@@ -89,11 +89,11 @@ export class CategorizationTabLayoutRendererCore
         next: (state: JsonFormsState) => {
           const props = mapStateToLayoutProps(state, this.getOwnProps());
           this.hidden = !props.visible;
-          this.visibleCategories = this.uischema.elements.filter(
+          this.visibleCategories = this.uischema.elements?.filter(
             (category: Category | Categorization) =>
               isVisible(category, props.data, undefined, getAjv(state))
           );
-          this.categoryLabels = this.visibleCategories.map((element) =>
+          this.categoryLabels = this.visibleCategories?.map((element) =>
             deriveLabelForUISchemaElement(
               element as Labelable<boolean>,
               state.jsonforms.i18n?.translate ??
