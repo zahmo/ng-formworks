@@ -91,19 +91,22 @@ export const cssFrameworkCfgBootstrap4:css_fw.frameworkcfg={
             "labelHtmlClass": "nav nav-tabs",
             "htmlClass": "tab-content",
             "fieldHtmlClass": "tab-pane",
-            "widget_radioClass":"form-check"
+            "widget_radioClass":"form-check",
+            "widget_tabLinkClass":"nav-link"
         },
         "tabarray": {
             "labelHtmlClass": "nav nav-tabs",
             "htmlClass": "tab-content",
             "fieldHtmlClass": "tab-pane",
-            "widget_radioClass":"form-check"
+            "widget_radioClass":"form-check",
+            "widget_tabLinkClass":"nav-link"
         },
         "one-of": {
             "labelHtmlClass": "nav nav-tabs",
             "htmlClass": "tab-content",
             "fieldHtmlClass": "tab-pane",
-            "widget_radioClass":"form-check"
+            "widget_radioClass":"form-check",
+            "widget_tabLinkClass":"nav-link"
         },
         "textarea": {},
         "default": {
