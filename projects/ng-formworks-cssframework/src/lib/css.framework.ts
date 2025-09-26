@@ -14,7 +14,8 @@ export class CssFramework extends Framework {
 
   framework:any = CssFrameworkComponent;
   config:css_fw.frameworkcfg
-  constructor(@Inject(CSS_FRAMEWORK_CFG ) cfg:css_fw.frameworkcfg){
+  renderers:any;
+  constructor(@Inject(CSS_FRAMEWORK_CFG ) cfg:css_fw.frameworkcfg&{renderers?:any}){
         //reverted to use @Inject for other child classes
         //const cfg = inject<css_fw.frameworkcfg>(CSS_FRAMEWORK_CFG);
 
@@ -26,6 +27,7 @@ export class CssFramework extends Framework {
         this.scripts=cfg.scripts;
         this.config=cfg;
         this.widgets=cfg.widgets;
+        this.renderers=cfg.renderers;
   }
   getActiveTheme():css_fw.themeKV{
     let activeRequestedThemeName=this.cssFWService.getActiveRequestedTheme();
