@@ -2,6 +2,11 @@ import { AddReferenceComponent } from './add-reference.component';
 import { ButtonComponent } from './button.component';
 import { CheckboxComponent } from './checkbox.component';
 import { CheckboxesComponent } from './checkboxes.component';
+import { TabsBaseComponent } from './experimental/tabs.base';
+import { TabsDefaultComponent } from './experimental/tabs.default.component';
+import { TabsProxyComponent } from './experimental/tabs.proxy.component';
+import { TabsTemplateComponent } from './experimental/tabs.template';
+import { TabsTestParentComponent } from './experimental/tabs.testparent';
 import { FileComponent } from './file.component';
 import { HiddenComponent } from './hidden.component';
 import { InputComponent } from './input.component';
@@ -28,7 +33,10 @@ export const BASIC_WIDGETS = [
   MessageComponent, NoneComponent, NumberComponent, RadiosComponent,
   RootComponent, SectionComponent, SelectComponent, SelectFrameworkComponent,
   SelectWidgetComponent, SubmitComponent, TabComponent, TabsComponent,
-  TemplateComponent, TextareaComponent,SelectCheckboxComponent
+  TemplateComponent, TextareaComponent,SelectCheckboxComponent,
+  TabsTemplateComponent,TabsTestParentComponent,TabsProxyComponent,
+  TabsBaseComponent,TabsDefaultComponent
+  //,TabContentTemplateComponent
 ];
 
 export { AddReferenceComponent } from './add-reference.component';
@@ -53,6 +61,12 @@ export { SelectComponent } from './select.component';
 export { SelectCheckboxComponent } from './selectcheckbox.component';
 export { SubmitComponent } from './submit.component';
 export { TabComponent } from './tab.component';
+//export { TabContentTemplateComponent } from './tabcontent.template';
+export { TabsBaseComponent } from './experimental/tabs.base';
+export { TabsDefaultComponent } from './experimental/tabs.default.component';
+export { TabsProxyComponent } from './experimental/tabs.proxy.component';
+export { TabsTemplateComponent } from './experimental/tabs.template';
+export { TabsTestParentComponent } from './experimental/tabs.testparent';
 export { TabsComponent } from './tabs.component';
 export { TemplateComponent } from './template.component';
 export { TextareaComponent } from './textarea.component';
