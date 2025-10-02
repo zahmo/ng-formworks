@@ -159,16 +159,20 @@
             <div *ngIf="!formActive">{{jsonFormStatusMessage}}</div>
 
             <!-- This is the form! -->
-            <!---commented out to test jsonforms-form-->
+            <!--comment out to test json-schema-form  -->
             <json-schema-form *ngIf="formActive" loadExternalAssets="true" [form]="jsonFormObject" [options]="jsonFormOptions" [framework]="selectedFramework" [language]="selectedLanguage" [theme]="selectedTheme" (onChanges)="onChanges($event)" (onSubmit)="onSubmit($event)"
                 (isValid)="isValid($event)" (validationErrors)="validationErrors($event)">
             </json-schema-form>
-
-            <!--
-            jsonforms-form
+            <!-- test two way binding
+            <json-schema-form *ngIf="formActive" loadExternalAssets="true" [(formData)]="formData" [schema]="jsonFormObject?.schema" [layout]="jsonFormObject?.layout" [options]="jsonFormOptions" [framework]="selectedFramework" [language]="selectedLanguage" [theme]="selectedTheme"
+                (onChanges)="onChanges($event)" (onSubmit)="onSubmit($event)" (isValid)="isValid($event)" (validationErrors)="validationErrors($event)">
+            </json-schema-form>
+            -->
+            <!--comment out to test jsonforms-form 
             <jsonforms-form *ngIf="formActive" loadExternalAssets="true" [options]="jsonFormOptions" [framework]="selectedFramework" [theme]="selectedTheme" [schema]="jsonFormObject.schema" [uischema]="jsonFormObject.uischema" [data]="jsonFormObject.data" (onChanges)="onChanges($event)">
             </jsonforms-form>
-            -->
+             -->
+
 
         </div>
         <hr>

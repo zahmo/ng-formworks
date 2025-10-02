@@ -119,6 +119,7 @@ export class DemoComponent implements OnInit,AfterViewInit {
     msg:'',
     toolbar_color:'primary'
   }
+  formData={};
 
   readonly menuTrigger = viewChild(MatMenuTrigger);
 
