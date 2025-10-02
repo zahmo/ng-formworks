@@ -22,7 +22,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
            name="tabSelection" 
            [(ngModel)]="selectedItem"
            [class]="(options?.widget_radioClass || '')"
-           [value]="i" 
+           [value]="i"
            (change)="select(i)"
           />
           {{setTabTitle(item, i)}}
