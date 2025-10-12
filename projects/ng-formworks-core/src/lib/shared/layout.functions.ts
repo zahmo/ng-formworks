@@ -671,13 +671,15 @@ export function buildLayoutFromSchema(
 ) {
   function applyITEConditions(builtLayout,schPointer,keySchemaPointer,negateClause,parentLayout?){
     if (builtLayout) {
-      if(parentLayout && parentLayout.isITEItem && parentLayout.options.condition){
-        return;
+      const parentCondition=parentLayout && parentLayout.isITEItem && parentLayout.options.condition;
+      if(parentCondition){
+         //builtLayout.isITEItem=true;
+         return;
       }
       if (isArray(builtLayout)) {
         builtLayout.forEach(item => {
           item.isITEItem=true;
-          item.options.condition = convertJSONSchemaIfToCondition(schema,item, negateClause);
+          item.options.condition =parentCondition?null:convertJSONSchemaIfToCondition(schema,item, negateClause);
           applyITEConditions(item,schPointer,keySchemaPointer,negateClause,builtLayout)
           //item.schemaPointer = schPointer + keySchemaPointer + item.dataPointer;
           //item.options.condition = convertJSONSchemaIfToCondition(schema, negateClause);
@@ -695,7 +697,7 @@ export function buildLayoutFromSchema(
         builtLayout.isITEItem=true;
         //builtLayout.schemaPointer = `${schPointer}${keySchemaPointer}/${builtLayout.name}`;
       
-        builtLayout.options.condition = convertJSONSchemaIfToCondition(schema,builtLayout, negateClause);
+        builtLayout.options.condition =parentCondition?null: convertJSONSchemaIfToCondition(schema,builtLayout, negateClause);
         //newSection.push(builtLayout)
       }
     }
@@ -975,6 +977,18 @@ export function buildLayoutFromSchema(
 
         // If removable, add tuple item layout to layoutRefLibrary
         if (removable && i >= newNode.options.minItems) {
+          let conditionalRefPointer=`${itemRefPointer}@${schemaPointer}`;
+          let templateRefToUse=itemRefPointer;
+          if (hasOwn(jsf.layoutRefLibrary, itemRefPointer)
+            && !hasOwn(jsf.layoutRefLibrary, conditionalRefPointer)) {
+              jsf.layoutRefLibrary[conditionalRefPointer] = buildLayoutFromSchema(
+                jsf, widgetLibrary, isArray(nodeValue) ? nodeValue[i] : null,
+                schemaPointer + '/items/' + i,
+                itemRecursive ? '' : dataPointer + '/' + i,
+                true, 'tuple', true, true, itemRecursive ? dataPointer + '/' + i : ''
+              );
+              templateRefToUse=conditionalRefPointer;
+          }
           if (!hasOwn(jsf.layoutRefLibrary, itemRefPointer)) {
             // Set to null first to prevent recursive reference from causing endless loop
             jsf.layoutRefLibrary[itemRefPointer] = null;
@@ -987,9 +1001,10 @@ export function buildLayoutFromSchema(
             if (itemRecursive) {
               jsf.layoutRefLibrary[itemRefPointer].recursiveReference = true;
             }
+            jsf.layoutRefLibrary[conditionalRefPointer]=jsf.layoutRefLibrary[itemRefPointer];
           }
           newItem = getLayoutNode({
-            $ref: itemRefPointer,
+            $ref: templateRefToUse,
             dataPointer: dataPointer + '/' + i,
             recursiveReference: itemRecursive,
           }, jsf, widgetLibrary, isArray(nodeValue) ? nodeValue[i] : null);
@@ -1023,6 +1038,18 @@ export function buildLayoutFromSchema(
       const itemSchemaPointer = removeRecursiveReferences(
         additionalItemsSchemaPointer, jsf.schemaRecursiveRefMap, jsf.arrayMap
       );
+      let conditionalRefPointer=`${itemRefPointer}@${schemaPointer}`;
+      let templateRefToUse=itemRefPointer;
+      if (hasOwn(jsf.layoutRefLibrary, itemRefPointer)
+        && !hasOwn(jsf.layoutRefLibrary, conditionalRefPointer)) {
+          jsf.layoutRefLibrary[conditionalRefPointer] =  buildLayoutFromSchema(
+            jsf, widgetLibrary, null,
+            itemSchemaPointer,
+            itemRecursive ? '' : dataPointer + '/-',
+            true, 'list', removable, true, itemRecursive ? dataPointer + '/-' : ''
+          )
+          templateRefToUse=conditionalRefPointer;
+      }
       // Add list item layout to layoutRefLibrary
       if (itemRefPointer.length && !hasOwn(jsf.layoutRefLibrary, itemRefPointer)) {
         // Set to null first to prevent recursive reference from causing endless loop
@@ -1036,6 +1063,7 @@ export function buildLayoutFromSchema(
         if (itemRecursive) {
           jsf.layoutRefLibrary[itemRefPointer].recursiveReference = true;
         }
+        jsf.layoutRefLibrary[conditionalRefPointer]=jsf.layoutRefLibrary[itemRefPointer];
       }
 
       // Add any additional default items
@@ -1048,7 +1076,7 @@ export function buildLayoutFromSchema(
         if (newNode.items.length < arrayLength) {
           for (let i = newNode.items.length; i < arrayLength; i++) {
             newNode.items.push(getLayoutNode({
-              $ref: itemRefPointer,
+              $ref: templateRefToUse,
               dataPointer: dataPointer + '/-',
               recursiveReference: itemRecursive,
             }, jsf, widgetLibrary, isArray(nodeValue) ? nodeValue[i] : null));
@@ -1084,7 +1112,7 @@ export function buildLayoutFromSchema(
           recursiveReference: itemRecursive,
           type: '$ref',
           widget: widgetLibrary.getWidget('$ref'),
-          $ref: itemRefPointer,
+          $ref: templateRefToUse//itemRefPointer,
         });
       }
     }
