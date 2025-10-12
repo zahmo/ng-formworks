@@ -377,6 +377,20 @@ export function buildFormGroupTemplate(
               shortDataPointer + '/' + i, jsf.dataRecursiveRefMap, jsf.arrayMap
             );
             const itemRecursive = itemRefPointer !== shortDataPointer + '/' + i;
+           //if is in templateLibrary then need to check if its a conditional
+           //and conditional pointers match orthewise create a new ref
+            let conditionalRefPointer=`${itemRefPointer}@${schemaPointer}`;
+            let templateRefToUse=itemRefPointer;
+            if(hasOwn(jsf.templateRefLibrary, itemRefPointer)
+               && !hasOwn(jsf.templateRefLibrary, conditionalRefPointer)){
+                jsf.templateRefLibrary[conditionalRefPointer]=buildFormGroupTemplate(
+                  jsf, null, setValues,
+                  schemaRefPointer,
+                  itemRefPointer,
+                  templatePointer + '/controls/' + i
+                );
+                templateRefToUse=conditionalRefPointer;
+            }
             if (!hasOwn(jsf.templateRefLibrary, itemRefPointer)) {
               jsf.templateRefLibrary[itemRefPointer] = null;
               jsf.templateRefLibrary[itemRefPointer] = buildFormGroupTemplate(
@@ -385,6 +399,7 @@ export function buildFormGroupTemplate(
                 itemRefPointer,
                 templatePointer + '/controls/' + i
               );
+              jsf.templateRefLibrary[conditionalRefPointer]=jsf.templateRefLibrary[itemRefPointer];
             }
             controls.push(
               isArray(nodeValue) ?
@@ -395,7 +410,7 @@ export function buildFormGroupTemplate(
                   templatePointer + '/controls/' + i
                 ) :
                 itemRecursive ?
-                  null : cloneDeep(jsf.templateRefLibrary[itemRefPointer])
+                  null : cloneDeep(jsf.templateRefLibrary[templateRefToUse])
             );
           }
         }
@@ -418,6 +433,20 @@ export function buildFormGroupTemplate(
           shortDataPointer + '/-', jsf.dataRecursiveRefMap, jsf.arrayMap
         );
         const itemRecursive = itemRefPointer !== shortDataPointer + '/-';
+        //if is in templateLibrary then need to check if its a conditional
+        //and conditional pointers match orthewise create a new ref
+           let conditionalRefPointer=`${itemRefPointer}@${schemaPointer}`;
+           let templateRefToUse=itemRefPointer;
+           if(hasOwn(jsf.templateRefLibrary, itemRefPointer)
+              && !hasOwn(jsf.templateRefLibrary, conditionalRefPointer)){
+               jsf.templateRefLibrary[conditionalRefPointer]=buildFormGroupTemplate(
+                 jsf, null, setValues,
+                 schemaRefPointer,
+                 itemRefPointer,
+                 templatePointer + '/controls/-' 
+               );
+               templateRefToUse=conditionalRefPointer;
+           }
         if (!hasOwn(jsf.templateRefLibrary, itemRefPointer)) {
           jsf.templateRefLibrary[itemRefPointer] = null;
           jsf.templateRefLibrary[itemRefPointer] = buildFormGroupTemplate(
@@ -426,6 +455,7 @@ export function buildFormGroupTemplate(
             itemRefPointer,
             templatePointer + '/controls/-'
           );
+          jsf.templateRefLibrary[conditionalRefPointer]=jsf.templateRefLibrary[itemRefPointer];
         }
         // const itemOptions = jsf.dataMap.get(itemRefPointer) || new Map();
         const itemOptions = nodeOptions;
@@ -445,7 +475,7 @@ export function buildFormGroupTemplate(
                   templatePointer + '/controls/-'
                 ) :
                 itemRecursive ?
-                  null : cloneDeep(jsf.templateRefLibrary[itemRefPointer])
+                  null : cloneDeep(jsf.templateRefLibrary[templateRefToUse])
             );
           }
         }
@@ -787,7 +817,39 @@ export function getControl(
   // If formGroup input is a formGroup template,
   // or formGroup.get() failed to return the control,
   // search the formGroup object for dataPointer's control
+
   let subGroup = formGroup;
+  //if schemapointer provided but no control matched
+  //it could mean the schema pointer is a nested child
+  //for example this could be in form group
+  //formGroup.controls.$allOf$0$then$properties$foo
+  //but schemapointer provided is '/allOf/0/then/properties/foo/items/properties/name'
+  //and dataPointer is '/foo/0/name'
+  //then need to look in formGroup.controls.$allOf$0$then$properties$foo
+  //for control path /0/name
+  if(schemaPointer){
+    let controlPointer=JsonPointer.toControlPointer(dataPointer,{});
+    let schemaPointerArray=schemaPointer.split('/')
+    let controlPointerArray=JsonPointer.parse(dataPointer);
+    //controlPointer.split('/').splice(1);
+
+    let currSPAKey;
+    let spFormGroup;
+    while(schemaPointerArray.length>0){
+      currSPAKey=schemaPointerArray.pop();
+      let ckey=path2ControlKey(schemaPointerArray.join("/"));
+      spFormGroup=formGroup.get(ckey);
+      if(controlPointerArray[0]==schemaPointerArray[schemaPointerArray.length-1]){
+        controlPointerArray.shift();
+      }
+      if(spFormGroup){
+        break;
+      }
+    }
+    subGroup=spFormGroup||subGroup;
+    dataPointerArray=spFormGroup?controlPointerArray:dataPointerArray;
+
+  }
   for (const key of dataPointerArray) {
     if (hasOwn(subGroup, 'controls')) { subGroup = subGroup.controls; }
     if (schemaPointer && hasOwn(subGroup, path2ControlKey(schemaPointer ))) {
