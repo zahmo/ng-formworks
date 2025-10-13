@@ -28,6 +28,8 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [readonly]="options?.readonly ? 'readonly' : null"
         [type]="layoutNode()?.type"
         [attributes]="inputAttributes"
+        (mousedown)="onMouseDown($event)"
+        (touchstart)="onTouchStart($event)"
         >
       <input *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
@@ -46,6 +48,8 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [value]="controlValue"
         (input)="updateValue($event)"
         [attributes]="inputAttributes"
+        (mousedown)="onMouseDown($event)"
+        (touchstart)="onTouchStart($event)"  
         >
         <datalist *ngIf="options?.typeahead?.source"
           [id]="'control' + layoutNode()?._id + 'Autocomplete'">
@@ -72,6 +76,16 @@ export class InputComponent implements OnInit, OnDestroy {
   get inputAttributes() {
     return this.options?.['x-inputAttributes'];
   }
+
+    //TODO review:stopPropagation used as a workaround 
+    //to prevent dragging onMouseDown and onTouchStart events
+    onMouseDown(e){
+      e.stopPropagation();
+    }
+
+    onTouchStart(e){
+      e.stopPropagation();
+    }
 
 
   ngOnInit() {
