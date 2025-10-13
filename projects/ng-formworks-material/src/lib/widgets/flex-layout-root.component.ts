@@ -11,9 +11,15 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     [class.flex-inherit]="true"
     [cdkDropListSortPredicate]="sortPredicate"
     >
+      <!--
+      cdkDragHandle directive, by itself, does not disable the 
+      default drag behavior of its parent cdkDrag element. 
+      You must explicitly disable dragging on the main element 
+      and re-enable it only when using the handle.
+      -->
       <div *ngFor="let layoutNode of layout(); let i = index" 
        cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
-       
+ 
         [class.form-flex-item]="isFlexItem()"
         [style.flex-grow]="getFlexAttribute(layoutNode, 'flex-grow')"
         [style.flex-shrink]="getFlexAttribute(layoutNode, 'flex-shrink')"
@@ -27,9 +33,11 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 
         >
         <!-- workaround to disbale dragging of input fields -->
+        <!--
         <div *ngIf="layoutNode?.dataType !='object'" cdkDragHandle>
          <p></p>
         </div>
+        -->
         <select-framework-widget *ngIf="showWidget(layoutNode)"
        
           [dataIndex]="layoutNode?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
