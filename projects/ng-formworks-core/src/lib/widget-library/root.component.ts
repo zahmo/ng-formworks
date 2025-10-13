@@ -10,7 +10,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       [class.flex-inherit]="true"
       [cdkDropListSortPredicate]="sortPredicate"
     >
-      <!--
+      <!-- -for now left out
       cdkDragHandle directive, by itself, does not disable the 
       default drag behavior of its parent cdkDrag element. 
       You must explicitly disable dragging on the main element 
