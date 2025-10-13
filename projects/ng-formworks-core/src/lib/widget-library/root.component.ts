@@ -1,3 +1,4 @@
+import { CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -5,9 +6,20 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   // tslint:disable-next-line:component-selector
   selector: 'root-widget',
   template: `
-    <div [class.flex-inherit]="true" #sortableContainter [sortablejs]="layout" [sortablejsOptions]="sortableConfig" (init)="sortableInit($event)">
+    <div cdkDropList (cdkDropListDropped)="drop($event)" 
+      [class.flex-inherit]="true"
+      [cdkDropListSortPredicate]="sortPredicate"
+    >
+      <!--
+      cdkDragHandle directive, by itself, does not disable the 
+      default drag behavior of its parent cdkDrag element. 
+      You must explicitly disable dragging on the main element 
+      and re-enable it only when using the handle.
+      -->
       <div *ngFor="let layoutItem of layout; let i = index"
-        [class.form-flex-item]="isFlexItem"
+         cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
+        
+        [class.form-flex-item]="isFlexItem()"
         [style.align-self]="(layoutItem.options || {})['align-self']"
         [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
         [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
@@ -16,22 +28,29 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [class.sortable-filter]="!isDraggable(layoutItem)"
         [class.sortable-fixed]="isFixed(layoutItem)"
         >
+
+        <!-- workaround to disbale dragging of input fields -->
+        <!--
+        <div *ngIf="layoutItem?.dataType !='object'"  cdkDragHandle>
+         <p>Drag Handle {{layoutItem?.dataType}}</p>
+        </div>
+        -->
         <!--NB orderable directive is not used but has been left in for now and set to false
           otherwise the compiler won't recognize dataIndex and other dependent attributes
         -->
+        <!--
         <div 
           [dataIndex]="layoutItem?.arrayItem ? (dataIndex || []).concat(i) : (dataIndex || [])"
           [layoutIndex]="(layoutIndex || []).concat(i)"
           [layoutNode]="layoutItem"
           [orderable]="false"
-          [class.sortable-filter]="!isDraggable(layoutItem)"
-          [class.sortable-fixed]="isFixed(layoutItem)"
           >
+        -->
           <select-framework-widget *ngIf="showWidget(layoutItem)"
             [dataIndex]="layoutItem?.arrayItem ? (dataIndex || []).concat(i) : (dataIndex || [])"
             [layoutIndex]="(layoutIndex || []).concat(i)"
             [layoutNode]="layoutItem"></select-framework-widget>
-        </div>
+        <!--</div>-->
       </div>
     </div>
     `,
@@ -174,6 +193,24 @@ export class RootComponent implements OnInit, OnDestroy{
     */
   }
 
+  drop(event: CdkDragDrop<string[]>) {
+    // most likely why this event is used is to get the dragging element's current index
+    // same properties as onEnd
+    //console.log(`sortablejs event:${evt}`);
+    let srcInd=event.previousIndex;
+    let trgInd=event.currentIndex;
+    let layoutItem=this.layout[trgInd];
+    let dataInd=layoutItem?.arrayItem ? (this.dataIndex || []).concat(trgInd) : (this.dataIndex || []);
+    let layoutInd=(this.layoutIndex || []).concat(trgInd)
+    let itemCtx:any={
+      dataIndex:()=>{return dataInd},
+      layoutIndex:()=>{return layoutInd},
+      layoutNode:()=>{return layoutItem},
+    }
+    //must set moveLayout to false as nxtSortable already moves it
+    this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
+  }
+
   isDraggable(node: any): boolean {
     let result=node.arrayItem && node.type !== '$ref' &&
     node.arrayItemType === 'list' && this.isOrderable !== false;
@@ -192,6 +229,21 @@ export class RootComponent implements OnInit, OnDestroy{
     let result=node.type == '$ref';
     return result;
   }
+
+      /**
+   * Predicate function that disallows '$ref' item sorts
+   * NB declared as a var instead of a function 
+   * like sortPredicate(index: number, item: CdkDrag<number>){..}
+   * since 'this' is bound to the draglist and doesn't reference the
+   * FlexLayoutRootComponent instance
+   */
+    //TODO also need to think of other types such as button which can be
+    //created by an arbitrary layout
+    sortPredicate=(index: number, item: CdkDrag<number>)=> {
+      let layoutItem=this.layout[index];
+      let result=layoutItem.type != '$ref';
+      return result;
+    }
 
   // Set attributes for flexbox child
   // (container attributes are set in section.component)
