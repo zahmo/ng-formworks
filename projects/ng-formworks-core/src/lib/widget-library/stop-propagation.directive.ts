@@ -1,8 +1,11 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 
 @Directive({
-  selector: '[appStopPropagation]'
+  selector: '[appStopPropagation]', standalone:false
 })
+
+//TODO review:stopPropagation used as a workaround 
+//to prevent dragging onMouseDown and onTouchStart events
 export class StopPropagationDirective implements OnInit, OnDestroy {
   // The input property to receive an array of event names
   @Input('appStopPropagation') events: string[] = [];
