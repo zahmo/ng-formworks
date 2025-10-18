@@ -1,6 +1,7 @@
 import { CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, inject, input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
+import { memoize } from 'lodash';
 
 
 @Component({
@@ -11,38 +12,44 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     [class.flex-inherit]="true"
     [cdkDropListSortPredicate]="sortPredicate"
     >
-      <!--
+      <!-- -for now left out
       cdkDragHandle directive, by itself, does not disable the 
       default drag behavior of its parent cdkDrag element. 
       You must explicitly disable dragging on the main element 
       and re-enable it only when using the handle.
       -->
-      <div *ngFor="let layoutNode of layout(); let i = index" 
+      <div *ngFor="let layoutItem of layout(); let i = index;trackBy: trackByFn" 
        cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
- 
+        [cdkDragDisabled]="layoutItem?.type=='submit' || layoutItem?.type=='$ref'"
         [class.form-flex-item]="isFlexItem()"
-        [style.flex-grow]="getFlexAttribute(layoutNode, 'flex-grow')"
-        [style.flex-shrink]="getFlexAttribute(layoutNode, 'flex-shrink')"
-        [style.flex-basis]="getFlexAttribute(layoutNode, 'flex-basis')"
-        [style.align-self]="(layoutNode?.options || {})['align-self']"
-        [style.order]="layoutNode?.options?.order"
-        [attr.fxFlex]="layoutNode?.options?.fxFlex"
-        [attr.fxFlexOrder]="layoutNode?.options?.fxFlexOrder"
-        [attr.fxFlexOffset]="layoutNode?.options?.fxFlexOffset"
-        [attr.fxFlexAlign]="layoutNode?.options?.fxFlexAlign"
+        [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
+        [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
+        [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
+        [style.align-self]="(layoutItem?.options || {})['align-self']"
+        [style.order]="layoutItem?.options?.order"
+        [attr.fxFlex]="layoutItem?.options?.fxFlex"
+        [attr.fxFlexOrder]="layoutItem?.options?.fxFlexOrder"
+        [attr.fxFlexOffset]="layoutItem?.options?.fxFlexOffset"
+        [attr.fxFlexAlign]="layoutItem?.options?.fxFlexAlign"
 
         >
         <!-- workaround to disbale dragging of input fields -->
         <!--
-        <div *ngIf="layoutNode?.dataType !='object'" cdkDragHandle>
+        <div *ngIf="layoutItem?.dataType !='object'" cdkDragHandle>
          <p></p>
         </div>
         -->
-        <select-framework-widget *ngIf="showWidget(layoutNode)"
-       
-          [dataIndex]="layoutNode?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
+        <!--
+        <select-framework-widget *ngIf="showWidget(layoutItem)"
+          [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
           [layoutIndex]="(layoutIndex() || []).concat(i)"
-          [layoutNode]="layoutNode"></select-framework-widget>
+          [layoutNode]="layoutItem"></select-framework-widget>
+        -->
+        <select-framework-widget *ngIf="showWidget(layoutItem)"
+            [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
+            [layoutIndex]="getSelectFrameworkInputs(layoutItem,i).layoutIndex"
+            [layoutNode]="getSelectFrameworkInputs(layoutItem,i).layoutNode">
+		  </select-framework-widget>
       </div>
     </div>`,
     styles:`
@@ -104,16 +111,19 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 }
     
 `,
-    changeDetection: ChangeDetectionStrategy.Default,
+    //changeDetection: ChangeDetectionStrategy.Default,
+    changeDetection:ChangeDetectionStrategy.OnPush,
     standalone: false
 })
-export class FlexLayoutRootComponent implements OnInit {
+export class FlexLayoutRootComponent implements OnInit,OnDestroy,OnChanges {
+
   private jsf = inject(JsonSchemaFormService);
 
   readonly dataIndex = input<number[]>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly layout = input<any[]>(undefined);
   readonly isFlexItem = input(false);
+  readonly memoizationEnabled= input<boolean>(true);
   ngOnInit() {
 
   }
@@ -174,7 +184,52 @@ export class FlexLayoutRootComponent implements OnInit {
       (node.options || {})[attribute] || ['1', '1', 'auto'][index];
   }
 
+  private _getSelectFrameworkInputsRaw = (layoutItem: any, i: number) => {
+    const dataIndexValue = this.dataIndex() || [];
+    const layoutIndexValue = this.layoutIndex() || [];
+
+    return {
+      layoutNode: layoutItem,
+      layoutIndex: [...layoutIndexValue, i],
+      dataIndex: layoutItem?.arrayItem ? [...dataIndexValue, i] : dataIndexValue,
+    };
+  };
+
+  // Define a separate function to hold the memoized version
+  private _getSelectFrameworkInputsMemoized = memoize(
+    this._getSelectFrameworkInputsRaw,
+    (layoutItem: any, i: number) => {
+      const layoutItemKey = layoutItem?.id ?? JSON.stringify(layoutItem);
+      return `${layoutItemKey}-${i}`;
+    }
+  );
+
+  // This is the public function that the template calls
+  getSelectFrameworkInputs(layoutItem: any, i: number) {
+    if (this.memoizationEnabled) {
+      return this._getSelectFrameworkInputsMemoized(layoutItem, i);
+    } else {
+      return this._getSelectFrameworkInputsRaw(layoutItem, i);
+    }
+  }
+    
+    trackByFn(index: number, item: any): any {
+      return item._id ?? index;
+    }
+
   showWidget(layoutNode: any): boolean {
     return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
+      // Clear the entire cache of the memoized function
+      this._getSelectFrameworkInputsMemoized.cache.clear();
+    }
+  }
+  ngOnDestroy(): void {
+    //this.selectframeworkInputCache?.clear()
+    //this.selectframeworkInputCache=null;
+    this._getSelectFrameworkInputsMemoized.cache.clear();
+    //this.dataChangesSubs?.unsubscribe();
+}
 }
