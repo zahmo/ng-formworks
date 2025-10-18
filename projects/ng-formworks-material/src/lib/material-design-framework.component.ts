@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, input, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, isDefined } from '@ng-formworks/core';
 import { CssframeworkService } from '@ng-formworks/cssframework';
 import cloneDeep from 'lodash/cloneDeep';
@@ -77,7 +77,7 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
     this.initializeFramework();
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes) {
     if (!this.frameworkInitialized) {
       this.initializeFramework();
     }
@@ -111,7 +111,7 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
           'submit', 'tabarray', 'tabs'].includes(layoutNode.type) &&
         /{{.+?}}/.test(this.widgetOptions.title || '')
       ) {
-        this.dynamicTitle = this.widgetOptions.title;
+        this.dynamicTitle = this.options?.title;//this.widgetOptions.title;
         this.updateTitle();
       }
 
