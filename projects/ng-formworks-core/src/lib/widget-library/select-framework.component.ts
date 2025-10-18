@@ -12,6 +12,8 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   template: `<div #widgetContainer></div>`,
 })
 export class SelectFrameworkComponent implements OnChanges, OnInit {
+
+
   newComponent: ComponentRef<any> = null;
   @Input() layoutNode: any;
   @Input() layoutIndex: number[];
@@ -29,7 +31,7 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
     this.updateComponent();
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes) {
     this.updateComponent();
   }
 
@@ -42,9 +44,12 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
       //this.widgetContainer.createComponent<any>(this.jsf.framework)
     }
     if (this.newComponent) {
-      for (const input of ['layoutNode', 'layoutIndex', 'dataIndex']) {
-        this.newComponent.instance[input] = this[input];
+      for (const inp of ['layoutNode', 'layoutIndex', 'dataIndex']) {
+        //this.newComponent.instance[inp] = this[inp];
+        this.newComponent.setInput(inp,this[inp]());
       }
+      // Manually trigger change detection after updating inputs
+      //this.changeDetectorRef.detectChanges();
     }
   }
 }
