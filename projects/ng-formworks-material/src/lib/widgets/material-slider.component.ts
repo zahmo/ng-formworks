@@ -15,7 +15,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [min]="options?.minimum"
       [step]="options?.multipleOf || options?.step || 'any'"
       [style.width]="'100%'"
-      class="sortable-filter"
       (blur)="options.showErrors = true">
         <input matSliderThumb [formControl]="formControl" 
         [attributes]="inputAttributes"
@@ -31,7 +30,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [min]="options?.minimum"
       [step]="options?.multipleOf || options?.step || 'any'"
       [style.width]="'100%'"
-      class="sortable-filter"
       (blur)="options.showErrors = true" #ngSlider>
         <input matSliderThumb [value]="controlValue" 
         (change)="updateValue({source: ngSliderThumb, parent: ngSlider, value: ngSliderThumb.value})"
