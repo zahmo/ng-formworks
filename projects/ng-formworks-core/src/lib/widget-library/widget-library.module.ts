@@ -5,12 +5,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElementAttributeDirective } from './element-attribute.directive';
 import { BASIC_WIDGETS } from './index';
 import { OrderableDirective } from './orderable.directive';
+import { StopPropagationDirective } from './stop-propagation.directive';
 
 @NgModule({
     imports: [CommonModule, FormsModule, ReactiveFormsModule,DragDropModule
  ],
-    declarations: [...BASIC_WIDGETS, OrderableDirective,ElementAttributeDirective],
-    exports: [...BASIC_WIDGETS, OrderableDirective,ElementAttributeDirective]
+    declarations: [...BASIC_WIDGETS, OrderableDirective,ElementAttributeDirective,StopPropagationDirective],
+    exports: [...BASIC_WIDGETS, OrderableDirective,ElementAttributeDirective,StopPropagationDirective]
 })
 export class WidgetLibraryModule {
 }
