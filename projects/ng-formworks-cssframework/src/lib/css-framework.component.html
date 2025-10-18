@@ -11,7 +11,7 @@
         <p *ngIf="options?.helpBlock" [class]="widgetStyles.__help_block__" [innerHTML]="options?.helpBlock"></p>
     </div>
 
-    <label *ngIf="options?.title && layoutNode?.type !== 'tab'" [attr.for]="'control' + layoutNode?._id" [class]="options?.labelHtmlClass || ''" [class.sr-only]="options?.notitle" [innerHTML]="options?.title"></label>
+    <label *ngIf="options?.title && layoutNode?.type !== 'tab'" [attr.for]="'control' + layoutNode?._id" [class]="options?.labelHtmlClass || ''" [class.sr-only]="options?.notitle" [innerHTML]="dynamicTitle"></label>
     <p *ngIf="layoutNode?.type === 'submit' && jsf?.formOptions?.fieldsRequired">
         <strong [class]="widgetStyles.__required_asterisk__">*</strong> = required fields
     </p>
