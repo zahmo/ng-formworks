@@ -1,4 +1,4 @@
-import { Component, ComponentRef, OnChanges, OnInit, ViewContainerRef, inject, input, viewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ComponentRef, OnChanges, OnInit, ViewContainerRef, inject, input, viewChild } from '@angular/core';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
@@ -10,7 +10,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
 })
 export class SelectFrameworkComponent implements OnChanges, OnInit {
   private jsf = inject(JsonSchemaFormService);
-
+  private changeDetectorRef = inject(ChangeDetectorRef);
   newComponent: ComponentRef<any> = null;
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
@@ -21,7 +21,7 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
     this.updateComponent();
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes) {
     this.updateComponent();
   }
 
@@ -34,9 +34,12 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
       //this.widgetContainer.createComponent<any>(this.jsf.framework)
     }
     if (this.newComponent) {
-      for (const input of ['layoutNode', 'layoutIndex', 'dataIndex']) {
-        this.newComponent.instance[input] = this[input];
+      for (const inp of ['layoutNode', 'layoutIndex', 'dataIndex']) {
+        //this.newComponent.instance[inp] = this[inp];
+        this.newComponent.setInput(inp,this[inp]());
       }
+      // Manually trigger change detection after updating inputs
+      //this.changeDetectorRef.detectChanges();
     }
   }
 }
