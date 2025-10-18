@@ -27,6 +27,8 @@ export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
   debug: any = '';
   parentArray: any = null;
   isOrderable = false;
+  dynamicTitle: string = null;
+  isDynamicTitle:boolean;
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
@@ -170,9 +172,12 @@ frameworkThemeSubs:Subscription;
     }
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes) {
     if (!this.frameworkInitialized) {
       this.initializeFramework();
+    }
+    if (this.isDynamicTitle) {
+      this.updateTitle();
     }
   }
 
@@ -194,8 +199,10 @@ frameworkThemeSubs:Subscription;
         'radiobuttons', 'radios-inline', 'radios', 'range', 'reset', 'search',
         'select', 'submit', 'tel', 'text', 'textarea', 'time', 'url', 'week'
       ]);
-
-      this.options.title = this.setTitle();
+      
+      this.isDynamicTitle=this.options?.title&& /{{.+?}}/.test(this.options.title)
+      this.updateTitle();
+      this.setTitle();
 
       this.options.htmlClass =
         addClasses(this.options.htmlClass, 'schema-form-' + layoutNode.type);
@@ -301,6 +308,16 @@ addClasses(this.options.htmlClass, this.widgetStyles.array.htmlClass):
         this.widgetOptions.title = null;
         return this.jsf.setItemTitle(this);
     }
+  }
+
+  updateTitle() {
+    this.dynamicTitle= this.jsf.parseText(
+      this.options?.title,
+      this.jsf.getFormControlValue(this),
+      this.jsf.getFormControlGroup(this)?.value,
+      this.dataIndex()[this.dataIndex().length - 1]
+    );
+    //this.jsf.setItemTitle(this);
   }
 
   removeItem() {
