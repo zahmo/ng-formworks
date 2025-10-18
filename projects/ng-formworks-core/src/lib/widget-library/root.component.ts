@@ -119,7 +119,6 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges{
       layoutIndex:()=>{return layoutInd},
       layoutNode:()=>{return layoutItem},
     }
-    //must set moveLayout to false as nxtSortable already moves it
     this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
   }
 

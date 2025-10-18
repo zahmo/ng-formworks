@@ -13,7 +13,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     template: `
     <section [class]="options?.htmlClass || ''" align="end">
       <button *ngIf="showAddButton"
-        [class]="options?.fieldHtmlClass || ''" class="sortable-filter sortable-fixed"
+        [class]="options?.fieldHtmlClass || ''"
         [disabled]="options?.readonly"
         (click)="addItem($event)"
         [appStopPropagation]="['mousedown', 'touchstart']"
