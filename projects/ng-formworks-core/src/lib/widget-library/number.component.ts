@@ -29,8 +29,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [title]="lastValidNumber"
         [type]="layoutNode?.type === 'range' ? 'range' : 'number'"
         [attributes]="inputAttributes"
-        (mousedown)="onMouseDown($event)"
-        (touchstart)="onTouchStart($event)"
+        [appStopPropagation]="['mousedown', 'touchstart']"
         >
       <input #inputControl *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
@@ -50,8 +49,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [value]="controlValue"
         (input)="updateValue($event)"
         [attributes]="inputAttributes"
-        (mousedown)="onMouseDown($event)"
-        (touchstart)="onTouchStart($event)"
+        [appStopPropagation]="['mousedown', 'touchstart']"
         >
       <span *ngIf="layoutNode?.type === 'range'" [innerHTML]="controlValue"></span>
     </div>`,

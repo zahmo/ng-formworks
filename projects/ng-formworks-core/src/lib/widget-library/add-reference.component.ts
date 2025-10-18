@@ -15,9 +15,12 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       <button *ngIf="showAddButton"
         [class]="options?.fieldHtmlClass || ''" class="sortable-filter sortable-fixed"
         [disabled]="options?.readonly"
-        (click)="addItem($event)">
+        (click)="addItem($event)"
+        [appStopPropagation]="['mousedown', 'touchstart']"
+        >
         <span *ngIf="options?.icon" [class]="options?.icon"></span>
         <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
+        
       </button>
     </section>`,
     changeDetection: ChangeDetectionStrategy.Default,
@@ -34,6 +37,7 @@ export class AddReferenceComponent implements OnInit {
   constructor(
     private jsf: JsonSchemaFormService
   ) { }
+
 
   ngOnInit() {
     this.options = this.layoutNode.options || {};

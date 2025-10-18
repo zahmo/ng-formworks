@@ -17,7 +17,9 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [name]="controlName"
         [type]="layoutNode?.type"
         [value]="controlValue"
-        (click)="updateValue($event)">
+        (click)="updateValue($event)"
+        [appStopPropagation]="['mousedown', 'touchstart']"
+        >
         <span *ngIf="options?.icon || options?.title"
           [class]="options?.icon"
           [innerHTML]="options?.title"></span>
