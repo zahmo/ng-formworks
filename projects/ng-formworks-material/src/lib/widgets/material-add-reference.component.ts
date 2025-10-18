@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 
@@ -10,7 +10,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <button mat-raised-button *ngIf="showAddButton"
         [color]="options?.color || 'accent'"
         [disabled]="options?.readonly"
-        (click)="addItem($event)">
+        (click)="addItem($event)"
+        [appStopPropagation]="['mousedown', 'touchstart']">
         <span *ngIf="options?.icon" [class]="options?.icon"></span>
         <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
       </button>
