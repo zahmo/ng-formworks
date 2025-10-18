@@ -51,6 +51,7 @@ export { SelectFrameworkComponent } from './select-framework.component';
 export { SelectWidgetComponent } from './select-widget.component';
 export { SelectComponent } from './select.component';
 export { SelectCheckboxComponent } from './selectcheckbox.component';
+export { StopPropagationDirective } from './stop-propagation.directive';
 export { SubmitComponent } from './submit.component';
 export { TabComponent } from './tab.component';
 export { TabsComponent } from './tabs.component';
