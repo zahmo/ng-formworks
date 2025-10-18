@@ -21,7 +21,9 @@ import { hasOwn } from '../shared/utility.functions';
         [name]="controlName"
         [type]="layoutNode?.type"
         [value]="controlValue"
-        (click)="updateValue($event)">
+        (click)="updateValue($event)"
+        [appStopPropagation]="['mousedown', 'touchstart']"
+        >
     </div>`,
 })
 export class SubmitComponent implements OnInit,OnDestroy {
