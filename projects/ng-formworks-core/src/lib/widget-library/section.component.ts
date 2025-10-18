@@ -88,6 +88,8 @@ export class SectionComponent implements OnInit {
     return this.options.notitle ? null : this.jsf.setItemTitle(this);
   }
 
+
+
   ngOnInit() {
     this.jsf.initializeControl(this);
     this.options = this.layoutNode().options || {};
