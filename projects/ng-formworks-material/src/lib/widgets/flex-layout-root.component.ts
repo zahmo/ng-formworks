@@ -130,23 +130,9 @@ export class FlexLayoutRootComponent implements OnInit,OnDestroy,OnChanges {
   removeItem(item) {
     this.jsf.removeItem(item);
   }
-  sortableObj: any;
-  sortableConfig:any={
-    filter:".sortable-filter",//needed to disable dragging on input range elements, class needs to be added to the element or its parent
-    preventOnFilter: false,//needed for input range elements slider do still work
-    onEnd: (/**Event*/evt)=> {
-
-      
-    }
-  }
-  sortableInit(sortable) {
-    this.sortableObj = sortable;
-  }
 
   drop(event: CdkDragDrop<string[]>) {
     // most likely why this event is used is to get the dragging element's current index
-    // same properties as onEnd
-    //console.log(`sortablejs event:${evt}`);
     let srcInd=event.previousIndex;
     let trgInd=event.currentIndex;
     let layoutItem=this.layout()[trgInd];
@@ -157,7 +143,6 @@ export class FlexLayoutRootComponent implements OnInit,OnDestroy,OnChanges {
       layoutIndex:()=>{return layoutInd},
       layoutNode:()=>{return layoutItem},
     }
-    //must set moveLayout to false as nxtSortable already moves it
     this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
   }
 
