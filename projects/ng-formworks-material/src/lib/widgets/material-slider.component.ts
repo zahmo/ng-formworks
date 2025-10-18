@@ -18,9 +18,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       class="sortable-filter"
       (blur)="options.showErrors = true">
         <input matSliderThumb [formControl]="formControl" 
-                [attributes]="inputAttributes"
-                (mousedown)="onMouseDown($event)"
-                (touchstart)="onTouchStart($event)"
+        [attributes]="inputAttributes"
+        [appStopPropagation]="['mousedown', 'touchstart']"
                 
         />
       </mat-slider>
@@ -37,9 +36,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         <input matSliderThumb [value]="controlValue" 
         (change)="updateValue({source: ngSliderThumb, parent: ngSlider, value: ngSliderThumb.value})"
         #ngSliderThumb="matSliderThumb" 
-                [attributes]="inputAttributes"
-                (mousedown)="onMouseDown($event)"
-                (touchstart)="onTouchStart($event)"
+        [attributes]="inputAttributes"
+        [appStopPropagation]="['mousedown', 'touchstart']"
 
         />
     </mat-slider>
@@ -65,16 +63,6 @@ export class MaterialSliderComponent implements OnInit,OnDestroy {
       //needed as templates don't accept something like [attributes]="options?.['x-inputAttributes']"
       get inputAttributes() {
         return this.options?.['x-inputAttributes'];
-      }
-  
-      //TODO review:stopPropagation used as a workaround 
-      //to prevent dragging onMouseDown and onTouchStart events
-      onMouseDown(e){
-        e.stopPropagation();
-      }
-  
-      onTouchStart(e){
-        e.stopPropagation();
       }
   
 
