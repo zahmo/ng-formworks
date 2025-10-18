@@ -189,15 +189,6 @@ export class JsonSchemaFormService implements OnDestroy {
     this.draggableStateSubject.next(value); // Update the draggable value
   }
 
-  //this is introduced to look at replacing the orderable directive with 
-  //nxt-sortablejs and sortablejs 
-  private sortableOptionsSubject = new BehaviorSubject<any>({disabled:false}); // Default value true
-  sortableOptions$ = this.sortableOptionsSubject.asObservable();
-
-  setSortableOptions(value: any) {
-    this.sortableOptionsSubject.next(value); // Update the sortable options value
-  }
-
   createAjvInstance(ajvOptions){
     let ajvInstance=new Ajv2019(ajvOptions); 
     ajvInstance.addMetaSchema(jsonDraft6);
