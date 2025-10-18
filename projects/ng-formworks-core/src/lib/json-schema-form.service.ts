@@ -382,14 +382,14 @@ this.ajv.addFormat("duration", {
     this.formGroup = <UntypedFormGroup>buildFormGroup(this.formGroupTemplate);
     if (this.formGroup) {
       this.compileAjvSchema(ajvInstanceName);
-      this.validateData(this.formGroup.value,true,ajvInstanceName);
+      this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName);
 
       // Set up observables to emit data and validation info when form data changes
       if (this.formValueSubscription) {
         this.formValueSubscription.unsubscribe();
       }
       this.formValueSubscription = this.formGroup.valueChanges.subscribe(
-        formValue => this.validateData(formValue,true,ajvInstanceName)
+        formValue => this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName)
       );
     }
   }
