@@ -106,8 +106,6 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges {
 
   drop(event: CdkDragDrop<string[]>) {
     // most likely why this event is used is to get the dragging element's current index
-    // same properties as onEnd
-    //console.log(`sortablejs event:${evt}`);
     let srcInd=event.previousIndex;
     let trgInd=event.currentIndex;
     let layoutItem=this.layout()[trgInd];
@@ -118,7 +116,6 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges {
       layoutIndex:()=>{return layoutInd},
       layoutNode:()=>{return layoutItem},
     }
-    //must set moveLayout to false as nxtSortable already moves it
     this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
   }
 
