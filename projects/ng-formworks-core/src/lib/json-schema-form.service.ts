@@ -1058,6 +1058,9 @@ this.ajv.addFormat("duration", {
 
     // Move item in the formArray
     const formArray = <UntypedFormArray>this.getFormControlGroup(ctx);
+    if(oldIndex >=formArray.length){
+      return false;
+    }
     const arrayItem = formArray.at(oldIndex);
     formArray.removeAt(oldIndex);
     formArray.insert(newIndex, arrayItem);
