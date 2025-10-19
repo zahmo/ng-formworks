@@ -19,7 +19,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       -->
       <div *ngFor="let layoutItem of layout(); let i = index;trackBy: trackByFn"
          cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
-        [cdkDragDisabled]="layoutItem?.type=='submit' || layoutItem?.type=='$ref'"
+        [cdkDragDisabled]="!isDraggable(layoutItem)"
         [class.form-flex-item]="isFlexItem()"
         [style.align-self]="(layoutItem.options || {})['align-self']"
         [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
@@ -121,7 +121,8 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges {
 
   isDraggable(node: any): boolean {
     let result=node.arrayItem && node.type !== '$ref' &&
-    node.arrayItemType === 'list' && this.isOrderable() !== false;
+    node.arrayItemType === 'list' && this.isOrderable() !== false
+    && node.type !=='submit'
     return result;
   }
 
@@ -144,7 +145,8 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges {
     //might not be needed added condition to [cdkDragDisabled]
     sortPredicate=(index: number, item: CdkDrag<number>)=> {
       let layoutItem=this.layout()[index];
-      let result=layoutItem.type != '$ref';
+      let result=this.isDraggable(layoutItem);
+      //layoutItem.type != '$ref';
       return result;
     }
 
