@@ -13,7 +13,7 @@ import { CssframeworkService } from './css-framework.service';
     standalone: false
 })
 export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
-  changeDetector = inject(ChangeDetectorRef);
+  cdr = inject(ChangeDetectorRef);
   jsf = inject(JsonSchemaFormService);
   jsfFLService = inject(FrameworkLibraryService);
   cssFWService = inject(CssframeworkService);
@@ -118,7 +118,6 @@ theme:string
 frameworkThemeSubs:Subscription;
   constructor(){
     const cssFWService = this.cssFWService;
-
     
     let activeFramework:any=this.jsfFLService.activeFramework;
     let fwcfg=activeFramework.config||{};
@@ -127,10 +126,6 @@ frameworkThemeSubs:Subscription;
     let defaultTheme=this.widgetStyles().__themes__[0];
     let defaultThemeName=cssFWService.activeRequestedTheme||defaultTheme.name;
     this.theme=this.options?.theme|| defaultThemeName;
-    this.frameworkThemeSubs=cssFWService.frameworkTheme$.subscribe(newTheme=>{
-        this.theme=newTheme;
-    })
- 
   }
 
   ngOnDestroy(): void {
@@ -161,6 +156,12 @@ frameworkThemeSubs:Subscription;
   }
 
   ngOnInit() {
+    const cssFWService = this.cssFWService;
+
+    this.frameworkThemeSubs=cssFWService.frameworkTheme$.subscribe(newTheme=>{
+        this.theme=newTheme;
+        this.cdr.detectChanges();
+    })
     this.initializeFramework();
     const layoutNode = this.layoutNode();
     if (layoutNode.arrayItem && layoutNode.type !== '$ref') {
