@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +8,9 @@ export class CssframeworkService {
 
   frameworkTheme$: Observable<string>;
   activeRequestedTheme:string;
-  frameworkThemeSubject: Subject<string>;
+  frameworkThemeSubject: BehaviorSubject<string>;
   constructor() {
-    this.frameworkThemeSubject = new Subject<string>();
+    this.frameworkThemeSubject = new BehaviorSubject<string>('default');
     this.frameworkTheme$ = this.frameworkThemeSubject.asObservable();
    }
 
