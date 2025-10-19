@@ -226,7 +226,6 @@ export class JsonSchemaFormService implements OnDestroy {
     this.ajv.addMetaSchema(jsonDraft7);
     addFormats(this.ajv);
     this.ajvRegistry['default']={name:'default',ajvInstance:this.ajv,ajvValidator:null};
-    console.log(this.ajvRegistry)
     // Add custom 'duration' format using a regex
 /*    
 this.ajv.addFormat("duration", {
