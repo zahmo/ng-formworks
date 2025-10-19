@@ -40,7 +40,8 @@
     "private": false,
     "peerDependencies": {
         "@angular/common": "^19.0.0",
-        "@angular/core": "^19.0.0"
+        "@angular/core": "^19.0.0",
+        "@angular/cdk": "^19.0.0"
     },
     "dependencies": {
         "tslib": "^2.7.0",
