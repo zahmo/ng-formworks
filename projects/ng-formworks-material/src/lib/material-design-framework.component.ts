@@ -10,7 +10,7 @@ import { cssFrameworkCfgMaterialDesign } from './material-design-cssframework';
   selector: 'material-design-framework',
   templateUrl: './material-design-framework.component.html',
   styleUrls: ['./material-design-framework.component.scss'],
-  //changeDetection:ChangeDetectionStrategy.OnPush
+  standalone: false
 })
 export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDestroy {
   frameworkInitialized = false;
@@ -29,7 +29,7 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
   theme:string="material-default-theme";
   frameworkThemeSubs:Subscription;
   constructor(
-    private changeDetector: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef,
     private jsf: JsonSchemaFormService,
     public jsfFLService:FrameworkLibraryService,
     public cssFWService:CssframeworkService
@@ -47,7 +47,7 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
   }
   ngOnDestroy(): void {
     this.frameworkThemeSubs.unsubscribe();
-    this.frameworkThemeSubs=null;
+    this.frameworkThemeSubs = null;
   }
 
   get showRemoveButton(): boolean {
@@ -71,6 +71,19 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
   }
 
   ngOnInit() {
+    const cssFWService = this.cssFWService;
+
+    let activeFramework: any = this.jsfFLService.activeFramework;
+    let fwcfg = activeFramework.config || {};
+    let defaultTheme = cssFrameworkCfgMaterialDesign.widgetstyles?.__themes__[0];
+    let defaultThemeName = cssFWService.activeRequestedTheme || defaultTheme.name;
+    this.theme = this.options?.theme || defaultThemeName;
+    this.frameworkThemeSubs = cssFWService.frameworkTheme$.subscribe(
+      newTheme => {
+        this.theme = newTheme;
+        this.cdr.detectChanges();
+      }
+    )
     this.initializeFramework();
   }
 
