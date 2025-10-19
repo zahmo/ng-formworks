@@ -556,6 +556,12 @@ this.ajv.addFormat("duration", {
     return '';
   }
 
+  //TODO fix- if template has value in title
+  // "items": {
+  //   "title": "{{ 'Input ' + $index+value }}",
+  //                   "type": "string"
+  // }
+  // result on button will be "Add Input [object Object]"
   setArrayItemTitle(
     parentCtx: any = {},
     childNode: any = null,
