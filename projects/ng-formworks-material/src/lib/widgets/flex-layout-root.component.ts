@@ -20,7 +20,7 @@ import { memoize } from 'lodash';
       -->
       <div *ngFor="let layoutItem of layout; let i = index;trackBy: trackByFn" 
        cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
-        [cdkDragDisabled]="layoutItem?.type=='submit' || layoutItem?.type=='$ref'"
+        [cdkDragDisabled]="!isDraggable(layoutItem)"
         [class.form-flex-item]="isFlexItem()"
         [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
         [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
@@ -119,6 +119,7 @@ export class FlexLayoutRootComponent {
   @Input() dataIndex: number[];
   @Input() layoutIndex: number[];
   @Input() layout: any[];
+  @Input() isOrderable:boolean;
   @Input() isFlexItem = false;
   @Input() memoizationEnabled =true;
   constructor(
@@ -144,6 +145,14 @@ export class FlexLayoutRootComponent {
     this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
   }
 
+  isDraggable(node: any): boolean {
+    let result=node.arrayItem && node.type !== '$ref' &&
+    node.arrayItemType === 'list' && this.isOrderable !== false
+    && node.type !=='submit'
+    return result;
+  }
+
+
     /**
    * Predicate function that disallows '$ref' item sorts
    * NB declared as a var instead of a function 
@@ -155,7 +164,8 @@ export class FlexLayoutRootComponent {
     //created by an arbitrary layout
     sortPredicate=(index: number, item: CdkDrag<number>)=> {
       let layoutItem=this.layout[index];
-      let result=layoutItem.type != '$ref';
+      let result=this.isDraggable(layoutItem);
+      //layoutItem.type != '$ref';
       return result;
     }
 
