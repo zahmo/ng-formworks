@@ -12,7 +12,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
                     [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
                     [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
                     [style.width]="'100%'">
-      <mat-label *ngIf="!options?.notitle">{{options?.title}}</mat-label>
+      <mat-label *ngIf="!options?.notitle">{{layoutNode().options?.title}}</mat-label>
       <span matPrefix *ngIf="options?.prefix || options?.fieldAddonLeft"
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <input matInput *ngIf="boundControl"
@@ -25,7 +25,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [matDatepicker]="picker"
         [min]="options?.minimum"
         [name]="controlName"
-        [placeholder]="options?.title"
+        [placeholder]="layoutNode().options?.title"
         [readonly]="options?.readonly"
         [required]="options?.required"
         [style.width]="'100%'"
@@ -41,7 +41,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [matDatepicker]="picker"
         [min]="options?.minimum"
         [name]="controlName"
-        [placeholder]="options?.title"
+        [placeholder]="layoutNode().options?.title"
         [required]="options?.required"
         [style.width]="'100%'"
         [readonly]="options?.readonly"

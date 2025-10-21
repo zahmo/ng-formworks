@@ -6,7 +6,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     // tslint:disable-next-line:component-selector
     selector: 'material-slider-widget',
     template: `
-<mat-label *ngIf="!options?.notitle">{{options?.title}}</mat-label>
+<mat-label *ngIf="!options?.notitle">{{this.layoutNode().options?.title}}</mat-label>
     <mat-slider discrete *ngIf="boundControl"
       [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
       [id]="'control' + layoutNode()?._id"
@@ -74,6 +74,7 @@ export class MaterialSliderComponent implements OnInit,OnDestroy {
     this.options.showErrors = true;
     this.jsf.updateValue(this, event.value);
   }
+
 
   ngOnDestroy () {
     this.jsf.updateValue(this, null);

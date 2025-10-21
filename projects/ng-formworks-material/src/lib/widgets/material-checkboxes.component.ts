@@ -24,7 +24,7 @@ import { JsonSchemaFormService, TitleMapItem, buildTitleMap } from '@ng-formwork
         class="title"
         [class]="options?.labelHtmlClass || ''"
         [style.display]="options?.notitle ? 'none' : ''"
-        [innerHTML]="options?.title"></label>
+        [innerHTML]="layoutNode().options?.title"></label>
       <ul class="checkbox-list" [class.horizontal-list]="horizontalList">
         <li *ngFor="let checkboxItem of checkboxList"
           [class]="options?.htmlClass || ''">
