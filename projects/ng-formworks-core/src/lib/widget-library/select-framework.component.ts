@@ -46,7 +46,7 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
     if (this.newComponent) {
       for (const inp of ['layoutNode', 'layoutIndex', 'dataIndex']) {
         //this.newComponent.instance[inp] = this[inp];
-        this.newComponent.setInput(inp,this[inp]());
+        this.newComponent.setInput(inp,this[inp]);
       }
       // Manually trigger change detection after updating inputs
       //this.changeDetectorRef.detectChanges();
