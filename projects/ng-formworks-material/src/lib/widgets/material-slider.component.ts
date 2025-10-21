@@ -6,7 +6,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     // tslint:disable-next-line:component-selector
     selector: 'material-slider-widget',
     template: `
-<mat-label *ngIf="!options?.notitle">{{this.layoutNode().options?.title}}</mat-label>
+<mat-label *ngIf="!options?.notitle">{{this.layoutNode.options?.title}}</mat-label>
     <mat-slider discrete *ngIf="boundControl"
       
       [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"

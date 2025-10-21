@@ -17,7 +17,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <span *ngIf="options?.title"
         class="checkbox-name"
         [style.display]="options?.notitle ? 'none' : ''"
-        [innerHTML]="layoutNode().options?.title"></span>
+        [innerHTML]="layoutNode.options?.title"></span>
     </mat-checkbox>
     <mat-checkbox *ngIf="!boundControl && !showSlideToggle"
       align="left"
@@ -32,7 +32,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <span *ngIf="options?.title"
         class="checkbox-name"
         [style.display]="options?.notitle ? 'none' : ''"
-        [innerHTML]="layoutNode().options?.title"></span>
+        [innerHTML]="layoutNode.options?.title"></span>
     </mat-checkbox>
     <mat-slide-toggle *ngIf="boundControl && showSlideToggle"
       [formControl]="formControl"
@@ -45,7 +45,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <span *ngIf="options?.title"
         class="checkbox-name"
         [style.display]="options?.notitle ? 'none' : ''"
-        [innerHTML]="layoutNode().options?.title"></span>
+        [innerHTML]="layoutNode.options?.title"></span>
     </mat-slide-toggle>
     <mat-slide-toggle *ngIf="!boundControl && showSlideToggle"
       align="left"
@@ -60,7 +60,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <span *ngIf="options?.title"
         class="checkbox-name"
         [style.display]="options?.notitle ? 'none' : ''"
-        [innerHTML]="layoutNode().options?.title"></span>
+        [innerHTML]="layoutNode.options?.title"></span>
     </mat-slide-toggle>
     <mat-error *ngIf="options?.showErrors && options?.errorMessage"
       [innerHTML]="options?.errorMessage"></mat-error>`,
