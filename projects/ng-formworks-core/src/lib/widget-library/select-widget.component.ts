@@ -1,7 +1,10 @@
 import {
   Component,
   ComponentRef, Input,
-  OnChanges, OnInit, ViewChild, ViewContainerRef
+  OnChanges, OnInit,
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -27,7 +30,7 @@ export class SelectWidgetComponent implements OnChanges, OnInit {
     this.updateComponent();
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes:SimpleChanges) {
     this.updateComponent();
   }
 
@@ -38,8 +41,9 @@ export class SelectWidgetComponent implements OnChanges, OnInit {
       );
     }
     if (this.newComponent) {
-      for (const input of ['layoutNode', 'layoutIndex', 'dataIndex']) {
-        this.newComponent.instance[input] = this[input];
+      for (const inp of ['layoutNode', 'layoutIndex', 'dataIndex']) {
+        //this.newComponent.instance[inp] = this[inp];
+        this.newComponent.setInput(inp,this[inp]());
       }
     }
   }
