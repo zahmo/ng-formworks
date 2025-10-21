@@ -6,7 +6,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
   selector: 'material-tabs-widget',
   template: `
     <nav mat-tab-nav-bar [tabPanel]="tabPanel"
-      [attr.aria-label]="options?.label || options?.title || ''"
+      [attr.aria-label]="options?.label || layoutNode().options?.title || ''"
       [style.width]="'100%'">
       
         <a mat-tab-link *ngFor="let item of layoutNode()?.items; let i = index"
