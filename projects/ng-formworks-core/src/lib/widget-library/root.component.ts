@@ -20,7 +20,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       <div *ngFor="let layoutItem of layout; let i = index;trackBy: trackByFn"
          cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
         [cdkDragDisabled]="!isDraggable(layoutItem)"
-        [class.form-flex-item]="isFlexItem()"
+        [class.form-flex-item]="isFlexItem"
         [style.align-self]="(layoutItem.options || {})['align-self']"
         [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
         [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
@@ -115,9 +115,9 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges{
     let dataInd=layoutItem?.arrayItem ? (this.dataIndex || []).concat(trgInd) : (this.dataIndex || []);
     let layoutInd=(this.layoutIndex || []).concat(trgInd)
     let itemCtx:any={
-      dataIndex:()=>{return dataInd},
-      layoutIndex:()=>{return layoutInd},
-      layoutNode:()=>{return layoutItem},
+      dataIndex:dataInd,
+      layoutIndex: layoutInd,
+      layoutNode: layoutItem
     }
     this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
   }
