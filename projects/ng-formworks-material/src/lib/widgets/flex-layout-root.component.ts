@@ -21,7 +21,7 @@ import { memoize } from 'lodash';
       <div *ngFor="let layoutItem of layout; let i = index;trackBy: trackByFn" 
        cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
         [cdkDragDisabled]="!isDraggable(layoutItem)"
-        [class.form-flex-item]="isFlexItem()"
+        [class.form-flex-item]="isFlexItem"
         [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
         [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
         [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
