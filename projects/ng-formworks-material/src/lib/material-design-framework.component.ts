@@ -137,12 +137,18 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges, OnDe
   }
 
   updateTitle() {
-    this.widgetLayoutNode.options.title = this.jsf.parseText(
+    this.widgetLayoutNode.options.title=
+    //let newTitle = 
+    this.jsf.parseText(
       this.dynamicTitle,
       this.jsf.getFormControlValue(this),
       this.jsf.getFormControlGroup(this).value,
       this.dataIndex()[this.dataIndex().length - 1]
     );
+    //this.widgetLayoutNode.options ={ ...this.widgetLayoutNode.options, title: newTitle }
+   //attempt to trigger change detection by changing widgetLayoutNode ref
+   // const newLayoutNode = { ...this.widgetLayoutNode, options: { ...this.widgetLayoutNode.options, title: newTitle } };
+  //this.widgetLayoutNode = newLayoutNode;
   }
 
   removeItem() {
