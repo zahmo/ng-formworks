@@ -13,7 +13,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
           [attr.for]="'control' + layoutNode?._id"
           [class]="options?.labelHtmlClass || ''"
           [style.display]="options?.notitle ? 'none' : ''"
-          [innerHTML]="layoutNode().options?.title"></label>
+          [innerHTML]="layoutNode.options?.title"></label>
       </div>
       <mat-button-toggle-group
         [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
