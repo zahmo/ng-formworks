@@ -12,7 +12,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
       [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
       [style.width]="'100%'">
-      <mat-label *ngIf="!options?.notitle">{{options?.title}}</mat-label>
+      <mat-label *ngIf="!options?.notitle">{{layoutNode().options?.title}}</mat-label>
       <span matPrefix *ngIf="options?.prefix || options?.fieldAddonLeft"
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <textarea matInput *ngIf="boundControl"
@@ -25,7 +25,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [required]="options?.required"
         [id]="'control' + layoutNode?._id"
         [name]="controlName"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder : layoutNode().options?.title"
         [readonly]="options?.readonly ? 'readonly' : null"
         [style.width]="'100%'"
         (blur)="options.showErrors = true"></textarea>
@@ -39,7 +39,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [disabled]="controlDisabled"
         [id]="'control' + layoutNode?._id"
         [name]="controlName"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder : layoutNode().options?.title"
         [readonly]="options?.readonly ? 'readonly' : null"
         [style.width]="'100%'"
         [value]="controlValue"

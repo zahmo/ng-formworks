@@ -4,15 +4,21 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-input-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-input-widget',
+    template: `
+    <!--TODO review- for dynamic titles
+      template must be  {{layoutNode().options?.title}}
+      ideally find a solution without changing all occurrences
+      in templates and not adding additional check cycles
+    -->
+
     <mat-form-field [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
       [class]="options?.htmlClass || ''"
       [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
       [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
       [style.width]="'100%'">
-      <mat-label *ngIf="!options?.notitle">{{options?.title}}</mat-label>
+      <mat-label *ngIf="!options?.notitle">{{layoutNode().options?.title}}</mat-label>
       <span matPrefix *ngIf="options?.prefix || options?.fieldAddonLeft"
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <input #input matInput *ngIf="boundControl"
@@ -25,7 +31,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [readonly]="options?.readonly ? 'readonly' : null"
         [id]="'control' + layoutNode?._id"
         [name]="controlName"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder :layoutNode().options?.title"
         [required]="options?.required"
         [type]="layoutNode?.type"
         (blur)="options.showErrors = true"
@@ -41,7 +47,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [disabled]="controlDisabled"
         [id]="'control' + layoutNode?._id"
         [name]="controlName"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder : layoutNode().options?.title"
         [readonly]="options?.readonly ? 'readonly' : null"
         [required]="options?.required"
         [style.width]="'100%'"
@@ -82,6 +88,7 @@ export class MaterialInputComponent implements OnInit {
   controlDisabled = false;
   boundControl = false;
   options: any;
+  layoutNodeRef:any;
   autoCompleteList: string[] = [];
   @Input() layoutNode: any;
   @Input() layoutIndex: number[];
