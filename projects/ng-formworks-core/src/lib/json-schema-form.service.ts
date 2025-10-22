@@ -702,7 +702,10 @@ this.ajv.addFormat("duration", {
     //set, as the control would only be initialized when the condition is true 
     //TODO-review need to decide which of the data sets between data,formValues and default 
     //to use for the value
-    if(ctx.options?.condition || layoutNode?.oneOfPointer || layoutNode?.anyOfPointer){
+    //TODO try maybe marking descendants in applyITEConditions
+    let isITEDescendant=layoutNode?.schemaPointer?.split("/")
+    .some(elt=>["then","else"].includes(elt));
+    if(ctx.options?.condition || layoutNode?.oneOfPointer || layoutNode?.anyOfPointer || isITEDescendant){
       const dataPointer = this.getDataPointer(ctx);
       const controlValue=ctx.formControl?.value;
       const dataValue=JsonPointer.has(this.data,dataPointer)?
