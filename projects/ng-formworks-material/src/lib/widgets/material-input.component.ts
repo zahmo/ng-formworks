@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, inject, input, viewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, inject, input as inputSignal, viewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { JsonSchemaFormService } from '@ng-formworks/core';
@@ -7,12 +7,18 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     // tslint:disable-next-line:component-selector
     selector: 'material-input-widget',
     template: `
+    <!--TODO review- for dynamic titles
+      template must be  {{layoutNode().options?.title}}
+      ideally find a solution without changing all occurrences
+      in templates and not adding additional check cycles
+    -->
+
     <mat-form-field [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
-      [class]="options?.htmlClass || ''" class="sortable-filter"
+      [class]="options?.htmlClass || ''"
       [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
       [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
       [style.width]="'100%'">
-      <mat-label *ngIf="!options?.notitle">{{options?.title}}</mat-label>
+      <mat-label *ngIf="!options?.notitle">{{layoutNode().options?.title}}</mat-label>
       <span matPrefix *ngIf="options?.prefix || options?.fieldAddonLeft"
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <input #input matInput *ngIf="boundControl"
@@ -25,13 +31,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [readonly]="options?.readonly ? 'readonly' : null"
         [id]="'control' + layoutNode()?._id"
         [name]="controlName"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder :layoutNode().options?.title"
         [required]="options?.required"
         [type]="layoutNode()?.type"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
-        (mousedown)="onMouseDown($event)"
-        (touchstart)="onTouchStart($event)"
+        [appStopPropagation]="['mousedown', 'touchstart']"
         >
       <input #input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
@@ -42,7 +47,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [disabled]="controlDisabled"
         [id]="'control' + layoutNode()?._id"
         [name]="controlName"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder : layoutNode().options?.title"
         [readonly]="options?.readonly ? 'readonly' : null"
         [required]="options?.required"
         [type]="layoutNode()?.type"
@@ -50,8 +55,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (input)="updateValue($event)"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
-        (mousedown)="onMouseDown($event)"
-        (touchstart)="onTouchStart($event)"        
+        [appStopPropagation]="['mousedown', 'touchstart']"      
         >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
@@ -87,10 +91,11 @@ export class MaterialInputComponent implements OnInit, OnDestroy {
   controlDisabled = false;
   boundControl = false;
   options: any;
+  layoutNodeRef:any;
   autoCompleteList: string[] = [];
-  readonly layoutNode = input<any>(undefined);
-  readonly layoutIndex = input<number[]>(undefined);
-  readonly dataIndex = input<number[]>(undefined);
+  readonly layoutNode = inputSignal<any>(undefined);
+  readonly layoutIndex = inputSignal<number[]>(undefined);
+  readonly dataIndex = inputSignal<number[]>(undefined);
 
   
   readonly input = viewChild<ElementRef>('input');
@@ -99,16 +104,6 @@ export class MaterialInputComponent implements OnInit, OnDestroy {
   get inputAttributes() {
     return this.options?.['x-inputAttributes'];
   }
-
-    //TODO review:stopPropagation used as a workaround 
-    //to prevent dragging onMouseDown and onTouchStart events
-    onMouseDown(e){
-      e.stopPropagation();
-    }
-
-    onTouchStart(e){
-      e.stopPropagation();
-    }
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};

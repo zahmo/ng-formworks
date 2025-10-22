@@ -7,7 +7,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     // tslint:disable-next-line:component-selector
     selector: 'number-widget',
     template: `
-    <div #divElt [class]="options?.htmlClass || ''" class="sortable-filter" >
+    <div #divElt [class]="options?.htmlClass || ''"  >
       <label *ngIf="options?.title"
         [attr.for]="'control' + layoutNode()?._id"
         [class]="options?.labelHtmlClass || ''"
@@ -29,7 +29,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [title]="lastValidNumber"
         [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
         [attributes]="inputAttributes"
-
+        [appStopPropagation]="['mousedown', 'touchstart']"
         >
       <input #inputControl *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
@@ -49,6 +49,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [value]="controlValue"
         (input)="updateValue($event)"
         [attributes]="inputAttributes"
+        [appStopPropagation]="['mousedown', 'touchstart']"
         >
       <span *ngIf="layoutNode()?.type === 'range'" [innerHTML]="controlValue"></span>
     </div>`,
@@ -81,7 +82,6 @@ export class NumberComponent implements OnInit,OnDestroy {
 
   @ViewChild('divElt', {})
   div: ElementRef;
-
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};

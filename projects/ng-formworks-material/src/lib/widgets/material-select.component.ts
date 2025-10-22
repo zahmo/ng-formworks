@@ -9,11 +9,11 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
   template: `
     <mat-form-field
       [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
-      [class]="options?.htmlClass || ''" class="sortable-filter"
+      [class]="options?.htmlClass || ''"
       [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
       [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
       [style.width]="'100%'">
-      <mat-label *ngIf="!options?.notitle">{{options?.title}}</mat-label>
+      <mat-label *ngIf="!options?.notitle">{{layoutNode().options?.title}}</mat-label>
       <span matPrefix *ngIf="options?.prefix || options?.fieldAddonLeft"
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <ng-container *ngIf="boundControl">
@@ -25,7 +25,7 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
         [attr.name]="controlName"
         [id]="'control' + layoutNode()?._id"
         [multiple]="options?.multiple"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder : layoutNode().options?.title"
         [required]="options?.required"
         [style.width]="'100%'"
         (blur)="options.showErrors = true"
@@ -50,7 +50,7 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
         [disabled]="controlDisabled || options?.readonly"
         [id]="'control' + layoutNode()?._id"
         [multiple]="options?.multiple"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder : layoutNode().options?.title"
         [required]="options?.required"
         [style.width]="'100%'"
         [value]="controlValue"
@@ -78,7 +78,7 @@ import { JsonSchemaFormService, buildTitleMap, isArray } from '@ng-formworks/cor
         [disabled]="controlDisabled || options?.readonly"
         [id]="'control' + layoutNode()?._id"
         [multiple]="options?.multiple"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder : layoutNode().options?.title"
         [required]="options?.required"
         [style.width]="'100%'"
         [value]="controlValue"

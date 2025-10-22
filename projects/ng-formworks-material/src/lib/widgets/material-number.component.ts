@@ -8,11 +8,11 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     selector: 'material-number-widget',
     template: `
     <mat-form-field [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
-    [class]="options?.htmlClass || ''" class="sortable-filter"
+    [class]="options?.htmlClass || ''"
     [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
     [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
     [style.width]="'100%'">
-    <mat-label *ngIf="!options?.notitle">{{options?.title}}</mat-label>
+    <mat-label *ngIf="!options?.notitle">{{layoutNode().options?.title}}</mat-label>
       <span matPrefix *ngIf="options?.prefix || options?.fieldAddonLeft"
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <input matInput *ngIf="boundControl"
@@ -23,15 +23,14 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [attr.step]="options?.multipleOf || options?.step || 'any'"
         [id]="'control' + layoutNode()?._id"
         [name]="controlName"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder : layoutNode().options?.title"
         [readonly]="options?.readonly ? 'readonly' : null"
         [required]="options?.required"
         [style.width]="'100%'"
         [type]="'number'"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
-        (mousedown)="onMouseDown($event)"
-        (touchstart)="onTouchStart($event)"  
+        [appStopPropagation]="['mousedown', 'touchstart']"
         >
       <input matInput *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
@@ -41,7 +40,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [disabled]="controlDisabled"
         [id]="'control' + layoutNode()?._id"
         [name]="controlName"
-        [placeholder]="options?.notitle ? options?.placeholder : options?.title"
+        [placeholder]="options?.notitle ? options?.placeholder : layoutNode().options?.title"
         [readonly]="options?.readonly ? 'readonly' : null"
         [required]="options?.required"
         [style.width]="'100%'"
@@ -50,8 +49,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         (input)="updateValue($event)"
         (blur)="options.showErrors = true"
         [attributes]="inputAttributes"
-        (mousedown)="onMouseDown($event)"
-        (touchstart)="onTouchStart($event)"  
+        [appStopPropagation]="['mousedown', 'touchstart']"
         >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
         [innerHTML]="options?.suffix || options?.fieldAddonRight"></span>
@@ -91,16 +89,7 @@ export class MaterialNumberComponent implements OnInit,OnDestroy {
   get inputAttributes() {
      return this.options?.['x-inputAttributes'];
   }
- 
-    //TODO review:stopPropagation used as a workaround 
-    //to prevent dragging onMouseDown and onTouchStart events
-    onMouseDown(e){
-      e.stopPropagation();
-    }
 
-    onTouchStart(e){
-      e.stopPropagation();
-    }  
   
   ngOnInit() {
     this.options = this.layoutNode().options || {};

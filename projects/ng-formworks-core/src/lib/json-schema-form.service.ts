@@ -189,15 +189,6 @@ export class JsonSchemaFormService implements OnDestroy {
     this.draggableStateSubject.next(value); // Update the draggable value
   }
 
-  //this is introduced to look at replacing the orderable directive with 
-  //nxt-sortablejs and sortablejs 
-  private sortableOptionsSubject = new BehaviorSubject<any>({disabled:false}); // Default value true
-  sortableOptions$ = this.sortableOptionsSubject.asObservable();
-
-  setSortableOptions(value: any) {
-    this.sortableOptionsSubject.next(value); // Update the sortable options value
-  }
-
   createAjvInstance(ajvOptions){
     let ajvInstance=new Ajv2019(ajvOptions); 
     ajvInstance.addMetaSchema(jsonDraft6);
@@ -390,14 +381,14 @@ this.ajv.addFormat("duration", {
     this.formGroup = <UntypedFormGroup>buildFormGroup(this.formGroupTemplate);
     if (this.formGroup) {
       this.compileAjvSchema(ajvInstanceName);
-      this.validateData(this.formGroup.value,true,ajvInstanceName);
+      this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName);
 
       // Set up observables to emit data and validation info when form data changes
       if (this.formValueSubscription) {
         this.formValueSubscription.unsubscribe();
       }
       this.formValueSubscription = this.formGroup.valueChanges.subscribe(
-        formValue => this.validateData(formValue,true,ajvInstanceName)
+        formValue => this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName)
       );
     }
   }
@@ -564,6 +555,12 @@ this.ajv.addFormat("duration", {
     return '';
   }
 
+  //TODO fix- if template has value in title
+  // "items": {
+  //   "title": "{{ 'Input ' + $index+value }}",
+  //                   "type": "string"
+  // }
+  // result on button will be "Add Input [object Object]"
   setArrayItemTitle(
     parentCtx: any = {},
     childNode: any = null,
@@ -732,7 +729,10 @@ this.ajv.addFormat("duration", {
     //set, as the control would only be initialized when the condition is true 
     //TODO-review need to decide which of the data sets between data,formValues and default 
     //to use for the value
-    if(ctx.options?.condition || layoutNode?.oneOfPointer || layoutNode?.anyOfPointer){
+    //TODO try maybe marking descendants in applyITEConditions
+    let isITEDescendant=layoutNode?.schemaPointer?.split("/")
+    .some(elt=>["then","else"].includes(elt));
+    if(ctx.options?.condition || layoutNode?.oneOfPointer || layoutNode?.anyOfPointer || isITEDescendant){
       const dataPointer = this.getDataPointer(ctx);
       const controlValue=ctx.formControl?.value;
       const dataValue=JsonPointer.has(this.data,dataPointer)?
@@ -1056,6 +1056,9 @@ this.ajv.addFormat("duration", {
 
     // Move item in the formArray
     const formArray = <UntypedFormArray>this.getFormControlGroup(ctx);
+    if(oldIndex >=formArray.length){
+      return false;
+    }
     const arrayItem = formArray.at(oldIndex);
     formArray.removeAt(oldIndex);
     formArray.insert(newIndex, arrayItem);

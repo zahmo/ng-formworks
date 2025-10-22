@@ -6,7 +6,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     // tslint:disable-next-line:component-selector
     selector: 'material-slider-widget',
     template: `
-
+<mat-label *ngIf="!options?.notitle">{{this.layoutNode().options?.title}}</mat-label>
     <mat-slider discrete *ngIf="boundControl"
       [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
       [id]="'control' + layoutNode()?._id"
@@ -14,12 +14,10 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [min]="options?.minimum"
       [step]="options?.multipleOf || options?.step || 'any'"
       [style.width]="'100%'"
-      class="sortable-filter"
       (blur)="options.showErrors = true">
         <input matSliderThumb [formControl]="formControl" 
-                [attributes]="inputAttributes"
-                (mousedown)="onMouseDown($event)"
-                (touchstart)="onTouchStart($event)"
+        [attributes]="inputAttributes"
+        [appStopPropagation]="['mousedown', 'touchstart']"
                 
         />
       </mat-slider>
@@ -31,14 +29,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [min]="options?.minimum"
       [step]="options?.multipleOf || options?.step || 'any'"
       [style.width]="'100%'"
-      class="sortable-filter"
       (blur)="options.showErrors = true" #ngSlider>
         <input matSliderThumb [value]="controlValue" 
         (change)="updateValue({source: ngSliderThumb, parent: ngSlider, value: ngSliderThumb.value})"
         #ngSliderThumb="matSliderThumb" 
-                [attributes]="inputAttributes"
-                (mousedown)="onMouseDown($event)"
-                (touchstart)="onTouchStart($event)"
+        [attributes]="inputAttributes"
+        [appStopPropagation]="['mousedown', 'touchstart']"
 
         />
     </mat-slider>
@@ -69,16 +65,6 @@ export class MaterialSliderComponent implements OnInit,OnDestroy {
       return this.options?.['x-inputAttributes'];
     }
 
-    //TODO review:stopPropagation used as a workaround 
-    //to prevent dragging onMouseDown and onTouchStart events
-    onMouseDown(e){
-      e.stopPropagation();
-    }
-
-    onTouchStart(e){
-      e.stopPropagation();
-    }
-
   ngOnInit() {
     this.options = this.layoutNode().options || {};
     this.jsf.initializeControl(this, !this.options.readonly);
@@ -88,6 +74,7 @@ export class MaterialSliderComponent implements OnInit,OnDestroy {
     this.options.showErrors = true;
     this.jsf.updateValue(this, event.value);
   }
+
 
   ngOnDestroy () {
     this.jsf.updateValue(this, null);

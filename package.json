@@ -1,6 +1,6 @@
 {
     "name": "demo",
-    "version": "20.6.6",
+    "version": "20.6.7",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "description": "Angular JSON Schema Form builder Demo",
     "engines": {
@@ -121,9 +121,7 @@
         "daisyui": "^5.0.46",
         "jsdom": "^26.1.0",
         "lodash-es": "~4.17.21",
-        "nxt-sortablejs": "^20.0.0",
         "rxjs": "^7.0.0",
-        "sortablejs": "^1.15.6",
         "tailwindcss": "^4.1.11",
         "tslib": "^2.7.0",
         "zone.js": "^0.15.0"

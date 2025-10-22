@@ -13,7 +13,7 @@ import { CssframeworkService } from './css-framework.service';
     standalone: false
 })
 export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
-  changeDetector = inject(ChangeDetectorRef);
+  cdr = inject(ChangeDetectorRef);
   jsf = inject(JsonSchemaFormService);
   jsfFLService = inject(FrameworkLibraryService);
   cssFWService = inject(CssframeworkService);
@@ -27,6 +27,8 @@ export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
   debug: any = '';
   parentArray: any = null;
   isOrderable = false;
+  dynamicTitle: string = null;
+  isDynamicTitle:boolean;
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
@@ -116,7 +118,6 @@ theme:string
 frameworkThemeSubs:Subscription;
   constructor(){
     const cssFWService = this.cssFWService;
-
     
     let activeFramework:any=this.jsfFLService.activeFramework;
     let fwcfg=activeFramework.config||{};
@@ -125,10 +126,6 @@ frameworkThemeSubs:Subscription;
     let defaultTheme=this.widgetStyles().__themes__[0];
     let defaultThemeName=cssFWService.activeRequestedTheme||defaultTheme.name;
     this.theme=this.options?.theme|| defaultThemeName;
-    this.frameworkThemeSubs=cssFWService.frameworkTheme$.subscribe(newTheme=>{
-        this.theme=newTheme;
-    })
- 
   }
 
   ngOnDestroy(): void {
@@ -159,6 +156,12 @@ frameworkThemeSubs:Subscription;
   }
 
   ngOnInit() {
+    const cssFWService = this.cssFWService;
+
+    this.frameworkThemeSubs=cssFWService.frameworkTheme$.subscribe(newTheme=>{
+        this.theme=newTheme;
+        this.cdr.detectChanges();
+    })
     this.initializeFramework();
     const layoutNode = this.layoutNode();
     if (layoutNode.arrayItem && layoutNode.type !== '$ref') {
@@ -170,9 +173,12 @@ frameworkThemeSubs:Subscription;
     }
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes) {
     if (!this.frameworkInitialized) {
       this.initializeFramework();
+    }
+    if (this.isDynamicTitle) {
+      this.updateTitle();
     }
   }
 
@@ -194,8 +200,10 @@ frameworkThemeSubs:Subscription;
         'radiobuttons', 'radios-inline', 'radios', 'range', 'reset', 'search',
         'select', 'submit', 'tel', 'text', 'textarea', 'time', 'url', 'week'
       ]);
-
-      this.options.title = this.setTitle();
+      
+      this.isDynamicTitle=this.options?.title&& /{{.+?}}/.test(this.options.title)
+      this.updateTitle();
+      this.setTitle();
 
       this.options.htmlClass =
         addClasses(this.options.htmlClass, 'schema-form-' + layoutNode.type);
@@ -301,6 +309,16 @@ addClasses(this.options.htmlClass, this.widgetStyles.array.htmlClass):
         this.widgetOptions.title = null;
         return this.jsf.setItemTitle(this);
     }
+  }
+
+  updateTitle() {
+    this.dynamicTitle= this.jsf.parseText(
+      this.options?.title,
+      this.jsf.getFormControlValue(this),
+      this.jsf.getFormControlGroup(this)?.value,
+      this.dataIndex()[this.dataIndex().length - 1]
+    );
+    //this.jsf.setItemTitle(this);
   }
 
   removeItem() {

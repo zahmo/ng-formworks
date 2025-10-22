@@ -6,8 +6,6 @@
     },
     "allowedNonPeerDependencies": [
         "lodash-es",
-        "ajv",
-        "nxt-sortablejs",
-        "sortablejs"
+        "ajv"
     ]
 }
