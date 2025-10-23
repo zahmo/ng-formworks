@@ -723,7 +723,7 @@ export function formatFormData(
         (value === null && returnEmptyFields)
       ) {
         if (genericPointer.indexOf("/$")>=0) {
-          return formattedData;
+          return;
         }
         console.error('formatFormData error: ' +
           `Schema type not found for form value at ${genericPointer}`);
