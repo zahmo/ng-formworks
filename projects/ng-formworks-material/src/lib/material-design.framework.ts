@@ -30,13 +30,12 @@ import {
 
 @Injectable()
 export class MaterialDesignFramework extends CssFramework {
-  cssFWService: CssframeworkService;
 
-  name = 'material-design';
+  override name = 'material-design';
 
-  framework = MaterialDesignFrameworkComponent;
+  override framework = MaterialDesignFrameworkComponent;
 
-  stylesheets = [
+  override stylesheets = [
     '//fonts.googleapis.com/icon?family=Material+Icons',
     '//fonts.googleapis.com/css?family=Roboto:300,400,500,700',
   ];
@@ -79,8 +78,7 @@ export class MaterialDesignFramework extends CssFramework {
 
   constructor(){
     const cssFWService = inject(CssframeworkService);
-
-    //super(cssFrameworkCfgMaterialDesign,cssFWService);
+    
     super(cssFrameworkCfgMaterialDesign);
     this.cssFWService = cssFWService;
 

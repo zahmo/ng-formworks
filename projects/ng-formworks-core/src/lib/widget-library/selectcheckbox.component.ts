@@ -72,13 +72,8 @@ import { buildTitleMap, isArray } from '../shared';
             height: 25px;  /*Height equal to the size of a single option */
             overflow: hidden; /* Hide scrollbars */
             text-overflow: ellipsis; /* For overflowing text inside options */
-            background-color: white; /* Set background to white */
-            color: black; /* Ensure text is black */
-            /* White gradient background */
-            /*
-            background-image: linear-gradient(0deg, white 0%, white 100%); 
-            */
-            background-color:transparent;
+            background-color: transparent;
+            color: var(--mat-sys-on-surface);
           }
 
         /* Remove the default focus outline */
@@ -89,8 +84,8 @@ import { buildTitleMap, isArray } from '../shared';
         /* Style the option element */
         .select-option {
             font-size: 20px; /* Adjust size of the checkbox */
-            color: black; /* Ensure text color is black */
-            background-color: white; /* Ensure background is white */
+            color: var(--mat-sys-on-surface);
+            background-color: var(--mat-sys-surface);
             display:inline-block;
         }
 
@@ -114,18 +109,15 @@ import { buildTitleMap, isArray } from '../shared';
 
         /* Maintain the text and background color when the option is selected */
         .select-option:checked {
-            background-image: linear-gradient(0deg, white 0%, white 100%);
-            color: black;
+            background-color: var(--mat-sys-surface);
+            color: var(--mat-sys-on-surface);
         }
 
         /* Style the select element when focused */
         .select-box[multiple]:focus {
-          /*
-            background-image: linear-gradient(0deg, white 0%, white 100%);
-            */
            background-color:transparent;
-            color: blue;
-            -webkit-text-fill-color: black;
+            color: var(--mat-sys-primary);
+            -webkit-text-fill-color: var(--mat-sys-on-surface);
         }
         
         .display-inline-block{

@@ -7,7 +7,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     selector: 'material-add-reference-widget',
     template: `
     <section [class]="options?.htmlClass || ''" align="end">
-      <button mat-raised-button *ngIf="showAddButton"
+      <button mat-stroked-button *ngIf="showAddButton"
         [color]="options?.color || 'accent'"
         [disabled]="options?.readonly"
         (click)="addItem($event)">

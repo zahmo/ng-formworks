@@ -158,7 +158,7 @@ export class FrameworkLibraryService {
   public requestThemeChange(name:string,validateThemeExists:boolean=false,existingFramework?:any){
     let actFramework:Framework& { [key: string]: any; }=existingFramework||this.activeFramework;
     if(actFramework.requestThemeChange){
-      if(validateThemeExists){  
+      if(validateThemeExists){
         let themes=this.getFrameworkThemes();
         let foundThemes=themes.filter(thm=>{return thm.name==name});
         if(!foundThemes|| foundThemes.length==0){
@@ -168,6 +168,7 @@ export class FrameworkLibraryService {
       actFramework.requestThemeChange(name);
       return true;
     }
+    return false;
   }
   //applies to CssFramework classes
   public getActiveTheme(existingFramework?:any):{name:string,text:string}{
@@ -175,6 +176,7 @@ export class FrameworkLibraryService {
     if(actFramework.getActiveTheme){
       return actFramework.getActiveTheme();
     }
+    return null;
   }
 
   //applies to CssFramework classes
@@ -183,6 +185,7 @@ export class FrameworkLibraryService {
     if(actFramework.registerTheme){
       return actFramework.registerTheme(newTheme);
     }
+    return false;
   }
 
     //applies to CssFramework classes
@@ -191,5 +194,6 @@ export class FrameworkLibraryService {
       if(actFramework.registerTheme){
         return actFramework.unregisterTheme(name);
       }
+      return false;
     }
 }

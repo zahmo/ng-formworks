@@ -110,6 +110,7 @@ export class RootComponent implements OnInit, OnDestroy {
        //console.log(evt.related);
        return false;
      }
+     return undefined;
    }
   }
   private sortableOptionsSubscription: Subscription;

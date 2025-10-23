@@ -10,9 +10,9 @@ import { CssframeworkService } from './css-framework.service';
 export class CssFramework extends Framework {
   cssFWService = inject(CssframeworkService);
 
-  name = 'css';
+  override name = 'css';
 
-  framework:any = CssFrameworkComponent;
+  override framework:any = CssFrameworkComponent;
   config:css_fw.frameworkcfg
   constructor(@Inject(CSS_FRAMEWORK_CFG ) cfg:css_fw.frameworkcfg){
         //reverted to use @Inject for other child classes
@@ -66,6 +66,7 @@ export class CssFramework extends Framework {
       cfg.widgetstyles.__themes__.push(newTheme);
       return true;
     }
+    return false;
   };
 
   unregisterTheme(name:string):boolean{

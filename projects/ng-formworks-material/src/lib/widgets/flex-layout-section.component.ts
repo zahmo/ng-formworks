@@ -1,12 +1,10 @@
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 @Component({
-    // tslint:disable-next-line:component-selector
     selector: 'flex-layout-section-widget',
     template: `
-
     <div *ngIf="containerType === 'div'"
       [class]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
@@ -29,13 +27,13 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [style.align-items]="getFlexAttribute('align-items')"
         [style.align-content]="getFlexAttribute('align-content')"
         [attr.fxLayout]="getFlexAttribute('layout')"
-        [attr.fxLayoutGap]="options?.fxLayoutGap"
+        [style.gap]="options?.fxLayoutGap"
         [attr.fxLayoutAlign]="options?.fxLayoutAlign"
         [attr.fxFlexFill]="options?.fxLayoutAlign"></flex-layout-root-widget>
       <mat-error *ngIf="options?.showErrors && options?.errorMessage"
         [innerHTML]="options?.errorMessage"></mat-error>
     </div>
-
+    
     <fieldset *ngIf="containerType === 'fieldset'"
       [class]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
@@ -59,17 +57,18 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [style.align-items]="getFlexAttribute('align-items')"
         [style.align-content]="getFlexAttribute('align-content')"
         [attr.fxLayout]="getFlexAttribute('layout')"
-        [attr.fxLayoutGap]="options?.fxLayoutGap"
         [attr.fxLayoutAlign]="options?.fxLayoutAlign"
+        [style.gap]="options?.fxLayoutGap"
         [attr.attr.fxFlexFill]="options?.fxLayoutAlign"></flex-layout-root-widget>
       <mat-error *ngIf="options?.showErrors && options?.errorMessage"
         [innerHTML]="options?.errorMessage"></mat-error>
     </fieldset>
 
-    <mat-card appearance="outlined" *ngIf="containerType === 'card'"
-      [ngClass]="options?.htmlClass || ''"
+    <mat-card *ngIf="containerType === 'card'" appearance="outlined"
       [class.expandable]="options?.expandable && !expanded"
-      [class.expanded]="options?.expandable && expanded">
+      [class.expanded]="options?.expandable && expanded"
+      [style.margin]="'10px 0'"
+      [ngClass]="options?.htmlClass || ''">
       <mat-card-header *ngIf="sectionTitle">
         <legend
           [class]="'legend ' + (options?.labelHtmlClass || '')"
@@ -92,7 +91,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
             [style.align-items]="getFlexAttribute('align-items')"
             [style.align-content]="getFlexAttribute('align-content')"
             [attr.fxLayout]="getFlexAttribute('layout')"
-            [attr.fxLayoutGap]="options?.fxLayoutGap"
+            [style.gap]="options?.fxLayoutGap"
             [attr.fxLayoutAlign]="options?.fxLayoutAlign"
             [attr.fxFlexFill]="options?.fxLayoutAlign"></flex-layout-root-widget>
           </fieldset>
@@ -104,17 +103,15 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     </mat-card>
 
     <mat-expansion-panel *ngIf="containerType === 'expansion-panel'"
-      [expanded]="expanded"
-      [hideToggle]="!options?.expandable">
+      [disabled]="options?.readonly" [hideToggle]="!options?.expandable">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <legend *ngIf="sectionTitle"
             [class]="options?.labelHtmlClass"
-            [innerHTML]="sectionTitle"
-            (click)="toggleExpanded()"></legend>
+            [innerHTML]="sectionTitle"></legend>
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <fieldset [disabled]="options?.readonly">
+      <fieldset>
         <flex-layout-root-widget 
           [layout]="layoutNode().items"
           [dataIndex]="dataIndex()"
@@ -129,19 +126,14 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
           [style.align-items]="getFlexAttribute('align-items')"
           [style.align-content]="getFlexAttribute('align-content')"
           [attr.fxLayout]="getFlexAttribute('layout')"
-          [attr.fxLayoutGap]="options?.fxLayoutGap"
+          [style.gap]="options?.fxLayoutGap"
           [attr.fxLayoutAlign]="options?.fxLayoutAlign"
           [attr.fxFlexFill]="options?.fxLayoutAlign"></flex-layout-root-widget>
       </fieldset>
       <mat-error *ngIf="options?.showErrors && options?.errorMessage"
         [innerHTML]="options?.errorMessage"></mat-error>
     </mat-expansion-panel>`,
-    styles: [`
-    fieldset { border: 0; margin: 0; padding: 0; }
-    .legend { font-weight: bold; }
-    .expandable > .legend:before { content: '▶'; padding-right: .3em; font-family:auto }
-    .expanded > .legend:before { content: '▼'; padding-right: .2em; }
-  `],
+    styleUrls: ['./flex-layout-section.component.scss'],
     standalone: false
 })
 export class FlexLayoutSectionComponent implements OnInit {
@@ -204,7 +196,7 @@ export class FlexLayoutSectionComponent implements OnInit {
       case 'flex-direction': case 'flex-wrap':
         const index = ['flex-direction', 'flex-wrap'].indexOf(attribute);
         return (this.options['flex-flow'] || '').split(/\s+/)[index] ||
-          this.options[attribute] || ['column', 'nowrap'][index];
+          this.options[attribute] || ['column', 'wrap', 'nowrap'][index];
       case 'justify-content': case 'align-items': case 'align-content':
         return this.options[attribute];
       case 'layout':

@@ -21,7 +21,7 @@
         margin-right: 0;
     }
     .ng-invalid.ng-touched {
-        border: 1px solid #f44336;
+        border: 1px solid var(--mat-sys-error);
     }
 }
 
@@ -41,5 +41,5 @@
 }
 
 .ng-invalid.ng-touched {
-    border: 1px solid #f44336;
+    border: 1px solid var(--mat-sys-error);
 }

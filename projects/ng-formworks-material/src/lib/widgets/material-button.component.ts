@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
     selector: 'material-button-widget',
     template: `
     <div class="button-row" [class]="options?.htmlClass || ''">
-      <button mat-raised-button
+      <button mat-stroked-button
         [attr.readonly]="options?.readonly ? 'readonly' : null"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
         [color]="options?.color || 'primary'"

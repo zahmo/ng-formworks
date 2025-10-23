@@ -9,6 +9,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     template: `
     <div cdkDropList (cdkDropListDropped)="drop($event)" 
     [class.flex-inherit]="true"
+    [style.gap]="'0 20px'"
     [cdkDropListSortPredicate]="sortPredicate"
     >
       <div *ngFor="let layoutNode of layout(); let i = index" 
@@ -24,7 +25,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [attr.fxFlexOrder]="layoutNode?.options?.fxFlexOrder"
         [attr.fxFlexOffset]="layoutNode?.options?.fxFlexOffset"
         [attr.fxFlexAlign]="layoutNode?.options?.fxFlexAlign"
-
         >
         <!-- workaround to disbale dragging of input fields -->
         <div *ngIf="layoutNode?.dataType !='object'" cdkDragHandle>
@@ -41,25 +41,25 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     .example-list {
   width: 500px;
   max-width: 100%;
-  border: solid 1px #ccc;
+  border: solid 1px var(--mat-sys-outline);
   min-height: 60px;
   display: block;
-  background: white;
+  background: var(--mat-sys-surface);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .example-box {
   padding: 20px 10px;
-  border-bottom: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
+  border-bottom: solid 1px var(--mat-sys-outline);
+  color: var(--mat-sys-on-surface);
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
   cursor: move;
-  background: white;
+  background: var(--mat-sys-surface);
   font-size: 14px;
 }
 

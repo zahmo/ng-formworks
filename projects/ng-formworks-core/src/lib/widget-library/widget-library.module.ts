@@ -18,6 +18,7 @@ import { OrderableDirective } from './orderable.directive';
                 //console.log(evt.related);
                 return false;
               }
+              return undefined;
             }
       })],
     declarations: [...BASIC_WIDGETS, OrderableDirective,ElementAttributeDirective],

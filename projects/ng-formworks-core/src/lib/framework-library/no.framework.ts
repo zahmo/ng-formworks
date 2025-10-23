@@ -5,7 +5,7 @@ import { NoFrameworkComponent } from './no-framework.component';
 
 @Injectable()
 export class NoFramework extends Framework {
-  name = 'no-framework';
-  text ='None (plain HTML)';
-  framework = NoFrameworkComponent;
+  override name = 'no-framework';
+  override text ='None (plain HTML)';
+  override framework = NoFrameworkComponent;
 }

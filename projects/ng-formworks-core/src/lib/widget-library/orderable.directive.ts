@@ -90,6 +90,7 @@ export class OrderableDirective implements OnInit,OnDestroy {
               this.element.classList.add('drag-target-bottom');
             }
           }
+          return undefined;
         });
 
         this.element.addEventListener('dragleave', (event) => {

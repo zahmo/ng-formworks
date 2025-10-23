@@ -36,13 +36,13 @@
 }
 
 [draggable=true].drag-target-top {
-    box-shadow: 0 -2px 0 #000;
+    box-shadow: 0 -2px 0 var(--mat-sys-primary);
     position: relative;
     z-index: 20;
 }
 
 [draggable=true].drag-target-bottom {
-    box-shadow: 0 2px 0 #000;
+    box-shadow: 0 2px 0 var(--mat-sys-primary);
     position: relative;
     z-index: 20;
 }
