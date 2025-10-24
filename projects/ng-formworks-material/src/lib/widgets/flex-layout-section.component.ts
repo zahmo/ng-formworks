@@ -20,7 +20,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [isFlexItem]="getFlexAttribute('is-flex')"
         [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
         [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
-        [style.display]="!expanded?'none':getFlexAttribute('display')"
         [style.flex-direction]="getFlexAttribute('flex-direction')"
         [style.flex-wrap]="getFlexAttribute('flex-wrap')"
         [style.justify-content]="getFlexAttribute('justify-content')"
@@ -50,7 +49,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [isFlexItem]="getFlexAttribute('is-flex')"
         [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
         [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
-        [style.display]="!expanded?'none':getFlexAttribute('display')"
         [style.flex-direction]="getFlexAttribute('flex-direction')"
         [style.flex-wrap]="getFlexAttribute('flex-wrap')"
         [style.justify-content]="getFlexAttribute('justify-content')"
@@ -84,7 +82,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
             [isFlexItem]="getFlexAttribute('is-flex')"
             [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
             [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
-            [style.display]="!expanded?'none':getFlexAttribute('display')"
             [style.flex-direction]="getFlexAttribute('flex-direction')"
             [style.flex-wrap]="getFlexAttribute('flex-wrap')"
             [style.justify-content]="getFlexAttribute('justify-content')"
@@ -119,7 +116,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
           [isFlexItem]="getFlexAttribute('is-flex')"
           [class.form-flex-column]="getFlexAttribute('flex-direction') === 'column'"
           [class.form-flex-row]="getFlexAttribute('flex-direction') === 'row'"
-          [style.display]="!expanded?'none':getFlexAttribute('display')"
           [style.flex-direction]="getFlexAttribute('flex-direction')"
           [style.flex-wrap]="getFlexAttribute('flex-wrap')"
           [style.justify-content]="getFlexAttribute('justify-content')"
@@ -146,6 +142,7 @@ export class FlexLayoutSectionComponent implements OnInit {
   boundControl = false;
   options: any;
   expanded = true;
+  expandable = true;
   containerType = 'div';
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
