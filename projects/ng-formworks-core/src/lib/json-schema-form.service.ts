@@ -6,7 +6,8 @@ import Ajv2019, { ErrorObject, Options, ValidateFunction } from 'ajv/dist/2019';
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { auditTime, BehaviorSubject, debounceTime, distinctUntilChanged, merge, Subject, Subscription } from 'rxjs';
+import { VALIDATE_DELAY } from './shared/settings';
 import {
   deValidationMessages,
   enValidationMessages,
@@ -396,8 +397,13 @@ this.ajv.addFormat("duration", {
       if (this.formValueSubscription) {
         this.formValueSubscription.unsubscribe();
       }
-      this.formValueSubscription = this.formGroup.valueChanges.subscribe(
-        formValue => this.validateData(formValue,true,ajvInstanceName)
+
+      const valueChanges$ = this.formGroup.valueChanges;
+      const saveAfterInactivity$ = valueChanges$.pipe(debounceTime(VALIDATE_DELAY));
+      this.formValueSubscription = saveAfterInactivity$.pipe(
+        distinctUntilChanged(isEqual),
+      ).subscribe(
+        (formValue: any) => this.validateData(formValue,true,ajvInstanceName)
       );
     }
   }
