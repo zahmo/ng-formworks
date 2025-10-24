@@ -103,7 +103,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     </mat-card>
 
     <mat-expansion-panel *ngIf="containerType === 'expansion-panel'"
-      [disabled]="options?.readonly" [hideToggle]="!options?.expandable">
+       [hideToggle]="!options?.expandable">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <legend *ngIf="sectionTitle"
