@@ -25,7 +25,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [style.justify-content]="getFlexAttribute('justify-content')"
         [style.align-items]="getFlexAttribute('align-items')"
         [style.align-content]="getFlexAttribute('align-content')"
-        [attr.fxLayout]="getFlexAttribute('layout')"
         [style.gap]="options?.fxLayoutGap"
         [attr.fxLayoutAlign]="options?.fxLayoutAlign"
         [attr.fxFlexFill]="options?.fxLayoutAlign"></flex-layout-root-widget>
@@ -54,7 +53,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [style.justify-content]="getFlexAttribute('justify-content')"
         [style.align-items]="getFlexAttribute('align-items')"
         [style.align-content]="getFlexAttribute('align-content')"
-        [attr.fxLayout]="getFlexAttribute('layout')"
         [attr.fxLayoutAlign]="options?.fxLayoutAlign"
         [style.gap]="options?.fxLayoutGap"
         [attr.attr.fxFlexFill]="options?.fxLayoutAlign"></flex-layout-root-widget>
@@ -87,7 +85,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
             [style.justify-content]="getFlexAttribute('justify-content')"
             [style.align-items]="getFlexAttribute('align-items')"
             [style.align-content]="getFlexAttribute('align-content')"
-            [attr.fxLayout]="getFlexAttribute('layout')"
             [style.gap]="options?.fxLayoutGap"
             [attr.fxLayoutAlign]="options?.fxLayoutAlign"
             [attr.fxFlexFill]="options?.fxLayoutAlign"></flex-layout-root-widget>
@@ -121,7 +118,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
           [style.justify-content]="getFlexAttribute('justify-content')"
           [style.align-items]="getFlexAttribute('align-items')"
           [style.align-content]="getFlexAttribute('align-content')"
-          [attr.fxLayout]="getFlexAttribute('layout')"
           [style.gap]="options?.fxLayoutGap"
           [attr.fxLayoutAlign]="options?.fxLayoutAlign"
           [attr.fxFlexFill]="options?.fxLayoutAlign"></flex-layout-root-widget>
