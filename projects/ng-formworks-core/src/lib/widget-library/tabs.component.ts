@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -27,6 +28,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
           />
           {{setTabTitle(item, i)}}
           </a>
+          
       </li>
     </ul>
 
@@ -71,9 +73,10 @@ export class TabsComponent implements OnInit {
   @Input() dataIndex: number[];
 
   constructor(
-    private jsf: JsonSchemaFormService
+    private jsf: JsonSchemaFormService,
+    private cdr:ChangeDetectorRef
   ) { }
-
+  dataChangesSubs:Subscription;
   ngOnInit() {
     this.options = this.layoutNode.options || {};
     if(this.options.selectedTab){
@@ -81,6 +84,12 @@ export class TabsComponent implements OnInit {
     }
     this.itemCount = this.layoutNode.items.length - 1;
     this.updateControl();
+    //TODO review/test-introduced to fix dynamic titles not updating
+    //when their conditional linked field is destroyed
+    //-forces change detection!
+    this.jsf.dataChanges.subscribe((val)=>{
+        this.cdr.detectChanges();
+    })
   }
 
   select(index) {
@@ -107,5 +116,9 @@ export class TabsComponent implements OnInit {
 
   setTabTitle(item: any, index: number): string {
     return this.jsf.setArrayItemTitle(this, item, index);
+  }
+
+  ngOnDestroy(): void {
+    this.dataChangesSubs?.unsubscribe();
   }
 }
