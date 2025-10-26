@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { memoize } from 'lodash';
 import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
@@ -103,7 +103,8 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges{
 
   dataChangesSubs:Subscription;
   constructor(
-    private jsf: JsonSchemaFormService
+    private jsf: JsonSchemaFormService,
+    private cdr:ChangeDetectorRef
   ) { }
 
 
@@ -250,6 +251,10 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges{
         this.jsf.dataChanges.subscribe((val)=>{
           //this.selectframeworkInputCache?.clear();
           this._getSelectFrameworkInputsMemoized.cache.clear();
+        //TODO-fix for now changed to detectChanges-
+        //used to updated the dynamic titles in tab compnents 
+        //this.cdr.markForCheck();
+        this.cdr.detectChanges();
         })
       }
 
