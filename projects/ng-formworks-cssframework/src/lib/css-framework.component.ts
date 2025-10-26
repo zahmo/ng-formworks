@@ -198,7 +198,16 @@ frameworkThemeSubs:Subscription;
       ]);
       
       this.isDynamicTitle=this.options?.title&& /{{.+?}}/.test(this.options.title)
-      this.updateTitle();
+      
+      if (
+        !['$ref', 'advancedfieldset', 'authfieldset', 'button', 'card',
+          'checkbox', 'expansion-panel', 'help', 'message', 'msg', 'section',
+          'submit', 'tabarray', 'tabs'].includes(layoutNode.type) &&
+        /{{.+?}}/.test(this.widgetOptions.title || '')
+      ) {
+        this.updateTitle();
+      }
+      
       this.setTitle();
 
       this.options.htmlClass =
@@ -308,7 +317,8 @@ addClasses(this.options.htmlClass, this.widgetStyles.array.htmlClass):
   }
 
   updateTitle() {
-    this.dynamicTitle= this.jsf.parseText(
+    this.dynamicTitle=
+     this.jsf.parseText(
       this.options?.title,
       this.jsf.getFormControlValue(this),
       this.jsf.getFormControlGroup(this)?.value,
