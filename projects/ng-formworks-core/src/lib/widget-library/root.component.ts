@@ -235,6 +235,7 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges {
     if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
       // Clear the entire cache of the memoized function
       this._getSelectFrameworkInputsMemoized.cache.clear();
+      this.cdr.markForCheck();
     }
   }
 
@@ -249,8 +250,8 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges {
           this._getSelectFrameworkInputsMemoized.cache.clear();
         //TODO-fix for now changed to detectChanges-
         //used to updated the dynamic titles in tab compnents 
-        //this.cdr.markForCheck();
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
+       // this.cdr.detectChanges();-breaks oneOf/ matdatepicker
         })
       }
 
