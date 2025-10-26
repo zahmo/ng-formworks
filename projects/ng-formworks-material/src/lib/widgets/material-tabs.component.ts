@@ -53,7 +53,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
                 [layoutNode]="layoutItem"></select-framework-widget>
              </ng-container>   
             <ng-container *ngIf="options?.tabMode !='oneOfMode'">
-              <select-framework-widget *ngIf="selectedItem === i"
+              <select-framework-widget
                 [class]="(options?.fieldHtmlClass || '') + ' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')"
                 [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
                 [layoutIndex]="(layoutIndex() || []).concat(i)"
