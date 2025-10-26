@@ -156,7 +156,7 @@ frameworkThemeSubs:Subscription;
 
   ngOnInit() {
     const cssFWService = this.cssFWService;
-
+    //TODO review:this will be run by every component instance
     this.frameworkThemeSubs=cssFWService.frameworkTheme$.subscribe(newTheme=>{
         this.theme=newTheme;
         this.cdr.detectChanges();
