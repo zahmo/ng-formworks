@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, inject, input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
@@ -63,7 +63,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       `],
     standalone: false
 })
-export class TabsComponent implements OnInit {
+export class TabsComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
   private cdr = inject(ChangeDetectorRef);
   options: any;
