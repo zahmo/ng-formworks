@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
@@ -63,7 +63,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       `],
     standalone: false
 })
-export class TabsComponent implements OnInit {
+export class TabsComponent implements OnInit,OnDestroy {
   options: any;
   itemCount: number;
   selectedItem = 0;
