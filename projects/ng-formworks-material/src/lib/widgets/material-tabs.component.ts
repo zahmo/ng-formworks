@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, inject, input, signal } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 @Component({
@@ -68,9 +68,10 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       `],
     standalone: false
 })
-export class MaterialTabsComponent implements OnInit {
-  private jsf = inject(JsonSchemaFormService);
+export class MaterialTabsComponent implements OnInit,OnDestroy,OnChanges {
 
+  private jsf = inject(JsonSchemaFormService);
+  private cdr = inject(ChangeDetectorRef);
   options: any;
   itemCount: number;
   selectedItem = 0;
@@ -110,5 +111,15 @@ export class MaterialTabsComponent implements OnInit {
 
   setTabTitle(item: any, index: number): string {
     return this.jsf.setArrayItemTitle(this, item, index);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    //TODO review/test-introduced to fix dynamic titles not updating
+    //when their conditional linked field is destroyed
+    //-forces change detection!
+    this.cdr.detectChanges();
+  }
+  ngOnDestroy(): void {
+    
   }
 }
