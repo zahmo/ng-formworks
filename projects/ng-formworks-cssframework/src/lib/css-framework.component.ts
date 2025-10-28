@@ -201,7 +201,7 @@ frameworkThemeSubs:Subscription;
       ]);
       
       this.isDynamicTitle=this.options?.title&& /{{.+?}}/.test(this.options.title)
-      
+      this.dynamicTitle=this.options?.title;
       if (
         !['$ref', 'advancedfieldset', 'authfieldset', 'button', 'card',
           'checkbox', 'expansion-panel', 'help', 'message', 'msg', 'section',
@@ -212,6 +212,10 @@ frameworkThemeSubs:Subscription;
       }
       
       this.setTitle();
+
+      if(this.widgetOptions.title){
+        this.dynamicTitle="";
+      }
 
       this.options.htmlClass =
         addClasses(this.options.htmlClass, 'schema-form-' + layoutNode.type);
@@ -289,6 +293,7 @@ addClasses(this.options.htmlClass, this.widgetStyles.array.htmlClass):
       this.options.description || this.options.help || null;
   }
 
+  //TODO review-side effect assignments
   setTitle(): string {
     switch (this.layoutNode().type) {
       case 'button':
