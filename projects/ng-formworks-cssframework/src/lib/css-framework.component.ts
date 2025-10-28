@@ -128,7 +128,7 @@ frameworkThemeSubs:Subscription;
   }
 
   ngOnDestroy(): void {
-    this.frameworkThemeSubs.unsubscribe();
+    this.frameworkThemeSubs?.unsubscribe();
     this.frameworkThemeSubs=null;
   }
 
