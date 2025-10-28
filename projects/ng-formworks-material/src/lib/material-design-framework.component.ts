@@ -39,7 +39,7 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges, OnDe
 
   }
   ngOnDestroy(): void {
-    this.frameworkThemeSubs.unsubscribe();
+    this.frameworkThemeSubs?.unsubscribe();
     this.frameworkThemeSubs = null;
   }
 
