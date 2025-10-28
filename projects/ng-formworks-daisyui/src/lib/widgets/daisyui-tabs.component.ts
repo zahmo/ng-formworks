@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
+import { Subscription } from 'rxjs';
 
 
 
@@ -64,9 +65,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
        `],
     standalone: false
 })
-export class DaisyUITabsComponent implements OnInit {
+export class DaisyUITabsComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);
-
+  private cdr = inject(ChangeDetectorRef);
   options: any;
   itemCount: number;
   selectedItem = 0;
@@ -74,7 +75,7 @@ export class DaisyUITabsComponent implements OnInit {
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
-
+  dataChangesSubs:Subscription;
   ngOnInit() {
     this.options = this.layoutNode().options || {};
     if(this.options.selectedTab){
@@ -82,6 +83,12 @@ export class DaisyUITabsComponent implements OnInit {
     }
     this.itemCount = this.layoutNode().items.length - 1;
     this.updateControl();
+    //TODO review/test-introduced to fix dynamic titles not updating
+    //when their conditional linked field is destroyed
+    //-forces change detection!
+    this.jsf.dataChanges.subscribe((val)=>{
+      this.cdr.detectChanges();
+  })
   }
 
   select(index) {
@@ -109,5 +116,9 @@ export class DaisyUITabsComponent implements OnInit {
 
   setTabTitle(item: any, index: number): string {
     return this.jsf.setArrayItemTitle(this, item, index);
+  }
+
+  ngOnDestroy(): void {
+    this.dataChangesSubs?.unsubscribe();
   }
 }
