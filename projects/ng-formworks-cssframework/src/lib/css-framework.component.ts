@@ -202,7 +202,7 @@ frameworkThemeSubs:Subscription;
       if (
         !['$ref', 'advancedfieldset', 'authfieldset', 'button', 'card',
           'checkbox', 'expansion-panel', 'help', 'message', 'msg', 'section',
-          'submit', 'tabarray', 'tabs'].includes(layoutNode.type) &&
+          'submit', 'tabarray', 'tabs'].includes(this.layoutNode.type) &&
         /{{.+?}}/.test(this.widgetOptions.title || '')
       ) {
         this.updateTitle();
