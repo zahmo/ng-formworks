@@ -33,8 +33,9 @@ export class SelectWidgetComponent implements OnChanges, OnInit {
       );
     }
     if (this.newComponent) {
-      for (const input of ['layoutNode', 'layoutIndex', 'dataIndex']) {
-        this.newComponent.instance[input] = this[input];
+      for (const inp of ['layoutNode', 'layoutIndex', 'dataIndex']) {
+        //this.newComponent.instance[inp] = this[inp];
+        this.newComponent.setInput(inp,this[inp]());
       }
     }
   }

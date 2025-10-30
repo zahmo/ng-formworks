@@ -1,37 +1,60 @@
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { memoize } from 'lodash';
 import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'root-widget',
   template: `
-    <div [class.flex-inherit]="true" #sortableContainter [nxtSortablejs]="layout()" [config]="sortableConfig" (init)="sortableInit($event)">
-      <div *ngFor="let layoutItem of layout(); let i = index"
+    <div cdkDropList (cdkDropListDropped)="drop($event)" 
+      [class.flex-inherit]="true"
+      [cdkDropListSortPredicate]="sortPredicate"
+    >
+      <!-- -for now left out
+      cdkDragHandle directive, by itself, does not disable the 
+      default drag behavior of its parent cdkDrag element. 
+      You must explicitly disable dragging on the main element 
+      and re-enable it only when using the handle.
+      -->
+      <div *ngFor="let layoutItem of layout(); let i = index;trackBy: trackByFn"
+         cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
+        [cdkDragDisabled]="!isDraggable(layoutItem)"
         [class.form-flex-item]="isFlexItem()"
         [style.align-self]="(layoutItem.options || {})['align-self']"
         [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
         [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
         [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
         [style.order]="(layoutItem.options || {}).order"
-        [class.sortable-filter]="!isDraggable(layoutItem)"
-        [class.sortable-fixed]="isFixed(layoutItem)"
         >
+
+        <!-- workaround to disbale dragging of input fields -->
+        <!--
+        <div *ngIf="layoutItem?.dataType !='object'"  cdkDragHandle>
+         <p>Drag Handle {{layoutItem?.dataType}}</p>
+        </div>
+        -->
         <!--NB orderable directive is not used but has been left in for now and set to false
           otherwise the compiler won't recognize dataIndex and other dependent attributes
         -->
+        <!--
         <div 
           [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
           [layoutIndex]="(layoutIndex() || []).concat(i)"
           [layoutNode]="layoutItem"
           [orderable]="false"
-          [class.sortable-filter]="!isDraggable(layoutItem)"
-          [class.sortable-fixed]="isFixed(layoutItem)"
           >
           <select-framework-widget *ngIf="showWidget(layoutItem)"
             [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
             [layoutIndex]="(layoutIndex() || []).concat(i)"
             [layoutNode]="layoutItem"></select-framework-widget>
         </div>
+        -->
+      <select-framework-widget *ngIf="showWidget(layoutItem)"
+            [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
+            [layoutIndex]="getSelectFrameworkInputs(layoutItem,i).layoutIndex"
+            [layoutNode]="getSelectFrameworkInputs(layoutItem,i).layoutNode">
+		  </select-framework-widget>
       </div>
     </div>
     `,
@@ -64,127 +87,42 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       width:100%
     }
   `],
+  changeDetection:ChangeDetectionStrategy.OnPush,
   standalone: false
 })
-export class RootComponent implements OnInit, OnDestroy {
-
+export class RootComponent implements OnInit, OnDestroy,OnChanges {
 
   private jsf = inject(JsonSchemaFormService);
-
+  private cdr = inject(ChangeDetectorRef);
   options: any;
   readonly dataIndex = input<number[]>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly layout = input<any[]>(undefined);
   readonly isOrderable = input<boolean>(undefined);
   readonly isFlexItem = input(false);
+  readonly memoizationEnabled= input<boolean>(true);
 
-  // @ViewChild('sortableContainter', {})
-  // sortableContainterElt: ElementRef;
+  dataChangesSubs:Subscription;
 
-  sortableObj: any;
-  sortableConfig:any={
-    filter:".sortable-filter",//needed to disable dragging on input range elements, class needs to be added to the element or its parent
-    preventOnFilter: false,//needed for input range elements slider do still work
-    delay: 1000,
-    delayOnTouchOnly: true,
-    onEnd: (/**Event*/evt)=> {
-      evt.newIndex // most likely why this event is used is to get the dragging element's current index
-      // same properties as onEnd
-      //console.log(`sortablejs event:${evt}`);
-      let srcInd=evt.oldIndex;
-      let trgInd=evt.newIndex;
-      let layoutItem=this.layout()[trgInd];
-      let dataInd=layoutItem?.arrayItem ? (this.dataIndex() || []).concat(trgInd) : (this.dataIndex() || []);
-      let layoutInd=(this.layoutIndex() || []).concat(trgInd)
-      let itemCtx:any={
-        dataIndex:()=>{return dataInd},
-        layoutIndex:()=>{return layoutInd},
-        layoutNode:()=>{return layoutItem},
-      }
-      //must set moveLayout to false as nxtSortable already moves it
-      this.jsf.moveArrayItem(itemCtx, evt.oldIndex, evt.newIndex,false);
-      
-    },
-    onMove: function (/**Event*/evt, /**Event*/originalEvent) {
-      if(evt.related.classList.contains("sortable-fixed")){
-       //console.log(evt.related);
-       return false;
-     }
-     return true;
-   }
-  }
-  private sortableOptionsSubscription: Subscription;
-  sortableInit(sortable) {
-    this.sortableObj = sortable;
-    //Sortable.utils.on(this.sortableObj.el,"nulling",(s)=>{console.log("event nulling sortablejs")})
-    ///NB issue caused by sortablejs when it its destroyed
-    //this mainly affects checkboxes coupled with conditions
-    //-the value is rechecked
-    //-see https://github.com/SortableJS/Sortable/issues/1052#issuecomment-369613072
-    /* attempt to monkey patch sortable js 
-    const originalMethod = sortable._nulling;
-    let zone=this.zone;
-    sortable._nulling=function() {
-      console.log(`pluginEvent 2 ${pluginEvent}`)
-            zone.runOutsideAngular(() => {
-              console.log(`pluginEvent3 ${pluginEvent}`)
-      pluginEvent('nulling', this);
-  
-      rootEl =
-      dragEl =
-      parentEl =
-      ghostEl =
-      nextEl =
-      cloneEl =
-      lastDownEl =
-      cloneHidden =
-  
-      tapEvt =
-      touchEvt =
-  
-      moved =
-      newIndex =
-      newDraggableIndex =
-      oldIndex =
-      oldDraggableIndex =
-  
-      lastTarget =
-      lastDirection =
-  
-      putSortable =
-      activeGroup =
-      Sortable.dragged =
-      Sortable.ghost =
-      Sortable.clone =
-      Sortable.active = null;
-  
-    
-        let el = this.el;
-        savedInputChecked.forEach(function (checkEl) {
-          if (el.contains(checkEl)) {
-            checkEl.checked = true;
-          }
-        });
-    
-        savedInputChecked.length =
-        lastDx =
-        lastDy = 0;
-
-      })
-
-    }.bind(sortable)
-    */
+  drop(event: CdkDragDrop<any[]>) {
+    // most likely why this event is used is to get the dragging element's current index
+    let srcInd=event.previousIndex;
+    let trgInd=event.currentIndex;
+    let layoutItem=this.layout()[trgInd];
+    let dataInd=layoutItem?.arrayItem ? (this.dataIndex() || []).concat(trgInd) : (this.dataIndex() || []);
+    let layoutInd=(this.layoutIndex() || []).concat(trgInd)
+    let itemCtx:any={
+      dataIndex:()=>{return dataInd},
+      layoutIndex:()=>{return layoutInd},
+      layoutNode:()=>{return layoutItem},
+    }
+    this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
   }
 
   isDraggable(node: any): boolean {
     let result=node.arrayItem && node.type !== '$ref' &&
-    node.arrayItemType === 'list' && this.isOrderable() !== false;
-    if (this.sortableObj) {
-      //this.sortableObj.option("disabled",true);
-      //this.sortableObj.option("sort",false);
-      //this.sortableObj.option("disabled",!result);
-    }
-
+    node.arrayItemType === 'list' && this.isOrderable() !== false
+    && node.type !=='submit'
     return result;
   }
 
@@ -195,6 +133,23 @@ export class RootComponent implements OnInit, OnDestroy {
     return result;
   }
 
+  /**
+   * Predicate function that disallows '$ref' item sorts
+   * NB declared as a var instead of a function 
+   * like sortPredicate(index: number, item: CdkDrag<number>){..}
+   * since 'this' is bound to the draglist and doesn't reference the
+   * FlexLayoutRootComponent instance
+   */
+    //TODO also need to think of other types such as button which can be
+    //created by an arbitrary layout
+    //might not be needed added condition to [cdkDragDisabled]
+    sortPredicate=(index: number, item: CdkDrag<number>)=> {
+      let layoutItem=this.layout()[index];
+      let result=this.isDraggable(layoutItem);
+      //layoutItem.type != '$ref';
+      return result;
+    }
+
   // Set attributes for flexbox child
   // (container attributes are set in section.component)
   getFlexAttribute(node: any, attribute: string) {
@@ -203,27 +158,110 @@ export class RootComponent implements OnInit, OnDestroy {
       (node.options || {})[attribute] || ['1', '1', 'auto'][index];
   }
 
+  //private selectframeworkInputCache = new Map<string, { dataIndex: any[], layoutIndex: any[], layoutNode: any }>();
+
+  //TODO review caching-if form field values change, the changes are not propagated
+
+  /*
+  getSelectFrameworkInputs(layoutItem: any, i: number) {
+    // Create a unique key based on the layoutItem and index
+    const cacheKey = `${layoutItem._id}-${i}`;
+  
+    // If the result is already in the cache, return it
+    if(this.enableCaching){
+      if (this.selectframeworkInputCache.has(cacheKey)) {
+        return this.selectframeworkInputCache.get(cacheKey);
+      }
+    }
+
+
+    // If not cached, calculate the values (assuming dataIndex() and layoutIndex() are functions)
+    const dataIndex = layoutItem?.arrayItem ? (this.dataIndex() || []).concat(i) : (this.dataIndex() || []);
+    const layoutIndex = (this.layoutIndex() || []).concat(i);
+
+    // Save the result in the cache
+    const result = { dataIndex, layoutIndex, layoutNode: layoutItem };
+    if(this.enableCaching){
+      this.selectframeworkInputCache.set(cacheKey, result);
+    }
+
+    return result;
+  }
+    */
+
+  private _getSelectFrameworkInputsRaw = (layoutItem: any, i: number) => {
+    const dataIndexValue = this.dataIndex() || [];
+    const layoutIndexValue = this.layoutIndex() || [];
+
+    return {
+      layoutNode: layoutItem,
+      layoutIndex: [...layoutIndexValue, i],
+      dataIndex: layoutItem?.arrayItem ? [...dataIndexValue, i] : dataIndexValue,
+    };
+  };
+
+  // Define a separate function to hold the memoized version
+  private _getSelectFrameworkInputsMemoized = memoize(
+    this._getSelectFrameworkInputsRaw,
+    (layoutItem: any, i: number) => {
+      const layoutItemKey = layoutItem?.id ?? JSON.stringify(layoutItem);
+      return `${layoutItemKey}-${i}`;
+    }
+  );
+
+  // This is the public function that the template calls
+  getSelectFrameworkInputs(layoutItem: any, i: number) {
+    if (this.memoizationEnabled) {
+      return this._getSelectFrameworkInputsMemoized(layoutItem, i);
+    } else {
+      return this._getSelectFrameworkInputsRaw(layoutItem, i);
+    }
+  }
+  trackByFn(index: number, item: any): any {
+    return item._id ?? index;
+  }
+
+  
+
+  /*
+  ngOnChanges(changes: SimpleChanges): void {
+    // If any of the input properties change, clear the cache
+    if (changes.dataIndex || changes.layoutIndex || changes.layout) {
+      this.selectframeworkInputCache?.clear(); // Clear the entire cache
+    }
+  }
+  */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
+      // Clear the entire cache of the memoized function
+      this._getSelectFrameworkInputsMemoized.cache.clear();
+      this.cdr.markForCheck();
+    }
+  }
+
+
   showWidget(layoutNode: any): boolean {
     return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
   }
   ngOnInit(): void {
-    // Subscribe to the draggable state
-    this.sortableOptionsSubscription = this.jsf.sortableOptions$.subscribe(
-      (optsValue) => {
-        if (this.sortableObj) {
-          Object.keys(optsValue).forEach(opt=>{
-            let optVal=optsValue[opt];
-            this.sortableObj.option(opt,optVal);
-          })
-          //this.sortableObj.option("disabled",true);
-          //this.sortableObj.option("sort",false);
-        }
+      if(this.memoizationEnabled){
+        this.jsf.dataChanges.subscribe((val)=>{
+          //this.selectframeworkInputCache?.clear();
+          this._getSelectFrameworkInputsMemoized.cache.clear();
+        //TODO-fix for now changed to detectChanges-
+        //used to updated the dynamic titles in tab compnents 
+        this.cdr.markForCheck();
+       // this.cdr.detectChanges();-breaks oneOf/ matdatepicker
+        })
       }
-    );
+
   }
   ngOnDestroy(): void {
-    if (this.sortableOptionsSubscription) {
-      this.sortableOptionsSubscription.unsubscribe();
-    }
+      //this.selectframeworkInputCache?.clear()
+      //this.selectframeworkInputCache=null;
+      this._getSelectFrameworkInputsMemoized.cache.clear();
+      this.dataChangesSubs?.unsubscribe();
   }
+  
+
 }

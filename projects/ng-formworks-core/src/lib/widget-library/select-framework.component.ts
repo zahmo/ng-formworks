@@ -1,4 +1,4 @@
-import { Component, ComponentRef, OnChanges, OnInit, ViewContainerRef, inject, input, viewChild } from '@angular/core';
+import { Component, ComponentRef, OnChanges, OnInit, SimpleChanges, ViewContainerRef, inject, input, viewChild } from '@angular/core';
 
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
@@ -21,7 +21,7 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
     this.updateComponent();
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     this.updateComponent();
   }
 
@@ -34,8 +34,9 @@ export class SelectFrameworkComponent implements OnChanges, OnInit {
       //this.widgetContainer.createComponent<any>(this.jsf.framework)
     }
     if (this.newComponent) {
-      for (const input of ['layoutNode', 'layoutIndex', 'dataIndex']) {
-        this.newComponent.instance[input] = this[input];
+      for (const inp of ['layoutNode', 'layoutIndex', 'dataIndex']) {
+        //this.newComponent.instance[inp] = this[inp];
+        this.newComponent.setInput(inp,this[inp]());
       }
     }
   }

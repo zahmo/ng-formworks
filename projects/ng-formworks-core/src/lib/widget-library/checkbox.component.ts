@@ -7,6 +7,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
 //-the value is rechecked
 //-see https://github.com/SortableJS/Sortable/issues/1052#issuecomment-369613072
 
+//-switched to angular cdk for dnd
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'checkbox-widget',

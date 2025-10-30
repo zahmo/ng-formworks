@@ -6,7 +6,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     selector: 'material-tabs-widget',
     template: `
     <nav mat-tab-nav-bar [tabPanel]="tabPanel"
-      [attr.aria-label]="options?.label || options?.title || ''"
+      [attr.aria-label]="options?.label || layoutNode().options?.title || ''"
       [style.width]="'100%'">
       
         <a mat-tab-link *ngFor="let item of layoutNode()?.items; let i = index"
@@ -53,7 +53,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
                 [layoutNode]="layoutItem"></select-framework-widget>
              </ng-container>   
             <ng-container *ngIf="options?.tabMode !='oneOfMode'">
-              <select-framework-widget *ngIf="selectedItem === i"
+              <select-framework-widget
                 [class]="(options?.fieldHtmlClass || '') + ' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')"
                 [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
                 [layoutIndex]="(layoutIndex() || []).concat(i)"

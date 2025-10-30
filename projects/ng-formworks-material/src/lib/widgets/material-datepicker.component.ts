@@ -11,7 +11,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
                     [class]="options?.htmlClass || ''"
                     [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
                     [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'">
-      <mat-label *ngIf="!options?.notitle">{{options?.title}}</mat-label>
+      <mat-label *ngIf="!options?.notitle">{{layoutNode().options?.title}}</mat-label>
       <span matPrefix *ngIf="options?.prefix || options?.fieldAddonLeft"
         [innerHTML]="options?.prefix || options?.fieldAddonLeft"></span>
       <input matInput *ngIf="boundControl"
@@ -24,7 +24,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [matDatepicker]="picker"
         [min]="options?.minimum"
         [name]="controlName"
-        [placeholder]="options?.title"
+        [placeholder]="layoutNode().options?.title"
         [readonly]="options?.readonly"
         [required]="options?.required"
         (blur)="options.showErrors = true"
@@ -39,7 +39,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [matDatepicker]="picker"
         [min]="options?.minimum"
         [name]="controlName"
-        [placeholder]="options?.title"
+        [placeholder]="layoutNode().options?.title"
         [required]="options?.required"
         [readonly]="options?.readonly"
         (blur)="options.showErrors = true"
@@ -71,9 +71,9 @@ export class MaterialDatepickerComponent implements OnInit,OnDestroy {
   boundControl = false;
   options: any;
   autoCompleteList: string[] = [];
-  readonly layoutNode = input<any>(undefined);
-  readonly layoutIndex = input<number[]>([]);
-  readonly dataIndex = input<number[]>([]);
+  readonly layoutNode = input.required<any>();
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};

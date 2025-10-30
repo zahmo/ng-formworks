@@ -7,7 +7,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     // tslint:disable-next-line:component-selector
     selector: 'input-widget',
     template: `
-    <div [class]="options?.htmlClass || ''" class="sortable-filter" >
+    <div [class]="options?.htmlClass || ''" >
       <label *ngIf="options?.title"
         [attr.for]="'control' + layoutNode()?._id"
         [class]="options?.labelHtmlClass || ''"
@@ -28,6 +28,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [readonly]="options?.readonly ? 'readonly' : null"
         [type]="layoutNode()?.type"
         [attributes]="inputAttributes"
+        [appStopPropagation]="['mousedown', 'touchstart']"
         >
       <input *ngIf="!boundControl"
         [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
@@ -46,6 +47,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [value]="controlValue"
         (input)="updateValue($event)"
         [attributes]="inputAttributes"
+        [appStopPropagation]="['mousedown', 'touchstart']"
         >
         <datalist *ngIf="options?.typeahead?.source"
           [id]="'control' + layoutNode()?._id + 'Autocomplete'">

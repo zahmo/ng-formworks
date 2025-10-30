@@ -6,8 +6,7 @@ import Ajv2019, { ErrorObject, Options, ValidateFunction } from 'ajv/dist/2019';
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
-import { auditTime, BehaviorSubject, debounceTime, distinctUntilChanged, merge, Subject, Subscription } from 'rxjs';
-import { VALIDATE_DELAY } from './shared/settings';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
   enValidationMessages,
@@ -188,15 +187,6 @@ export class JsonSchemaFormService implements OnDestroy {
 
   setDraggableState(value: boolean) {
     this.draggableStateSubject.next(value); // Update the draggable value
-  }
-
-  //this is introduced to look at replacing the orderable directive with 
-  //nxt-sortablejs and sortablejs 
-  private sortableOptionsSubject = new BehaviorSubject<any>({disabled:false}); // Default value true
-  sortableOptions$ = this.sortableOptionsSubject.asObservable();
-
-  setSortableOptions(value: any) {
-    this.sortableOptionsSubject.next(value); // Update the sortable options value
   }
 
   createAjvInstance(ajvOptions){
@@ -391,19 +381,14 @@ this.ajv.addFormat("duration", {
     this.formGroup = <UntypedFormGroup>buildFormGroup(this.formGroupTemplate);
     if (this.formGroup) {
       this.compileAjvSchema(ajvInstanceName);
-      this.validateData(this.formGroup.value,true,ajvInstanceName);
+      this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName);
 
       // Set up observables to emit data and validation info when form data changes
       if (this.formValueSubscription) {
         this.formValueSubscription.unsubscribe();
       }
-
-      const valueChanges$ = this.formGroup.valueChanges;
-      const saveAfterInactivity$ = valueChanges$.pipe(debounceTime(VALIDATE_DELAY));
-      this.formValueSubscription = saveAfterInactivity$.pipe(
-        distinctUntilChanged(isEqual),
-      ).subscribe(
-        (formValue: any) => this.validateData(formValue,true,ajvInstanceName)
+      this.formValueSubscription = this.formGroup.valueChanges.subscribe(
+        formValue => this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName)
       );
     }
   }
@@ -570,6 +555,12 @@ this.ajv.addFormat("duration", {
     return '';
   }
 
+  //TODO fix- if template has value in title
+  // "items": {
+  //   "title": "{{ 'Input ' + $index+value }}",
+  //                   "type": "string"
+  // }
+  // result on button will be "Add Input [object Object]"
   setArrayItemTitle(
     parentCtx: any = {},
     childNode: any = null,
@@ -738,7 +729,10 @@ this.ajv.addFormat("duration", {
     //set, as the control would only be initialized when the condition is true 
     //TODO-review need to decide which of the data sets between data,formValues and default 
     //to use for the value
-    if(ctx.options?.condition || layoutNode?.oneOfPointer || layoutNode?.anyOfPointer){
+    //TODO try maybe marking descendants in applyITEConditions
+    let isITEDescendant=layoutNode?.schemaPointer?.split("/")
+    .some(elt=>["then","else"].includes(elt));
+    if(ctx.options?.condition || layoutNode?.oneOfPointer || layoutNode?.anyOfPointer || isITEDescendant){
       const dataPointer = this.getDataPointer(ctx);
       const controlValue=ctx.formControl?.value;
       const dataValue=JsonPointer.has(this.data,dataPointer)?
@@ -1062,6 +1056,9 @@ this.ajv.addFormat("duration", {
 
     // Move item in the formArray
     const formArray = <UntypedFormArray>this.getFormControlGroup(ctx);
+    if(oldIndex >=formArray.length){
+      return false;
+    }
     const arrayItem = formArray.at(oldIndex);
     formArray.removeAt(oldIndex);
     formArray.insert(newIndex, arrayItem);

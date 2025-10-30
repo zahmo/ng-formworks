@@ -10,7 +10,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       <button mat-stroked-button *ngIf="showAddButton"
         [color]="options?.color || 'accent'"
         [disabled]="options?.readonly"
-        (click)="addItem($event)">
+        (click)="addItem($event)"
+        [appStopPropagation]="['mousedown', 'touchstart']">
         <span *ngIf="options?.icon" [class]="options?.icon"></span>
         <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
       </button>
