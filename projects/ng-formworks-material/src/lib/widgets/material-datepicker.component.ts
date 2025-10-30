@@ -42,6 +42,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         [placeholder]="layoutNode().options?.title"
         [required]="options?.required"
         [readonly]="options?.readonly"
+        [value]="controlValue"
         (blur)="options.showErrors = true"
         >
       <span matSuffix *ngIf="options?.suffix || options?.fieldAddonRight"
@@ -66,7 +67,7 @@ export class MaterialDatepickerComponent implements OnInit,OnDestroy {
 
   formControl: FormControl;
   controlName: string;
-  dateValue: any;
+  controlValue: any;
   controlDisabled = false;
   boundControl = false;
   options: any;
