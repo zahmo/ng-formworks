@@ -799,7 +799,7 @@ this.ajv.addFormat("duration", {
     // Set values of any related controls in copyValueTo array
     if (isArray(ctx.options.copyValueTo)) {
       for (const item of ctx.options.copyValueTo) {
-        const targetControl = getControl(this.formGroup, item);
+        const targetControl = this.formGroup && getControl(this.formGroup, item);
         if (
           isObject(targetControl) &&
           typeof targetControl.setValue === 'function'
@@ -894,6 +894,7 @@ this.ajv.addFormat("duration", {
       !ctx.layoutNode ||
       !isDefined(ctx.layoutNode.dataPointer) ||
       ctx.layoutNode.type === '$ref'
+      ||this.formGroup==null
     ) {
       return null;
     }
@@ -905,7 +906,7 @@ this.ajv.addFormat("duration", {
   }
 
   getFormControlGroup(ctx: any): UntypedFormArray | UntypedFormGroup {
-    if (!ctx.layoutNode || !isDefined(ctx.layoutNode.dataPointer)) {
+    if (!ctx.layoutNode || !isDefined(ctx.layoutNode.dataPointer) ||this.formGroup==null) {
       return null;
     }
     const schemaPointer=ctx.layoutNode?.isITEItem?ctx.layoutNode?.schemaPointer:null;
