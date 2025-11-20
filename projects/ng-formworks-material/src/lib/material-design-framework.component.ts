@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, isDefined } from '@ng-formworks/core';
 import { CssframeworkService } from '@ng-formworks/cssframework';
-import cloneDeep from 'lodash/cloneDeep';
+import { cloneDeep } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { cssFrameworkCfgMaterialDesign } from './material-design-cssframework';
 

@@ -1,6 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep';
-import isEqual from 'lodash/isEqual';
-
+import { cloneDeep, isEqual } from 'lodash-es';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, forwardRef, inject, input, output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
@@ -53,12 +51,12 @@ export const JSON_SCHEMA_FORM_VALUE_ACCESSOR: any = {
  *   http://ulion.github.io/jsonform/playground (examples)
  *
  * This library depends on:
- *  - Angular (obviously)                  https://angular.io
- *  - lodash, JavaScript utility library   https://github.com/lodash/lodash
- *  - ajv, Another JSON Schema validator   https://github.com/epoberezkin/ajv
+ *  - Angular (obviously)                   https://angular.io
+ *  - lodash-es, JavaScript utility library https://github.com/lodash/lodash
+ *  - ajv, Another JSON Schema validator    https://github.com/epoberezkin/ajv
  *
  * In addition, the Example Playground also depends on:
- *  - brace, Browserified Ace editor       http://thlorenz.github.io/brace
+ *  - brace, Browserified Ace editor        http://thlorenz.github.io/brace
  */
 @Component({
     // tslint:disable-next-line:component-selector

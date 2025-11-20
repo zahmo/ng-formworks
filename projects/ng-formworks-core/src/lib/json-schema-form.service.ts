@@ -5,7 +5,6 @@ import addFormats from "ajv-formats";
 import Ajv2019, { ErrorObject, Options, ValidateFunction } from 'ajv/dist/2019';
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
-import cloneDeep from 'lodash/cloneDeep';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
@@ -38,7 +37,7 @@ import {
   toTitleCase
 } from './shared';
 
-import { default as _isEqual, default as isEqual } from 'lodash/isEqual';
+import { default as _isEqual, default as isEqual, cloneDeep } from 'lodash-es';
 import { setControl } from './shared/form-group.functions';
 
 

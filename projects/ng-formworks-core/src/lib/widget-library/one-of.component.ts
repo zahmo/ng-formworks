@@ -1,7 +1,7 @@
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
-import { isEqual, isObject, pick } from 'lodash';
+import { isEqual, isObject, pick } from 'lodash-es';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 import { hasNonNullValue, hasOwn, JsonPointer, path2ControlKey } from '../shared';
 

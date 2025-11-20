@@ -1,7 +1,9 @@
-import cloneDeep from 'lodash/cloneDeep';
-import _isArray from 'lodash/isArray';
-import _isPlainObject from 'lodash/isPlainObject';
-import uniqueId from 'lodash/uniqueId';
+import {
+  cloneDeep, 
+  isPlainObject as _isPlainObject, 
+  uniqueId, 
+  isArray as _isArray
+} from 'lodash-es'
 import { TitleMapItem } from '../json-schema-form.service';
 import {
   checkInlineType,
@@ -28,8 +30,6 @@ import {
   isObject,
   isString
 } from './validator.functions';
-
-
 
 
 /**

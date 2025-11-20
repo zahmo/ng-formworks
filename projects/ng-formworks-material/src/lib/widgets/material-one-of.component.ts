@@ -1,7 +1,7 @@
 import { Component, inject, input, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { hasNonNullValue, hasOwn, JsonPointer, JsonSchemaFormService, path2ControlKey } from '@ng-formworks/core';
-import { isEqual, isObject, pick } from 'lodash';
+import { isEqual, isObject, pick } from 'lodash-es';
 import { MaterialTabsComponent } from './material-tabs.component';
 
 

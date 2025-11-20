@@ -1,4 +1,4 @@
-import { isNil, some } from 'lodash';
+import { isNil, some } from 'lodash-es';
 import { hasValue, inArray, isArray, isDefined, isEmpty, isMap, isObject, isSet, isString, PlainObject } from './validator.functions';
 
 /**
