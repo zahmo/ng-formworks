@@ -10,7 +10,7 @@ import { JsonSchemaFormService } from './json-schema-form.service';
 import { convertSchemaToDraft6 } from './shared/convert-schema-to-draft6.function';
 import { resolveSchemaReferences } from './shared/json-schema.functions';
 import { JsonPointer } from './shared/jsonpointer.functions';
-import { forEach, hasOwn } from './shared/utility.functions';
+import { compareObjectArraySizes, forEach, hasOwn } from './shared/utility.functions';
 import {
   hasValue,
   inArray,
@@ -285,16 +285,26 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
 
       // If only input values have changed, update the form values
       if (changedInput.length === 1 && changedInput[0] === this.formValuesInput) {
+       
         if (this.formValuesInput.indexOf('.') === -1) {
           changedData=this.getInputValue(this.formValuesInput)
           //this[this.formValuesInput];
-          this.setFormValues(changedData, resetFirst);
         } else {
           const [input, key] = this.formValuesInput.split('.');
           changedData=this.getInputValue(input)[key];
-          this.setFormValues(changedData, resetFirst);
         }
-
+        //TODO -review if any of the the array sizes changed then the 
+        //layout array sizes need to be resynced to match
+        //-for now jsf.adjustLayout doesnt seem to work with nested arrays
+        //so entire form is reinited 
+        let arraySizesChanged=!compareObjectArraySizes(changedData,this.jsf.data,);
+        if(arraySizesChanged){
+          this.initializeForm(changedData);
+          if (this.onChange) { this.onChange(changedData); }
+          if (this.onTouched) { this.onTouched(changedData); }
+        }else{
+          this.setFormValues(changedData, resetFirst);
+        }   
         // If anything else has changed, re-render the entire form
       } else if (changedInput.length) {
         this.initializeForm(changedData);
@@ -314,24 +324,33 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
         .forEach(input => this.previousInputs[input] = this.getInputValue(input));
     }
   }
+  
 
-  setFormValues(formValues: any, resetFirst = true) {
+  setFormValues(formValues: any, resetFirst = true,emitFormEvent=true,usePatch=true) {
+
     if (formValues) {
       const newFormValues = this.objectWrap ? formValues['1'] : formValues;
       if (!this.jsf.formGroup) {
         this.jsf.formValues = formValues;
         this.activateForm();
       } else if (resetFirst) {//changed to avoid reset events
-        this.jsf.formGroup.reset({},{emitEvent:false});
+        this.jsf.formGroup.reset({},{emitEvent:emitFormEvent});
       }
       if (this.jsf.formGroup) {//changed to avoid reset events
-        this.jsf.formGroup.patchValue(newFormValues,{emitEvent:false});
+        
+        if(usePatch){
+          this.jsf.formGroup.patchValue(newFormValues,{emitEvent:emitFormEvent});
+        }else{
+          this.jsf.formGroup.setValue(newFormValues,{emitEvent:emitFormEvent});
+        }
+        
       }
       if (this.onChange) { this.onChange(newFormValues); }
       if (this.onTouched) { this.onTouched(newFormValues); }
     } else {
       this.jsf.formGroup.reset();
     }
+    this.changeDetector.markForCheck();
   }
 
   submitForm() {
