@@ -487,7 +487,7 @@ export function buildLayout_original(jsf, widgetLibrary) {
 }
 
 //TODO-review:this implements a quick 'post' fix rather than an
-//integrared ideal fix
+//integrated ideal fix
 export function buildLayout(jsf, widgetLibrary) {
   let layout = buildLayout_original(jsf, widgetLibrary);
   if (jsf.formValues) {
@@ -501,7 +501,7 @@ export function buildLayout(jsf, widgetLibrary) {
 
 
 
-function fixNestedArrayLayout(options: any) {
+export function fixNestedArrayLayout(options: any) {
   let { builtLayout, formData } = options;
   let arrLengths = {};
   let traverseObj = function (obj, path, onValue?) {
@@ -611,11 +611,22 @@ function fixNestedArrayLayout(options: any) {
             : cloneDeep(builtLayout.items[0]);//copy first
           newItem._id = uniqueId("new_");
           builtLayout.items.unshift(newItem);
+         // builtLayout.items=[newItem, ...builtLayout.items];
+          
         }
-        if (builtLayout.options.listItems) {
-          builtLayout.options.listItems = numDataItems;
+      }else if (numActualItems > numDataItems) {
+        let numItemsToRemove = numActualItems-numDataItems;
+        for (let i = 0; i < numItemsToRemove; i++) {
+          builtLayout.items.pop();
+          //builtLayout.items=builtLayout.items.slice(0, -1);
+          //builtLayout.items.slice(0, -1);
         }
       }
+      if (builtLayout.options.listItems) {
+        builtLayout.options.listItems = numDataItems;
+      }
+      //builtLayout.items=[...builtLayout.items];
+        
       indices[builtLayout.dataPointer] = indices[builtLayout.dataPointer] || -1;
       indexPos++;
       builtLayout.items.forEach((item, index) => {
