@@ -159,8 +159,11 @@
             <div *ngIf="!formActive">{{jsonFormStatusMessage}}</div>
 
             <!-- This is the form! -->
-            <json-schema-form *ngIf="formActive" loadExternalAssets="true" [form]="jsonFormObject" [options]="jsonFormOptions" [framework]="selectedFramework" [language]="selectedLanguage" [theme]="selectedTheme" (onChanges)="onChanges($event)" (onSubmit)="onSubmit($event)"
-                (isValid)="isValid($event)" (validationErrors)="validationErrors($event)">
+            <json-schema-form *ngIf="formActive  && formInputMode=='combinedInputs'" loadExternalAssets="true" [form]="jsonFormObject" [options]="jsonFormOptions" [framework]="selectedFramework" [language]="selectedLanguage" [theme]="selectedTheme" (onChanges)="onChanges($event)"
+                (onSubmit)="onSubmit($event)" (isValid)="isValid($event)" (validationErrors)="validationErrors($event)">
+            </json-schema-form>
+            <json-schema-form *ngIf="formActive && formInputMode=='seperateInputs'" [loadExternalAssets]="true" [form]="jsonFormObject" [schema]="jsonFormSchema" [layout]="jsonFormLayout" [options]="jsonFormOptions" [framework]="selectedFramework" [language]="selectedLanguage"
+                [widgets]="jsonFormWidgets" [model]="jsonFormData" [theme]="selectedTheme" (onChanges)="onChanges($event)" (onSubmit)="onSubmit($event)" (isValid)="isValid($event)" (validationErrors)="validationErrors($event)">
             </json-schema-form>
 
         </div>

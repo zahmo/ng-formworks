@@ -120,6 +120,11 @@ export class DemoComponent implements OnInit,AfterViewInit {
     toolbar_color:'primary'
   }
 
+  formInputMode:string="combinedInputs";//combinedInputs or seperateInputs
+  jsonFormWidgets:any;//used when formInputMode is seperateInputs
+  jsonFormData:any;//used when formInputMode is seperateInputs
+  jsonFormLayout:any;//used when formInputMode is seperateInputs
+
   readonly menuTrigger = viewChild(MatMenuTrigger);
 
 
@@ -388,10 +393,15 @@ b64ToUtf8(b64) {
     try {
 
       // Parse entered content as JSON
-      this.jsonFormObject = JSON.parse(newFormString);
+      let jsonFormObj=JSON.parse(newFormString);
+      this.jsonFormObject =this.formInputMode=="combinedInputs"?jsonFormObj:this.jsonFormObject;
       this.jsonFormValid = true;
-      this.formDataEncoded=this.asBase64Encoded(this.jsonFormObject);
-
+      this.formDataEncoded=this.formInputMode=="combinedInputs"?this.asBase64Encoded(this.jsonFormObject):"";
+      if(this.formInputMode=="seperateInputs"){
+        this.jsonFormLayout=jsonFormObj?.layout||this.jsonFormLayout;
+        this.jsonFormSchema=jsonFormObj?.schema||this.jsonFormSchema;
+        this.jsonFormData=jsonFormObj.data||this.jsonFormData;
+      }
     } catch (jsonError) {
       try {
 
@@ -527,7 +537,9 @@ newUrlParameters(params) {
 
   onJsonLoaderDataChange(jsonLoaderData: JSONLoaderChanges) {
     if(jsonLoaderData && jsonLoaderData.jsonData){
-      this.jsonFormSchema = JSON.stringify(jsonLoaderData.jsonData,null,2);
+      let jsonFormStr=JSON.stringify(jsonLoaderData.jsonData,null,2);
+      this.formInputMode=jsonLoaderData.jsonData?.demoOptions?.formInputsMode||'combinedInputs';
+      this.jsonFormSchema=this.formInputMode=="combinedInputs"?jsonFormStr:this.jsonFormSchema;
       if(jsonLoaderData.srcType=='URL'){
         this.formDataJSONURL=jsonLoaderData.url
         let navUrl=this.newUrlParameters({
@@ -561,13 +573,14 @@ newUrlParameters(params) {
       }
       if(this.formDataEncoded){
         let formData=this.fromBase64Decoded(this.formDataEncoded);
-        this.jsonFormSchema = JSON.stringify({
+        jsonFormStr= JSON.stringify({
           ...jsonLoaderData.jsonData,  // Spread all properties from jsonData
           //data: formData.data||jsonLoaderData.jsonData.data  // Override the data property with formData's data
         },null,2);
+        this.jsonFormSchema=this.formInputMode=="combinedInputs"?jsonFormStr:this.jsonFormSchema;
       }
       this.loadedJSON=JSON.stringify(jsonLoaderData.jsonData,null,2);
-      this.generateForm(this.jsonFormSchema);
+      this.generateForm(jsonFormStr);
     }
 
   }
