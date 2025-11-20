@@ -17,7 +17,7 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       You must explicitly disable dragging on the main element 
       and re-enable it only when using the handle.
       -->
-      <div *ngFor="let layoutItem of layout(); let i = index;trackBy: trackByFn"
+      <div *ngFor="let layoutItem of layout(); let i = index;"
          cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
         [cdkDragDisabled]="!isDraggable(layoutItem)"
         [class.form-flex-item]="isFlexItem()"
