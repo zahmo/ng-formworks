@@ -890,15 +890,7 @@ export function convertJSONSchemaIfToCondition(schema:any,layoutNode:any,negate=
      .join("")
      :"";
      let modelPath=parentPath?`model.${parentPath}`:"model";
-     let checkPath=modelPath.split('.')
-      .map((_, index, array) => {
-      return array.slice(0, index + 1).join('.');  // Build each part of the path dynamically
-    }).join(' && ');  // Join the parts with '&&'
-    
-    //  .reduce((accumulator, currentPart, index) => {
-    //   const currentExpression = index === 0 ? currentPart : `${accumulator}.${currentPart}`;
-    //   return index === 0 ? currentExpression : `${accumulator} && ${currentExpression}`;
-    // }, '');
+     let checkPath=modelPath.replace(/\[/g,".[").split('.').join("?.")
       if(schema.if){
         Object.keys(schema.if.properties).forEach((ifProp,ind)=>{
           let amper=ind>0?"&":"";
