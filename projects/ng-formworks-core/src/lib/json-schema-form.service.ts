@@ -6,6 +6,7 @@ import Ajv2019, { ErrorObject, Options, ValidateFunction } from 'ajv/dist/2019';
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
+import _isArray from 'lodash/isArray';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
@@ -1073,4 +1074,71 @@ this.ajv.addFormat("duration", {
     JsonPointer.remove(this.layout, this.getLayoutPointer(ctx));
     return true;
   }
+
+   //TODO fix-doesnt seem to work for nested array
+    adjustLayout(layout:any, newData: any,currLayoutIndex=[0],currDataIndex=[]) {
+      const createWidgetCtx=(layoutNode:any,layoutIndex:any,dataIndex:any):any=>{
+        return {
+          layoutNode: ()=>{return layoutNode},
+          layoutIndex: ()=>{return layoutIndex},
+          dataIndex: ()=>{return dataIndex},
+        }
+      }
+      // console.log(`adjustLayout currLayoutIndex:${currLayoutIndex}`);
+      if(layout.items && _isArray(newData)){
+        let ctx=createWidgetCtx(
+          {//add a ref node to be that of first items datapointer
+
+            ...layout,
+            $ref:layout.$ref||layout.items[0]?.dataPointer,
+            dataPointer:layout.items[0]?.dataPointer,
+            arrayItem: true,
+            arrayItemType: "list"
+          
+          }
+          ,[...currLayoutIndex.slice(0, currLayoutIndex.length - 1),layout.items.length-1]
+          ,[...currDataIndex.slice(0, currDataIndex.length - 1),layout.items.length-1]);
+        const lengthDifference = newData.length - layout.items.filter(litem=>{
+          return litem?.type!="$ref"
+        }).length;
+        if (lengthDifference > 0) {
+          // Add missing controls if newData has more items
+          for (let i = 0; i < lengthDifference; i++) {
+            this.addItem(ctx)
+          }
+        } else if (lengthDifference < 0) {
+          let numToRemove=layout.items.filter(litem=>{
+            return litem?.type!="$ref"
+          })
+          .length-newData.length;
+          // Remove extra controls if newData has fewer items
+          for (let i = 0; i< numToRemove; i++) {
+           
+            let oldDataIndex=ctx.dataIndex();
+            let lastDataIndex=oldDataIndex[oldDataIndex.length-1];
+            let updatedLayoutIndex=[...currLayoutIndex.slice(0, currLayoutIndex.length - 1),0]
+            let updatedDataIndex=[...oldDataIndex.slice(0, oldDataIndex.length - 1),0];
+            ctx=createWidgetCtx(ctx.layoutNode(),updatedLayoutIndex,updatedDataIndex)
+            let removed=this.removeItem(ctx);
+           // if(removed){
+
+            //}
+
+          }
+        }
+        return 
+      }
+      if(_isArray(layout) ){
+        layout.forEach((layoutNode,ind)=>{
+          //if(layoutNode.items){
+            let layoutMappedData=layoutNode.dataPointer?JsonPointer.get(newData,layoutNode.dataPointer)
+            :undefined;
+            this.adjustLayout(layoutNode,layoutMappedData,[...currLayoutIndex,ind],[...currDataIndex,ind]);
+          ///}
+        })
+      }
+
+    }
+
+    
 }
