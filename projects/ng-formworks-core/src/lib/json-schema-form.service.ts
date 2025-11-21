@@ -910,7 +910,6 @@ this.ajv.addFormat("duration", {
     if (!(abstractControl instanceof UntypedFormGroup) && !(abstractControl instanceof UntypedFormArray)) {
        abstractControl.setErrors(null);
        abstractControl.setValidators([]);
-       abstractControl.setValue(null);
     }
   }
 
