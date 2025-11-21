@@ -221,6 +221,8 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges{
       return this._getSelectFrameworkInputsRaw(layoutItem, i);
     }
   }
+  //TODO investigate-causing layout issue with layout,for now
+  //removed from template
   trackByFn(index: number, item: any): any {
     return item._id ?? index;
   }
