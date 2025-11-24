@@ -87,8 +87,9 @@ export class TabsComponent implements OnInit,OnDestroy {
     //TODO review/test-introduced to fix dynamic titles not updating
     //when their conditional linked field is destroyed
     //-forces change detection!
-    this.jsf.dataChanges.subscribe((val)=>{
-        this.cdr.detectChanges();
+    //-commented out, causing other issues
+    this.dataChangesSubs=this.jsf.dataChanges.subscribe((val)=>{
+        //this.cdr.detectChanges();
     })
   }
 
