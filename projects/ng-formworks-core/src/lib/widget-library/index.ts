@@ -5,6 +5,7 @@ import { CheckboxesComponent } from './checkboxes.component';
 import { FileComponent } from './file.component';
 import { HiddenComponent } from './hidden.component';
 import { InputComponent } from './input.component';
+import { ItemTitleComponent } from './item-title.component';
 import { MessageComponent } from './message.component';
 import { NoneComponent } from './none.component';
 import { NumberComponent } from './number.component';
@@ -28,7 +29,7 @@ export const BASIC_WIDGETS = [
   MessageComponent, NoneComponent, NumberComponent, RadiosComponent,
   RootComponent, SectionComponent, SelectComponent, SelectFrameworkComponent,
   SelectWidgetComponent, SubmitComponent, TabComponent, TabsComponent,
-  TemplateComponent, TextareaComponent,SelectCheckboxComponent
+  TemplateComponent, TextareaComponent,SelectCheckboxComponent,ItemTitleComponent
 ];
 
 export { AddReferenceComponent } from './add-reference.component';
@@ -39,6 +40,7 @@ export { ElementAttributeDirective } from './element-attribute.directive';
 export { FileComponent } from './file.component';
 export { HiddenComponent } from './hidden.component';
 export { InputComponent } from './input.component';
+export { ItemTitleComponent } from './item-title.component';
 export { MessageComponent } from './message.component';
 export { NoneComponent } from './none.component';
 export { NumberComponent } from './number.component';
