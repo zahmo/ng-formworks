@@ -219,7 +219,7 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
   }
   ngOnInit() {
     this.updateForm();
-    this.loadAssets();
+    // this.loadAssets();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -228,7 +228,7 @@ export class JsonSchemaFormComponent implements ControlValueAccessor, OnChanges,
     if (changes.framework) {
       if (!changes.framework.isFirstChange() &&
         (changes.framework.previousValue !== changes.framework.currentValue)) {
-        this.loadAssets();
+        // this.loadAssets();
       }
     }
   }
