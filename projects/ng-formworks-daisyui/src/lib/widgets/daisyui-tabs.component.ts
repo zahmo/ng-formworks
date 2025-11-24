@@ -86,8 +86,9 @@ export class DaisyUITabsComponent implements OnInit,OnDestroy {
     //TODO review/test-introduced to fix dynamic titles not updating
     //when their conditional linked field is destroyed
     //-forces change detection!
+    //-commented out, causing other issues
     this.jsf.dataChanges.subscribe((val)=>{
-      this.cdr.detectChanges();
+      //this.cdr.detectChanges();
   })
   }
 
