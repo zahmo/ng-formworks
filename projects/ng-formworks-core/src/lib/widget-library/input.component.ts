@@ -86,7 +86,12 @@ export class InputComponent implements OnInit {
   }
 
   ngOnDestroy () {
-    this.jsf.updateValue(this, null);
+    //needed to be done in timeout for when dynamic/condition based
+    //titles depend on the formControls value but the formControl
+    //is also destroyed
+    setTimeout(()=>{
+      this.jsf.updateValue(this, null);
+    })
   }
 
 }

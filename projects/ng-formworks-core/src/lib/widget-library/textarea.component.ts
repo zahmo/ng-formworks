@@ -67,6 +67,9 @@ export class TextareaComponent implements OnInit {
   }
   
   ngOnDestroy () {
-    this.jsf.updateValue(this, null);
+    //see cpmments in input component
+    setTimeout(()=>{
+      this.jsf.updateValue(this, null);
+    })
   }
 }
