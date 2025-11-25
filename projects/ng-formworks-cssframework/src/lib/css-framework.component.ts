@@ -212,7 +212,7 @@ frameworkThemeSubs:Subscription;
         this.updateTitle();
       }
       
-      this.setTitle();
+      this.options.title=this.setTitle();
 
       if(this.widgetOptions.title){
         this.dynamicTitle="";
@@ -334,6 +334,7 @@ addClasses(this.options.htmlClass, this.widgetStyles.array.htmlClass):
       this.dataIndex()[this.dataIndex().length - 1]
     );
     //this.jsf.setItemTitle(this);
+    //this.widgetLayoutNode.options.title=this.dynamicTitle;
   }
 
   removeItem() {
