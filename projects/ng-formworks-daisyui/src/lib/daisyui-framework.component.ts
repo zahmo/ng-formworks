@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnChanges, OnInit, ViewEncapsulation, input, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnInit, ViewEncapsulation, inject, input } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 /**
@@ -17,8 +17,15 @@ template: `
   </css-framework>
 </div>
 `,
-styleUrls: ['./daisyui-framework.component.scss'],
-encapsulation:ViewEncapsulation.None
+    //styleUrls: ['./daisyui-framework.component.scss'],
+    styleUrls: [
+      './daisyui-framework.component.css',
+      './tailwind-output.css',
+      './daisyui-ng-formworks-themes.css'
+      
+    ],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class DaisyUIFrameworkComponent implements OnInit, OnChanges {
 changeDetector = inject(ChangeDetectorRef);
