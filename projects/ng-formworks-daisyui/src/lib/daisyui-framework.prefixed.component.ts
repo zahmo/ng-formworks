@@ -24,8 +24,14 @@ template: `
   </css-framework>
 </div>
 `,
-styleUrls: ['./daisyui-framework.prefixed.component.scss'],
-encapsulation:ViewEncapsulation.None
+    //styleUrls: ['./daisyui-framework.prefixed.component.scss'],
+    styleUrls: [
+      './daisyui-framework.prefixed.component.css',
+      './tailwind-output-prefixed.css',
+      './daisyui-ng-formworks-themes-prefixed.css'
+    ],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class DaisyUIFrameworkComponentPrefixed implements OnInit, OnChanges {
 
