@@ -1,4 +1,3 @@
-@use "sass:meta";
 :host ::ng-deep {
     .list-group-item .form-control-feedback {
         top: 40px;
@@ -44,6 +43,3 @@
 .ng-invalid.ng-touched {
     border: 1px solid #f44336;
 }
-
-@include meta.load-css('tailwind-output-prefixed.scss');
-@include meta.load-css('daisyui-ng-formworks-themes-prefixed.scss');
