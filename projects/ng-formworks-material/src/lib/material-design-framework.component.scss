@@ -29,6 +29,14 @@
     margin: 6px 0;
 }
 
+// Subtle highlight for required but empty controls
+// Applied via [ngClass] on mat-form-field as 'required-pending'.
+// Need ::ng-deep because the internal structure belongs to Angular Material.
+::ng-deep mat-form-field.required-pending .mat-mdc-text-field-wrapper {
+    background-color: rgba(255, 193, 7, 0.08); // very light amber tint
+    box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.5) inset; // subtle border inside outline
+}
+
 [draggable=true]:hover {
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .2), 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12);
     cursor: move;

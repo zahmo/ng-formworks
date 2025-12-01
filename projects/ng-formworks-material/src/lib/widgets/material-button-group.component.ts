@@ -7,33 +7,58 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
     // tslint:disable-next-line:component-selector
     selector: 'material-button-group-widget',
     template: `
-    <div>
-      <div *ngIf="options?.title">
-        <label
-          [attr.for]="'control' + layoutNode()?._id"
-          [class]="options?.labelHtmlClass || ''"
-          [style.display]="options?.notitle ? 'none' : ''"
-          [innerHTML]="layoutNode().options?.title"></label>
+    <div [class]="options?.htmlClass || ''">
+      <div class="button-group-container">
+        <div *ngIf="options?.title">
+          <label
+            [attr.for]="'control' + layoutNode()?._id"
+            [class]="options?.labelHtmlClass || ''"
+            [style.display]="options?.notitle ? 'none' : ''"
+            [innerHTML]="layoutNode().options?.title"></label>
+        </div>
+        <mat-button-toggle-group
+          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+          [attr.readonly]="options?.readonly ? 'readonly' : null"
+          [attr.required]="options?.required"
+          [ngClass]="{ 'required-pending-button-group': options?.required && !controlValue }"
+          [disabled]="controlDisabled || options?.readonly"
+          [name]="controlName"
+          [value]="controlValue"
+          [vertical]="!!options.vertical">
+          <mat-button-toggle *ngFor="let radioItem of radiosList"
+            [id]="'control' + layoutNode()?._id + '/' + radioItem?.name"
+            [value]="radioItem?.value"
+            (click)="updateValue(radioItem?.value)">
+            <span [innerHTML]="radioItem?.name"></span>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
       </div>
-      <mat-button-toggle-group
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [attr.readonly]="options?.readonly ? 'readonly' : null"
-        [attr.required]="options?.required"
-        [disabled]="controlDisabled || options?.readonly"
-        [name]="controlName"
-        [value]="controlValue"
-        [vertical]="!!options.vertical">
-        <mat-button-toggle *ngFor="let radioItem of radiosList"
-          [id]="'control' + layoutNode()?._id + '/' + radioItem?.name"
-          [value]="radioItem?.value"
-          (click)="updateValue(radioItem?.value)">
-          <span [innerHTML]="radioItem?.name"></span>
-        </mat-button-toggle>
-      </mat-button-toggle-group>
       <mat-error *ngIf="options?.showErrors && options?.errorMessage"
         [innerHTML]="options?.errorMessage"></mat-error>
     </div>`,
-    styles: [` mat-error { font-size: 75%; } `],
+    styles: [`
+      mat-error { font-size: 75%; }
+
+      .button-group-container {
+        width: 100%;
+      }
+
+      /* Keep button group in a single horizontal row; Angular Material will
+         handle vertical stacking when [vertical] is true. */
+      .button-group-container .mat-button-toggle-group {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        max-width: 100%;
+      }
+
+      /* Subtle highlight for required but empty button group */
+      .required-pending-button-group {
+        background-color: rgba(255, 193, 7, 0.08);
+        box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.5) inset;
+        border-radius: 4px;
+        padding: 2px 4px;
+      }
+    `],
     standalone: false
 })
 export class MaterialButtonGroupComponent implements OnInit,OnDestroy {

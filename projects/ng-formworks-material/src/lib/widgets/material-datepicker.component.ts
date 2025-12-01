@@ -9,6 +9,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     template: `
     <mat-form-field [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
                     [class]="options?.htmlClass || ''"
+                    [ngClass]="{ 'required-pending': options?.required && !(boundControl ? formControl?.value : controlValue) }"
                     [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
                     [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'">
       <mat-label *ngIf="!options?.notitle">{{layoutNode().options?.title}}</mat-label>
@@ -58,6 +59,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     mat-error { font-size: 75%; margin-top: -1rem; margin-bottom: 0.5rem; }
     ::ng-deep json-schema-form mat-form-field .mat-mdc-form-field-wrapper .mat-form-field-flex
       .mat-form-field-infix { width: initial; }
+
+    /* Subtle highlight for required but empty controls */
+    .required-pending .mat-mdc-text-field-wrapper {
+      background-color: rgba(255, 193, 7, 0.08);
+      box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.5) inset;
+    }
   `],
     standalone: false
 })

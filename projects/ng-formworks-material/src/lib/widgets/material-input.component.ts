@@ -15,6 +15,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 
     <mat-form-field [appearance]="options?.appearance || matFormFieldDefaultOptions?.appearance || 'fill'"
       [class]="options?.htmlClass || ''"
+      [ngClass]="{ 'required-pending': options?.required && !(boundControl ? formControl?.value : controlValue) }"
       [floatLabel]="options?.floatLabel || matFormFieldDefaultOptions?.floatLabel || (options?.notitle ? 'never' : 'auto')"
       [hideRequiredMarker]="options?.hideRequired ? 'true' : 'false'"
       [style.width]="'100%'">
@@ -78,6 +79,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       input {width:100%;}
       /*width of 120% for type 'datetime-local' to hide firefox picker*/ 
       input[type='datetime-local'] {width:120%;}
+
+    /* Subtle highlight for required but empty controls */
+    .required-pending .mat-mdc-text-field-wrapper {
+      background-color: rgba(255, 193, 7, 0.08);
+      box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.5) inset;
+    }
   `],
     standalone: false
 })
