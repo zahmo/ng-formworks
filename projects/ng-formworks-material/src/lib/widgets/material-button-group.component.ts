@@ -12,7 +12,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
         <div *ngIf="options?.title">
           <label
             [attr.for]="'control' + layoutNode()?._id"
-            [class]="options?.labelHtmlClass || ''"
+            [class]="options?.labelHtmlClass || 'mat-label-medium'"
             [style.display]="options?.notitle ? 'none' : ''"
             [innerHTML]="layoutNode().options?.title"></label>
         </div>
