@@ -41,6 +41,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
 
       .button-group-container {
         width: 100%;
+        margin-bottom: 1.5rem;
       }
 
       /* Keep button group in a single horizontal row; Angular Material will

@@ -6,7 +6,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     // tslint:disable-next-line:component-selector
     selector: 'material-add-reference-widget',
     template: `
-    <section [class]="options?.htmlClass || ''" align="end">
+    <section [class]="options?.htmlClass || ''" align="end" class="add-reference-container">
       <button mat-stroked-button *ngIf="showAddButton"
         [color]="options?.color || 'accent'"
         [disabled]="options?.readonly"
@@ -16,6 +16,11 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
         <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
       </button>
     </section>`,
+    styles: [`
+      .add-reference-container {
+        padding-top: 0.75rem;
+      }
+    `],
     changeDetection: ChangeDetectionStrategy.Default,
     standalone: false
 })
