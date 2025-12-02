@@ -94,7 +94,10 @@ export class NumberComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy () {
-    this.jsf.updateValue(this, null);
+    //see cpmments in input component
+    setTimeout(()=>{
+      this.jsf.updateValue(this, null);
+    })
   }
   
 }

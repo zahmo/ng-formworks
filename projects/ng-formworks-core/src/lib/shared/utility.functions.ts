@@ -404,3 +404,51 @@ export function hasNonNullValue(obj: Record<string, any>): boolean {
     return !isNil(value);
   });
 }
+/**
+ * Recursively compares array sizes of nested arrays
+ *
+ * @param obj1 - The object to check.
+ * @param obj2 - The object to check.
+ * @returns `false` if at least one nested array size mismatches`.
+ *
+ * @example
+ * const obj1 = { a: ['a','aa'], b:{c:[1,11,11]} };
+ * const obj2 = { a: ['ee','dd'], b:{c:[2]} };
+ * 
+ * console.log(compareObjectArraySizes(obj1,obj1));  // Output: false
+ * mismatch will be on path b/c
+ */
+  export function compareObjectArraySizes(obj1: any, obj2: any, comparePath = "") {
+    if (isArray(obj1) && isArray(obj2)) {
+      if (obj1.length != obj2.length) {
+        console.log(`size mismatch at ${comparePath}` );
+        return false; // immediately return false on mismatch
+      } else {
+        for (let ind = 0; ind < obj1.length; ind++) {
+          const item1 = obj1[ind];
+          const item2 = obj2[ind];
+          const result = compareObjectArraySizes(item1, item2, `${comparePath}/${ind}`);
+          if (result === false) {
+            return false; // propagate false if mismatch is found
+          }
+        }
+      }
+    }
+  
+    if (isObject(obj1) && !isArray(obj1)) {
+      for (let key in obj1) {
+        if (obj2.hasOwnProperty(key)) {
+          const result = compareObjectArraySizes(obj1[key], obj2[key], `${comparePath}/${key}`);
+          if (result === false) {
+            return false; // propagate false if mismatch is found
+          }
+        }
+      }
+    }
+  
+    return true; // all checks passed
+  }
+  
+
+
+

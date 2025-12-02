@@ -18,7 +18,7 @@ import { memoize } from 'lodash';
       You must explicitly disable dragging on the main element 
       and re-enable it only when using the handle.
       -->
-      <div *ngFor="let layoutItem of layout(); let i = index;trackBy: trackByFn" 
+      <div *ngFor="let layoutItem of layout(); let i = index;" 
        cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
         [cdkDragDisabled]="!isDraggable(layoutItem)"
         [class.form-flex-item]="isFlexItem()"
@@ -207,7 +207,8 @@ export class FlexLayoutRootComponent implements OnInit,OnDestroy,OnChanges {
       return this._getSelectFrameworkInputsRaw(layoutItem, i);
     }
   }
-    
+  //TODO investigate-causing layout issue with layout,for now
+  //removed from template
     trackByFn(index: number, item: any): any {
       return item._id ?? index;
     }

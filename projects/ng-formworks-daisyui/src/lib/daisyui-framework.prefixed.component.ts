@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnChanges, OnInit, ViewEncapsulation, input, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnInit, ViewEncapsulation, inject, input } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 /**
@@ -17,7 +17,12 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
   </css-framework>
 </div>
 `,
-    styleUrls: ['./daisyui-framework.prefixed.component.scss'],
+    //styleUrls: ['./daisyui-framework.prefixed.component.scss'],
+    styleUrls: [
+      './daisyui-framework.prefixed.component.css',
+      './tailwind-output-prefixed.css',
+      './daisyui-ng-formworks-themes-prefixed.css'
+    ],
     encapsulation: ViewEncapsulation.None,
     standalone: false
 })
