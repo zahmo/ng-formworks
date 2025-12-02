@@ -73,6 +73,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     <mat-error *ngIf="options?.showErrors && options?.errorMessage"
       [innerHTML]="options?.errorMessage"></mat-error>`,
     styles: [`
+    :host { margin-bottom: 16px; display: block; }
     mat-error { font-size: 75%; margin-top: -1rem; margin-bottom: 0.5rem; }
     ::ng-deep json-schema-form mat-form-field .mat-mdc-form-field-wrapper .mat-form-field-flex
       .mat-form-field-infix { width: initial; }
@@ -83,7 +84,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     /* Subtle highlight for required but empty controls */
     .required-pending .mat-mdc-text-field-wrapper {
       background-color: rgba(255, 193, 7, 0.08);
-      box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.5) inset;
     }
   `],
     standalone: false

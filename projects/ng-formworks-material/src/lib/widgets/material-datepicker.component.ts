@@ -63,7 +63,6 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     /* Subtle highlight for required but empty controls */
     .required-pending .mat-mdc-text-field-wrapper {
       background-color: rgba(255, 193, 7, 0.08);
-      box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.5) inset;
     }
   `],
     standalone: false

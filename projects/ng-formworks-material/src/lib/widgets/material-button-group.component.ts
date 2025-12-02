@@ -9,7 +9,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
     template: `
     <div [class]="options?.htmlClass || ''">
       <div class="button-group-container">
-        <div *ngIf="options?.title">
+        <div *ngIf="options?.title" class="button-group-label-container">
           <label
             [attr.for]="'control' + layoutNode()?._id"
             [class]="options?.labelHtmlClass || 'mat-label-medium'"
@@ -20,7 +20,7 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
           [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
           [attr.readonly]="options?.readonly ? 'readonly' : null"
           [attr.required]="options?.required"
-          [ngClass]="{ 'required-pending-button-group': options?.required && !controlValue }"
+          [ngClass]="{ 'required-pending-button-group': options?.required && controlValue == null }"
           [disabled]="controlDisabled || options?.readonly"
           [name]="controlName"
           [value]="controlValue"
@@ -44,6 +44,10 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
         margin-bottom: 1.5rem;
       }
 
+      .button-group-label-container {
+        margin-bottom: 0.75rem;
+      }
+
       /* Keep button group in a single horizontal row; Angular Material will
          handle vertical stacking when [vertical] is true. */
       .button-group-container .mat-button-toggle-group {
@@ -55,9 +59,6 @@ import { JsonSchemaFormService, buildTitleMap } from '@ng-formworks/core';
       /* Subtle highlight for required but empty button group */
       .required-pending-button-group {
         background-color: rgba(255, 193, 7, 0.08);
-        box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.5) inset;
-        border-radius: 4px;
-        padding: 2px 4px;
       }
     `],
     standalone: false

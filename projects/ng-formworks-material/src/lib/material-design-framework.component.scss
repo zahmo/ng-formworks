@@ -34,7 +34,6 @@
 // Need ::ng-deep because the internal structure belongs to Angular Material.
 ::ng-deep mat-form-field.required-pending .mat-mdc-text-field-wrapper {
     background-color: rgba(255, 193, 7, 0.08); // very light amber tint
-    box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.5) inset; // subtle border inside outline
 }
 
 [draggable=true]:hover {
