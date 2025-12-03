@@ -37,6 +37,7 @@ Below is a table of the corresponding ng-formworks versions that's needed for th
 
 | Angular | ng-formworks |  installation (for Material Design)
 |--|--|--|
+| 21.x.x |21.x.x|```npm  install @ng-formworks/core@^21.0.0 @ng-formworks/cssframework@^21.0.0 @ng-formworks/material@^21.0.0```|
 | 20.x.x |20.x.x|```npm  install @ng-formworks/core@^20.0.0 @ng-formworks/cssframework@^20.0.0 @ng-formworks/material@^20.0.0```|
 | 19.x.x |19.x.x|```npm  install @ng-formworks/core@^19.0.0 @ng-formworks/cssframework@^19.0.0 @ng-formworks/material@^19.0.0```|
 | 18.x.x |18.x.x|```npm  install @ng-formworks/core@^18.0.0 @ng-formworks/cssframework@^18.0.0 @ng-formworks/material@^18.0.0```|
