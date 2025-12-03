@@ -1,5 +1,5 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, provideZoneChangeDetection } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -35,8 +35,9 @@ import { JsonLoaderComponent } from './json-loader/json-loader.component';
 
 
 
-@NgModule({ declarations: [AceEditorDirective, DemoComponent, DemoRootComponent,JsonLoaderComponent],
-    bootstrap: [DemoRootComponent], imports: [BrowserModule, BrowserAnimationsModule, FormsModule,CommonModule,
+@NgModule({
+    declarations: [AceEditorDirective, DemoComponent, DemoRootComponent, JsonLoaderComponent],
+    bootstrap: [DemoRootComponent], imports: [BrowserModule, BrowserAnimationsModule, FormsModule, CommonModule,
         MatButtonModule, MatCardModule, MatCheckboxModule,
         MatIconModule, MatMenuModule, MatSelectModule, MatToolbarModule,
         MatFormFieldModule,
@@ -50,9 +51,15 @@ import { JsonLoaderComponent } from './json-loader/json-loader.component';
         DaisyUIFrameworkModule,
         Bootstrap5FrameworkModule,
         CssFrameworkModule,
-        JsonSchemaFormModule], providers: [{ provide: REMOVE_STYLES_ON_COMPONENT_DESTROY, useValue: true }
-        //uncomment to disable daisyui class name prefixing
-        ,
-        { provide: DUIOPTIONS, useValue: { classPrefix: environment.cssClassPrefix } }, provideHttpClient(withInterceptorsFromDi())] })
+        JsonSchemaFormModule],
+    providers: [
+        { provide: REMOVE_STYLES_ON_COMPONENT_DESTROY, useValue: true }
+            //uncomment to disable daisyui class name prefixing
+            ,
+        { provide: DUIOPTIONS, useValue: { classPrefix: environment.cssClassPrefix } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideZoneChangeDetection()
+    ]
+})
 
 export class DemoModule { }
