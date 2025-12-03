@@ -18,6 +18,7 @@ which version of ng-formworks:
 * [ ] 18.x.x
 * [ ] 19.x.x
 * [ ] 20.x.x
+* [ ] 21.x.x
 
 which version of Angular:
 
@@ -27,6 +28,7 @@ which version of Angular:
 * [ ] 18
 * [ ] 19
 * [ ] 20
+* [ ] 21
 
 which framework:
 
@@ -56,6 +58,7 @@ of ng-formworks that you are using.
     - version 18: https://zahmo.github.io/ng-formworks/18
     - version 19: https://zahmo.github.io/ng-formworks/19
     - version 20: https://zahmo.github.io/ng-formworks/20
+    - version 21: https://zahmo.github.io/ng-formworks/21
     
 2. From the Dropdowns section 'Selected Framework and Options',
     - Select the Framework related to your issue
