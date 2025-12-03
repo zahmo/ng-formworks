@@ -20,9 +20,11 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         (click)="updateValue($event)"
         [appStopPropagation]="['mousedown', 'touchstart']"
         >
-        <span *ngIf="options?.icon || options?.title"
-          [class]="options?.icon"
+        @if (options?.icon || options?.title) {
+          <span
+            [class]="options?.icon"
           [innerHTML]="options?.title"></span>
+        }
       </button>
     </div>`,
     standalone: false

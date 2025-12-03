@@ -10,85 +10,111 @@ import { buildTitleMap, isArray } from '../shared';
   template: `
     <div
       [class]="options?.htmlClass || ''">
-      <label *ngIf="options?.title"
-        [attr.for]="'control' + layoutNode()?._id"
-        [class]="options?.labelHtmlClass || ''"
-        [style.display]="options?.notitle ? 'none' : ''"
+      @if (options?.title) {
+        <label
+          [attr.for]="'control' + layoutNode()?._id"
+          [class]="options?.labelHtmlClass || ''"
+          [style.display]="options?.notitle ? 'none' : ''"
         [innerHTML]="options?.title"></label>
-      <select *ngIf="boundControl && !options?.multiple"
-        [formControl]="formControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [attr.readonly]="options?.readonly ? 'readonly' : null"
-        [attr.required]="options?.required"
-        [class]="options?.fieldHtmlClass || ''"
-        [id]="'control' + layoutNode()?._id"
-        [name]="controlName">
-        <ng-template ngFor let-selectItem [ngForOf]="selectList">
-          <option *ngIf="!isArray(selectItem?.items)"
-            [ngValue]="selectItem?.value">
-            <span [innerHTML]="selectItem?.name"></span>
-          </option>
-          <optgroup *ngIf="isArray(selectItem?.items)"
-            [label]="selectItem?.group">
-            <option *ngFor="let subItem of selectItem.items"
-              [ngValue]="subItem?.value">
-              <span [innerHTML]="subItem?.name"></span>
-            </option>
-          </optgroup>
-        </ng-template>
-      </select>
-      <select *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [attr.readonly]="options?.readonly ? 'readonly' : null"
-        [attr.required]="options?.required"
-        [class]="options?.fieldHtmlClass || ''"
-        [disabled]="controlDisabled"
-        [id]="'control' + layoutNode()?._id"
-        [name]="controlName"
-        (change)="updateValue($event)">
-        <ng-template ngFor let-selectItem [ngForOf]="selectList">
-          <option *ngIf="!isArray(selectItem?.items)"
-            [selected]="selectItem?.value === controlValue"
-            [ngValue]="selectItem?.value">
-            <span [innerHTML]="selectItem?.name"></span>
-          </option>
-          <optgroup *ngIf="isArray(selectItem?.items)"
-            [label]="selectItem?.group">
-            <option *ngFor="let subItem of selectItem.items"
-              [attr.selected]="subItem?.value === controlValue"
-              [ngValue]="subItem?.value">
-              <span [innerHTML]="subItem?.name"></span>
-            </option>
-          </optgroup>
-        </ng-template>
-      </select>
-      <select *ngIf="boundControl && options?.multiple"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [attr.readonly]="options?.readonly ? 'readonly' : null"
-        [attr.required]="options?.required"
-        [class]="options?.fieldHtmlClass || ''"
-        [disabled]="controlDisabled"
-        [id]="'control' + layoutNode()?._id"
-        [multiple]="options?.multiple"
-        [name]="controlName"
-        [(ngModel)]="controlValue"
-        (change)="updateValue($event)">
-        <ng-template ngFor let-selectItem [ngForOf]="selectList">
-          <option *ngIf="!isArray(selectItem?.items)"
-            [selected]="selectItem?.value === controlValue"
-            [ngValue]="selectItem?.value">
-            <span [innerHTML]="selectItem?.name"></span>
-          </option>
-          <optgroup *ngIf="isArray(selectItem?.items)"
-            [label]="selectItem?.group">
-            <option *ngFor="let subItem of selectItem.items"
-              [attr.selected]="subItem?.value === controlValue"
-              [ngValue]="subItem?.value">
-              <span [innerHTML]="subItem?.name"></span>
-            </option>
-          </optgroup>
-        </ng-template>
-      </select>
+      }
+      @if (boundControl && !options?.multiple) {
+        <select
+          [formControl]="formControl"
+          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+          [attr.readonly]="options?.readonly ? 'readonly' : null"
+          [attr.required]="options?.required"
+          [class]="options?.fieldHtmlClass || ''"
+          [id]="'control' + layoutNode()?._id"
+          [name]="controlName">
+          @for (selectItem of selectList; track selectItem) {
+            @if (!isArray(selectItem?.items)) {
+              <option
+                [ngValue]="selectItem?.value">
+                <span [innerHTML]="selectItem?.name"></span>
+              </option>
+            }
+            @if (isArray(selectItem?.items)) {
+              <optgroup
+                [label]="selectItem?.group">
+                @for (subItem of selectItem.items; track subItem) {
+                  <option
+                    [ngValue]="subItem?.value">
+                    <span [innerHTML]="subItem?.name"></span>
+                  </option>
+                }
+              </optgroup>
+            }
+          }
+        </select>
+      }
+      @if (!boundControl) {
+        <select
+          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+          [attr.readonly]="options?.readonly ? 'readonly' : null"
+          [attr.required]="options?.required"
+          [class]="options?.fieldHtmlClass || ''"
+          [disabled]="controlDisabled"
+          [id]="'control' + layoutNode()?._id"
+          [name]="controlName"
+          (change)="updateValue($event)">
+          @for (selectItem of selectList; track selectItem) {
+            @if (!isArray(selectItem?.items)) {
+              <option
+                [selected]="selectItem?.value === controlValue"
+                [ngValue]="selectItem?.value">
+                <span [innerHTML]="selectItem?.name"></span>
+              </option>
+            }
+            @if (isArray(selectItem?.items)) {
+              <optgroup
+                [label]="selectItem?.group">
+                @for (subItem of selectItem.items; track subItem) {
+                  <option
+                    [attr.selected]="subItem?.value === controlValue"
+                    [ngValue]="subItem?.value">
+                    <span [innerHTML]="subItem?.name"></span>
+                  </option>
+                }
+              </optgroup>
+            }
+          }
+        </select>
+      }
+      @if (boundControl && options?.multiple) {
+        <select
+          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+          [attr.readonly]="options?.readonly ? 'readonly' : null"
+          [attr.required]="options?.required"
+          [class]="options?.fieldHtmlClass || ''"
+          [disabled]="controlDisabled"
+          [id]="'control' + layoutNode()?._id"
+          [multiple]="options?.multiple"
+          [name]="controlName"
+          [(ngModel)]="controlValue"
+          (change)="updateValue($event)">
+          @for (selectItem of selectList; track selectItem) {
+            @if (!isArray(selectItem?.items)) {
+              <option
+                [selected]="selectItem?.value === controlValue"
+                [ngValue]="selectItem?.value">
+                <span [innerHTML]="selectItem?.name"></span>
+              </option>
+            }
+            @if (isArray(selectItem?.items)) {
+              <optgroup
+                [label]="selectItem?.group">
+                @for (subItem of selectItem.items; track subItem) {
+                  <option
+                    [attr.selected]="subItem?.value === controlValue"
+                    [ngValue]="subItem?.value">
+                    <span [innerHTML]="subItem?.name"></span>
+                  </option>
+                }
+              </optgroup>
+            }
+          }
+        </select>
+      }
     </div>`,
   standalone: false
 })
