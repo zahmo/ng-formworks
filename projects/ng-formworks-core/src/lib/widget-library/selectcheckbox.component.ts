@@ -10,56 +10,64 @@ import { buildTitleMap, isArray } from '../shared';
   // tslint:disable-next-line:component-selector
   selector: 'selectcheckbox-widget',
   template: `
-    <div 
+    <div
       [class]="options?.htmlClass || ''">
-      <select *ngIf="boundControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [attr.readonly]="options?.readonly ? 'readonly' : null"
-        [attr.required]="options?.required"
-        [class]=" frameworkStyles[activeFramework].selectClass"
-        [multiple]="true"
-        [id]="'control' + layoutNode()?._id"
-        [name]="controlName"
-        [ngModel]="selectValue"   
-        >
-        <ng-template ngFor let-selectItem [ngForOf]="selectList">
-          <option *ngIf="!isArray(selectItem?.items)"
-            [class]="frameworkStyles[activeFramework].optionClass"
-            [class.active]="selectItem?.value === controlValue"
-            [class.unchecked-notusing]="selectItem?.value != controlValue"
-            [value]="selectItem?.value"
-            (click)="onSelectClicked($event)"
-            type="checkbox"
-            >
-          </option>
-          <!--NB the text is out of the option element to display besides the checkbox-->
-          <span [innerHTML]="selectItem?.name"></span>
-        </ng-template>
-      </select>
-      <select *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [attr.readonly]="options?.readonly ? 'readonly' : null"
-        [attr.required]="options?.required"
-        [class]="frameworkStyles[activeFramework].selectClass +' select-box'"
-        [multiple]="true"
-        [disabled]="controlDisabled"
-        [id]="'control' + layoutNode()?._id"
-        [name]="controlName"
-        (change)="updateValue($event)">
-        <ng-template ngFor let-selectItem [ngForOf]="selectList">
-          <option *ngIf="!isArray(selectItem?.items)"
-            [selected]="selectItem?.value === controlValue"
-            [class]="frameworkStyles[activeFramework].optionClass"
-            [class.checked-notusing]="selectItem?.value === controlValue"
-            [class.unchecked-notusing]]="selectItem?.value != controlValue"
-            [value]="selectItem?.value"
-            type="checkbox">
-          </option>
-          <!--NB the text is out of the option element to display besides the checkbox-->
-          <span [innerHTML]="selectItem?.name"></span>
-        </ng-template>
-      </select>
-      
+      @if (boundControl) {
+        <select
+          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+          [attr.readonly]="options?.readonly ? 'readonly' : null"
+          [attr.required]="options?.required"
+          [class]=" frameworkStyles[activeFramework].selectClass"
+          [multiple]="true"
+          [id]="'control' + layoutNode()?._id"
+          [name]="controlName"
+          [ngModel]="selectValue"
+          >
+          @for (selectItem of selectList; track selectItem) {
+            @if (!isArray(selectItem?.items)) {
+              <option
+                [class]="frameworkStyles[activeFramework].optionClass"
+                [class.active]="selectItem?.value === controlValue"
+                [class.unchecked-notusing]="selectItem?.value != controlValue"
+                [value]="selectItem?.value"
+                (click)="onSelectClicked($event)"
+                type="checkbox"
+                >
+              </option>
+            }
+            <!--NB the text is out of the option element to display besides the checkbox-->
+            <span [innerHTML]="selectItem?.name"></span>
+          }
+        </select>
+      }
+      @if (!boundControl) {
+        <select
+          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+          [attr.readonly]="options?.readonly ? 'readonly' : null"
+          [attr.required]="options?.required"
+          [class]="frameworkStyles[activeFramework].selectClass +' select-box'"
+          [multiple]="true"
+          [disabled]="controlDisabled"
+          [id]="'control' + layoutNode()?._id"
+          [name]="controlName"
+          (change)="updateValue($event)">
+          @for (selectItem of selectList; track selectItem) {
+            @if (!isArray(selectItem?.items)) {
+              <option
+                [selected]="selectItem?.value === controlValue"
+                [class]="frameworkStyles[activeFramework].optionClass"
+                [class.checked-notusing]="selectItem?.value === controlValue"
+                [class.unchecked-notusing]]="selectItem?.value != controlValue"
+                [value]="selectItem?.value"
+                type="checkbox">
+              </option>
+            }
+            <!--NB the text is out of the option element to display besides the checkbox-->
+            <span [innerHTML]="selectItem?.name"></span>
+          }
+        </select>
+      }
+    
     </div>`,
     styles:[`
         /* Style the select element */

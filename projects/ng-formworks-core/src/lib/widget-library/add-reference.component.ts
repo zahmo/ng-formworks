@@ -7,16 +7,21 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     selector: 'add-reference-widget',
     template: `
     <section [class]="options?.htmlClass || ''" align="end">
-      <button *ngIf="showAddButton"
-        [class]="options?.fieldHtmlClass || ''"
-        [disabled]="options?.readonly"
-        (click)="addItem($event)"
-        [appStopPropagation]="['mousedown', 'touchstart']"
-        >
-        <span *ngIf="options?.icon" [class]="options?.icon"></span>
-        <span *ngIf="options?.title" [innerHTML]="buttonText"></span>
-        
-      </button>
+      @if (showAddButton) {
+        <button
+          [class]="options?.fieldHtmlClass || ''"
+          [disabled]="options?.readonly"
+          (click)="addItem($event)"
+          [appStopPropagation]="['mousedown', 'touchstart']"
+          >
+          @if (options?.icon) {
+            <span [class]="options?.icon"></span>
+          }
+          @if (options?.title) {
+            <span [innerHTML]="buttonText"></span>
+          }
+        </button>
+      }
     </section>`,
     changeDetection: ChangeDetectionStrategy.Default,
     standalone: false
