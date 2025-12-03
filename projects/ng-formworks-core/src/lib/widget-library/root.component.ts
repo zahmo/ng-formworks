@@ -1,8 +1,18 @@
 import { CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { memoize } from 'lodash';
-import { Subscription } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges
+} from '@angular/core';
+import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
+
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'root-widget',
@@ -11,12 +21,6 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       [class.flex-inherit]="true"
       [cdkDropListSortPredicate]="sortPredicate"
       >
-      <!-- -for now left out
-      cdkDragHandle directive, by itself, does not disable the
-      default drag behavior of its parent cdkDrag element.
-      You must explicitly disable dragging on the main element
-      and re-enable it only when using the handle.
-      -->
       @for (layoutItem of layout(); track layoutItem; let i = $index) {
         <div
           cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
@@ -28,28 +32,6 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
           [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
           [style.order]="(layoutItem.options || {}).order"
           >
-          <!-- workaround to disbale dragging of input fields -->
-          <!--
-          <div *ngIf="layoutItem?.dataType !='object'"  cdkDragHandle>
-            <p>Drag Handle {{layoutItem?.dataType}}</p>
-          </div>
-          -->
-          <!--NB orderable directive is not used but has been left in for now and set to false
-          otherwise the compiler won't recognize dataIndex and other dependent attributes
-          -->
-          <!--
-          <div
-            [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
-            [layoutIndex]="(layoutIndex() || []).concat(i)"
-            [layoutNode]="layoutItem"
-            [orderable]="false"
-            >
-            <select-framework-widget *ngIf="showWidget(layoutItem)"
-              [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
-              [layoutIndex]="(layoutIndex() || []).concat(i)"
-            [layoutNode]="layoutItem"></select-framework-widget>
-          </div>
-          -->
           @if (showWidget(layoutItem)) {
             <select-framework-widget
               [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
@@ -90,109 +72,85 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       width:100%
     }
   `],
-  changeDetection:ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
-export class RootComponent implements OnInit, OnDestroy,OnChanges {
+export class RootComponent implements OnInit, OnDestroy, OnChanges {
 
   private jsf = inject(JsonSchemaFormService);
   private cdr = inject(ChangeDetectorRef);
+
   options: any;
   readonly dataIndex = input<number[]>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly layout = input<any[]>(undefined);
   readonly isOrderable = input<boolean>(undefined);
   readonly isFlexItem = input(false);
-  readonly memoizationEnabled= input<boolean>(true);
+  readonly memoizationEnabled = input<boolean>(true);
 
-  dataChangesSubs:Subscription;
+  // Unified destroy notifier for Rx subscriptions
+  private destroy$ = new Subject<void>();
 
-  drop(event: CdkDragDrop<string[]>) {
-    // most likely why this event is used is to get the dragging element's current index
-    let srcInd=event.previousIndex;
-    let trgInd=event.currentIndex;
-    let layoutItem=this.layout()[trgInd];
-    let dataInd=layoutItem?.arrayItem ? (this.dataIndex() || []).concat(trgInd) : (this.dataIndex() || []);
-    let layoutInd=(this.layoutIndex() || []).concat(trgInd)
-    let itemCtx:any={
-      dataIndex:()=>{return dataInd},
-      layoutIndex:()=>{return layoutInd},
-      layoutNode:()=>{return layoutItem},
+  // WeakMap caches keyed by layout node object to allow GC when nodes are removed
+  private selectInputsCache = new WeakMap<object, Map<number, { dataIndex: any[], layoutIndex: any[], layoutNode: any }>>();
+  private showWidgetCache = new WeakMap<object, Map<string, boolean>>();
+
+  ngOnInit(): void {
+    if (this.memoizationEnabled) {
+      // Debounce dataChanges so rapid model updates don't thrash caches
+      this.jsf.dataChanges.pipe(
+        debounceTime(30),
+        takeUntil(this.destroy$)
+      ).subscribe(() => {
+        // Clear caches on model change; WeakMap allows entries to be GC'd when layout nodes die
+        this.clearAllCaches();
+        // Ensure OnPush components are checked for visibility/title updates
+        this.cdr.markForCheck();
+      });
     }
-    this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
   }
 
-  isDraggable(node: any): boolean {
-    let result=node.arrayItem && node.type !== '$ref' &&
-    node.arrayItemType === 'list' && this.isOrderable() !== false
-    && node.type !=='submit'
-    return result;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
+      // Input context changed — cached computed inputs and visibility may be stale
+      this.clearAllCaches();
+      this.cdr.markForCheck();
+    }
   }
 
-  //TODO also need to think of other types such as button which can be
-  //created by an arbitrary layout
-  isFixed(node: any): boolean {
-    let result=node.type == '$ref';
-    return result;
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.clearAllCaches();
   }
 
   /**
-   * Predicate function that disallows '$ref' item sorts
-   * NB declared as a var instead of a function 
-   * like sortPredicate(index: number, item: CdkDrag<number>){..}
-   * since 'this' is bound to the draglist and doesn't reference the
-   * FlexLayoutRootComponent instance
+   * Get select-framework inputs for a layout node/index. Memoizes per-node and per-index.
+   * Uses a WeakMap keyed by layoutItem object to avoid JSON.stringify and circular-to-string issues.
    */
-    //TODO also need to think of other types such as button which can be
-    //created by an arbitrary layout
-    //might not be needed added condition to [cdkDragDisabled]
-    sortPredicate=(index: number, item: CdkDrag<number>)=> {
-      let layoutItem=this.layout()[index];
-      let result=this.isDraggable(layoutItem);
-      //layoutItem.type != '$ref';
-      return result;
-    }
-
-  // Set attributes for flexbox child
-  // (container attributes are set in section.component)
-  getFlexAttribute(node: any, attribute: string) {
-    const index = ['flex-grow', 'flex-shrink', 'flex-basis'].indexOf(attribute);
-    return ((node.options || {}).flex || '').split(/\s+/)[index] ||
-      (node.options || {})[attribute] || ['1', '1', 'auto'][index];
-  }
-
-  //private selectframeworkInputCache = new Map<string, { dataIndex: any[], layoutIndex: any[], layoutNode: any }>();
-
-  //TODO review caching-if form field values change, the changes are not propagated
-
-  /*
   getSelectFrameworkInputs(layoutItem: any, i: number) {
-    // Create a unique key based on the layoutItem and index
-    const cacheKey = `${layoutItem._id}-${i}`;
-  
-    // If the result is already in the cache, return it
-    if(this.enableCaching){
-      if (this.selectframeworkInputCache.has(cacheKey)) {
-        return this.selectframeworkInputCache.get(cacheKey);
-      }
+    // Fast path when memoization disabled
+    if (!this.memoizationEnabled || !layoutItem) {
+      return this.computeSelectFrameworkInputs(layoutItem, i);
     }
 
-
-    // If not cached, calculate the values (assuming dataIndex() and layoutIndex() are functions)
-    const dataIndex = layoutItem?.arrayItem ? (this.dataIndex() || []).concat(i) : (this.dataIndex() || []);
-    const layoutIndex = (this.layoutIndex() || []).concat(i);
-
-    // Save the result in the cache
-    const result = { dataIndex, layoutIndex, layoutNode: layoutItem };
-    if(this.enableCaching){
-      this.selectframeworkInputCache.set(cacheKey, result);
+    let perNode = this.selectInputsCache.get(layoutItem);
+    if (!perNode) {
+      perNode = new Map();
+      this.selectInputsCache.set(layoutItem, perNode);
     }
 
-    return result;
+    const cached = perNode.get(i);
+    if (cached) {
+      return cached;
+    }
+
+    const computed = this.computeSelectFrameworkInputs(layoutItem, i);
+    perNode.set(i, computed);
+    return computed;
   }
-    */
 
-  private _getSelectFrameworkInputsRaw = (layoutItem: any, i: number) => {
+  private computeSelectFrameworkInputs(layoutItem: any, i: number) {
     const dataIndexValue = this.dataIndex() || [];
     const layoutIndexValue = this.layoutIndex() || [];
 
@@ -201,72 +159,80 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges {
       layoutIndex: [...layoutIndexValue, i],
       dataIndex: layoutItem?.arrayItem ? [...dataIndexValue, i] : dataIndexValue,
     };
-  };
-
-  // Define a separate function to hold the memoized version
-  private _getSelectFrameworkInputsMemoized = memoize(
-    this._getSelectFrameworkInputsRaw,
-    (layoutItem: any, i: number) => {
-      const layoutItemKey = layoutItem?.id ?? JSON.stringify(layoutItem);
-      return `${layoutItemKey}-${i}`;
-    }
-  );
-
-  // This is the public function that the template calls
-  getSelectFrameworkInputs(layoutItem: any, i: number) {
-    if (this.memoizationEnabled) {
-      return this._getSelectFrameworkInputsMemoized(layoutItem, i);
-    } else {
-      return this._getSelectFrameworkInputsRaw(layoutItem, i);
-    }
-  }
-  //TODO investigate-causing layout issue with layout,for now
-  //removed from template
-  trackByFn(index: number, item: any): any {
-    return item._id ?? index;
   }
 
-  
-
-  /*
-  ngOnChanges(changes: SimpleChanges): void {
-    // If any of the input properties change, clear the cache
-    if (changes.dataIndex || changes.layoutIndex || changes.layout) {
-      this.selectframeworkInputCache?.clear(); // Clear the entire cache
-    }
-  }
-  */
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
-      // Clear the entire cache of the memoized function
-      this._getSelectFrameworkInputsMemoized.cache.clear();
-      this.cdr.markForCheck();
-    }
-  }
-
-
+  /**
+   * showWidget: caches visibility decisions per layout node and per dataIndexKey (stringified index array).
+   * Uses WeakMap for memory-safety. Cache invalidated on model/layout changes.
+   */
   showWidget(layoutNode: any): boolean {
-    return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
-  }
-  ngOnInit(): void {
-      if(this.memoizationEnabled){
-        this.jsf.dataChanges.subscribe((val)=>{
-          //this.selectframeworkInputCache?.clear();
-          this._getSelectFrameworkInputsMemoized.cache.clear();
-        //TODO-fix for now changed to detectChanges-
-        //used to updated the dynamic titles in tab compnents 
-        this.cdr.markForCheck();
-       // this.cdr.detectChanges();-breaks oneOf/ matdatepicker
-        })
-      }
+    if (!layoutNode) {
+      return false;
+    }
+    if (!this.memoizationEnabled) {
+      return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+    }
 
-  }
-  ngOnDestroy(): void {
-      //this.selectframeworkInputCache?.clear()
-      //this.selectframeworkInputCache=null;
-      this._getSelectFrameworkInputsMemoized.cache.clear();
-      this.dataChangesSubs?.unsubscribe();
-  }
-  
+    let perNode = this.showWidgetCache.get(layoutNode);
+    if (!perNode) {
+      perNode = new Map();
+      this.showWidgetCache.set(layoutNode, perNode);
+    }
 
-}
+    const dataIndexKey = (this.dataIndex() || []).join(',');
+    const cached = perNode.get(dataIndexKey);
+    if (typeof cached === 'boolean') {
+      return cached;
+    }
+
+    const visible = this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+    perNode.set(dataIndexKey, visible);
+    return visible;
+  }
+
+  // Clear both caches (WeakMaps will drop entries automatically when keys are GC'd)
+  private clearAllCaches() {
+    this.selectInputsCache = new WeakMap();
+    this.showWidgetCache = new WeakMap();
+  }
+
+  // Better trackBy helps Angular avoid re-rendering node DOM when only non-visual changes happen
+  trackByFn(index: number, item: any): any {
+    // Prefer stable explicit id, otherwise fallback to object identity
+    return item?._id ?? item;
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    const srcInd = event.previousIndex;
+    const trgInd = event.currentIndex;
+    const layoutItem = this.layout()[trgInd];
+    const dataInd = layoutItem?.arrayItem ? (this.dataIndex() || []).concat(trgInd) : (this.dataIndex() || []);
+    const layoutInd = (this.layoutIndex() || []).concat(trgInd);
+    const itemCtx: any = {
+      dataIndex: () => { return dataInd; },
+      layoutIndex: () => { return layoutInd; },
+      layoutNode: () => { return layoutItem; },
+    };
+    this.jsf.moveArrayItem(itemCtx, srcInd, trgInd, true);
+  }
+
+  isDraggable(node: any): boolean {
+    return !!(node && node.arrayItem && node.type !== '$ref' &&
+      node.arrayItemType === 'list' && this.isOrderable() !== false && node.type !== 'submit');
+  }
+
+  isFixed(node: any): boolean {
+    return node?.type === '$ref';
+  }
+
+  sortPredicate = (index: number, item: CdkDrag<number>) => {
+    const layoutItem = this.layout()[index];
+    return this.isDraggable(layoutItem);
+  }
+
+  getFlexAttribute(node: any, attribute: string) {
+    const index = ['flex-grow', 'flex-shrink', 'flex-basis'].indexOf(attribute);
+    return ((node.options || {}).flex || '').split(/\s+/)[index] ||
+      (node.options || {})[attribute] || ['1', '1', 'auto'][index];
+  }
+
