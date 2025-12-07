@@ -1,8 +1,7 @@
 /* see https://material.angular.io/guide/theming */
 
 @use '@angular/material' as mat;
-@include mat.elevation-classes();
-@include mat.app-background();
+@include mat.core();
 $indigo-primary: mat.m2-define-palette(mat.$m2-indigo-palette, 500);
 $green-accent: mat.m2-define-palette(mat.$m2-green-palette, A200, A100, A400);
 $red-warn: mat.m2-define-palette(mat.$m2-red-palette);
@@ -21,8 +20,7 @@ $indigo-pink-accent: $pink-accent;
 $indigo-pink-warn: $red-warn;
 $indigo-pink-theme: mat.m2-define-light-theme(( color: ( primary: $indigo-pink-primary, accent: $indigo-pink-accent, warn:$indigo-pink-warn), typography: $typography, density: $density));
 .indigo-pink {
-    @include mat.elevation-classes();
-    @include mat.app-background();
+    @include mat.core-theme($indigo-pink-theme);
     @include mat.all-component-themes($indigo-pink-theme);
     @include mat.button-color($indigo-pink-theme);
 }
@@ -35,8 +33,7 @@ $purple-green-accent: $green-accent;
 $purple-green-warn: $red-warn;
 $purple-green-theme: mat.m2-define-dark-theme(( color: ( primary: $purple-green-primary, accent: $purple-green-accent, warn:$purple-green-warn)));
 .purple-green {
-    @include mat.elevation-classes();
-    @include mat.app-background();
+    @include mat.core-color($purple-green-theme);
     @include mat.all-component-colors($purple-green-theme);
     @include mat.button-color($purple-green-theme);
 }
@@ -49,8 +46,7 @@ $deeppurple-amber-accent: $amber-accent;
 $deeppurple-amber-warn: $red-warn;
 $deeppurple-amber-theme: mat.m2-define-light-theme(( color: ( primary: $deeppurple-amber-primary, accent: $deeppurple-amber-accent, warn:$deeppurple-amber-warn)));
 .deeppurple-amber {
-    @include mat.elevation-classes();
-    @include mat.app-background();
+    @include mat.core-color($deeppurple-amber-theme);
     @include mat.all-component-colors($deeppurple-amber-theme);
     @include mat.button-color($deeppurple-amber-theme);
 }
@@ -63,8 +59,7 @@ $pink-bluegrey-accent: $bluegrey-accent;
 $pink-bluegrey-warn: $red-warn;
 $pink-bluegrey-theme: mat.m2-define-dark-theme(( color: ( primary: $pink-bluegrey-primary, accent: $pink-bluegrey-accent, warn:$pink-bluegrey-warn)));
 .pink-bluegrey {
-    @include mat.elevation-classes();
-    @include mat.app-background();
+    @include mat.core-color($pink-bluegrey-theme);
     @include mat.all-component-colors($pink-bluegrey-theme);
     @include mat.button-color($pink-bluegrey-theme);
 }
