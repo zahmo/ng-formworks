@@ -1,5 +1,5 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { NgModule, provideZoneChangeDetection } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -57,8 +57,7 @@ import { JsonLoaderComponent } from './json-loader/json-loader.component';
             //uncomment to disable daisyui class name prefixing
             ,
         { provide: DUIOPTIONS, useValue: { classPrefix: environment.cssClassPrefix } },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideZoneChangeDetection()
+        provideHttpClient(withInterceptorsFromDi())
     ]
 })
 
