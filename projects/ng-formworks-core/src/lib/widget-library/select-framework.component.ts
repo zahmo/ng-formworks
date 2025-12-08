@@ -3,9 +3,10 @@ import { ChangeDetectorRef, Component, ComponentRef, OnChanges, OnInit, ViewCont
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'select-framework-widget',
-  template: `<div #widgetContainer></div>`,
+    // tslint:disable-next-line:component-selector
+    selector: 'select-framework-widget',
+    template: `<div #widgetContainer></div>`,
+    standalone: false
 })
 export class SelectFrameworkComponent implements OnChanges, OnInit {
   private jsf = inject(JsonSchemaFormService);

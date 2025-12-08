@@ -4,9 +4,9 @@ import { JsonSchemaFormService, hasOwn } from '@ng-formworks/core';
 import { Subscription } from 'rxjs';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-button-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-button-widget',
+    template: `
     <div class="button-row" [class]="options?.htmlClass || ''">
       <button mat-raised-button
         [attr.readonly]="options?.readonly ? 'readonly' : null"
@@ -20,11 +20,16 @@ import { Subscription } from 'rxjs';
         (click)="updateValue($event)"
         [appStopPropagation]="['mousedown', 'touchstart']"
         >
-        <mat-icon *ngIf="options?.icon" class="mat-24">{{options?.icon}}</mat-icon>
-        <span *ngIf="options?.title" [innerHTML]="layoutNode().options?.title"></span>
+        @if (options?.icon) {
+          <mat-icon class="mat-24">{{options?.icon}}</mat-icon>
+        }
+        @if (options?.title) {
+          <span [innerHTML]="layoutNode().options?.title"></span>
+        }
       </button>
     </div>`,
     styles: [` button { margin-top: 10px; } `],
+    standalone: false
 })
 export class MaterialButtonComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);

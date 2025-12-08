@@ -6,9 +6,9 @@ import { hasOwn } from '../shared/utility.functions';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'submit-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'submit-widget',
+    template: `
     <div
       [class]="options?.htmlClass || ''">
       <input
@@ -25,6 +25,7 @@ import { hasOwn } from '../shared/utility.functions';
         [appStopPropagation]="['mousedown', 'touchstart']"
         >
     </div>`,
+    standalone: false
 })
 export class SubmitComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);

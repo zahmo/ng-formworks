@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
@@ -6,9 +7,10 @@ import {
   JsonSchemaFormService,
   WidgetLibraryModule
 } from '@ng-formworks/core';
+import { CssFrameworkComponent } from '@ng-formworks/cssframework';
 import { Bootstrap5FrameworkComponent } from './bootstrap5-framework.component';
 
-describe('Bootstrap5Component', () => {
+describe('Bootstrap5FrameworkComponent', () => {
   let component: Bootstrap5FrameworkComponent;
   let fixture: ComponentFixture<Bootstrap5FrameworkComponent>;
   let componentRef:ComponentRef<Bootstrap5FrameworkComponent>;
@@ -18,10 +20,10 @@ describe('Bootstrap5Component', () => {
       imports: [
         JsonSchemaFormModule,
         CommonModule,
-        WidgetLibraryModule,
+        WidgetLibraryModule
       ],
-      declarations: [Bootstrap5FrameworkComponent],
-      providers: [JsonSchemaFormService]
+      declarations: [Bootstrap5FrameworkComponent,CssFrameworkComponent],
+      providers: [JsonSchemaFormService, HttpClient,HttpHandler]
     })
       .compileComponents();
   }));

@@ -1,77 +1,81 @@
-import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, inject, input, signal } from '@angular/core';
+import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-tabs-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-tabs-widget',
+    template: `
     <nav mat-tab-nav-bar [tabPanel]="tabPanel"
       [attr.aria-label]="options?.label || layoutNode().options?.title || ''"
       [style.width]="'100%'">
-      
-        <a mat-tab-link *ngFor="let item of layoutNode()?.items; let i = index"
+    
+      @for (item of layoutNode()?.items; track item; let i = $index) {
+        <a mat-tab-link
           [active]="selectedItem === i"
           (click)="select(i)">
-          
-
-         <!--   
-          <input 
-      type="radio" 
-      name="tabSelection" 
-      [(ngModel)]="selectedItem" 
-      [value]="i" 
-      (change)="select(i)" class="mat-mdc-radio-button" />
-
-    {{ setTabTitle(item, i) }}
-     -->
-        <mat-radio-button *ngIf="options?.tabMode=='oneOfMode'"
-          [checked]="selectedItem === i" 
-          [value]="i"
-          >
-        </mat-radio-button>
-
-          <span *ngIf="showAddTab || item.type !== '$ref'"
-            [innerHTML]="setTabTitle(item, i)"></span>
-                  
-        </a>
-
-        
-    </nav>
-        <mat-tab-nav-panel #tabPanel>
-          <div *ngFor="let layoutItem of layoutNode()?.items; let i = index" 
+          <!--
+          <input
+            type="radio"
+            name="tabSelection"
+            [(ngModel)]="selectedItem"
+            [value]="i"
+            (change)="select(i)" class="mat-mdc-radio-button" />
+            {{ setTabTitle(item, i) }}
+            -->
+            @if (options?.tabMode=='oneOfMode') {
+              <mat-radio-button
+                [checked]="selectedItem === i"
+                [value]="i"
+                >
+              </mat-radio-button>
+            }
+            @if (showAddTab || item.type !== '$ref') {
+              <span
+              [innerHTML]="setTabTitle(item, i)"></span>
+            }
+          </a>
+        }
+    
+    
+      </nav>
+      <mat-tab-nav-panel #tabPanel>
+        @for (layoutItem of layoutNode()?.items; track layoutItem; let i = $index) {
+          <div
             [class]="(options?.htmlClass || '') + (selectedItem != i?' ngf-hidden':'')">
-               <!--for now the only difference between oneOfMode and the default 
-                is that oneOfMode uses the *ngIf="selectedItem === i" clause, which automatically
-                destroys the tabs that are not rendered while default mode only hide them
-                the upshot is that only the active tabs value will be used
-              -->
-            <ng-container *ngIf="options?.tabMode=='oneOfMode'">
-              <select-framework-widget *ngIf="selectedItem === i"
-                [class]="(options?.fieldHtmlClass || '') + ' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')"
-                [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
-                [layoutIndex]="(layoutIndex() || []).concat(i)"
+            <!--for now the only difference between oneOfMode and the default
+            is that oneOfMode uses the *ngIf="selectedItem === i" clause, which automatically
+            destroys the tabs that are not rendered while default mode only hide them
+            the upshot is that only the active tabs value will be used
+            -->
+            @if (options?.tabMode=='oneOfMode') {
+              @if (selectedItem === i) {
+                <select-framework-widget
+                  [class]="(options?.fieldHtmlClass || '') + ' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')"
+                  [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
+                  [layoutIndex]="(layoutIndex() || []).concat(i)"
                 [layoutNode]="layoutItem"></select-framework-widget>
-             </ng-container>   
-            <ng-container *ngIf="options?.tabMode !='oneOfMode'">
+              }
+            }
+            @if (options?.tabMode !='oneOfMode') {
               <select-framework-widget
                 [class]="(options?.fieldHtmlClass || '') + ' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')"
                 [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
                 [layoutIndex]="(layoutIndex() || []).concat(i)"
-                [layoutNode]="layoutItem"></select-framework-widget>
-             </ng-container>   
+              [layoutNode]="layoutItem"></select-framework-widget>
+            }
           </div>
-        </mat-tab-nav-panel>
-
-`,
+        }
+      </mat-tab-nav-panel>
+    
+    `,
     styles: [` a { cursor: pointer; } 
             .ngf-hidden{display:none}
       `],
     standalone: false
 })
-export class MaterialTabsComponent implements OnInit,OnDestroy,OnChanges {
-
+export class MaterialTabsComponent implements OnInit {
   private jsf = inject(JsonSchemaFormService);
-  private cdr = inject(ChangeDetectorRef);
+
   options: any;
   itemCount: number;
   selectedItem = 0;
@@ -111,15 +115,5 @@ export class MaterialTabsComponent implements OnInit,OnDestroy,OnChanges {
 
   setTabTitle(item: any, index: number): string {
     return this.jsf.setArrayItemTitle(this, item, index);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    //TODO review/test-introduced to fix dynamic titles not updating
-    //when their conditional linked field is destroyed
-    //-forces change detection!
-    this.cdr.detectChanges();
-  }
-  ngOnDestroy(): void {
-    
   }
 }

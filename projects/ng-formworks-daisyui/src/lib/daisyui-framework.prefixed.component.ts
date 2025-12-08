@@ -6,9 +6,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
 *
 */
 @Component({
-// tslint:disable-next-line:component-selector
-selector: 'daisyui-framework-prefixed',
-template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'daisyui-framework-prefixed',
+    template: `
 <div>
   <css-framework [layoutNode]="layoutNode()" 
   [layoutIndex]="layoutIndex()" 

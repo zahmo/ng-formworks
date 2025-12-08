@@ -8,51 +8,60 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     selector: 'number-widget',
     template: `
     <div #divElt [class]="options?.htmlClass || ''"  >
-      <label *ngIf="options?.title"
-        [attr.for]="'control' + layoutNode()?._id"
-        [class]="options?.labelHtmlClass || ''"
-        [style.display]="options?.notitle ? 'none' : ''"
+      @if (options?.title) {
+        <label
+          [attr.for]="'control' + layoutNode()?._id"
+          [class]="options?.labelHtmlClass || ''"
+          [style.display]="options?.notitle ? 'none' : ''"
         [innerHTML]="options?.title"></label>
-      <input #inputControl *ngIf="boundControl"
-        [formControl]="formControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [attr.max]="options?.maximum"
-        [attr.min]="options?.minimum"
-        [attr.placeholder]="options?.placeholder"
-        [attr.required]="options?.required"
-        [attr.readonly]="options?.readonly ? 'readonly' : null"
-        [attr.step]="options?.multipleOf || options?.step || 'any'"
-        [class]="options?.fieldHtmlClass || ''"
-        [id]="'control' + layoutNode()?._id"
-        [name]="controlName"
-        [readonly]="options?.readonly ? 'readonly' : null"
-        [title]="lastValidNumber"
-        [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
-        [attributes]="inputAttributes"
-        [appStopPropagation]="['mousedown', 'touchstart']"
-        >
-      <input #inputControl *ngIf="!boundControl"
-        [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
-        [attr.max]="options?.maximum"
-        [attr.min]="options?.minimum"
-        [attr.placeholder]="options?.placeholder"
-        [attr.required]="options?.required"
-        [attr.readonly]="options?.readonly ? 'readonly' : null"
-        [attr.step]="options?.multipleOf || options?.step || 'any'"
-        [class]="options?.fieldHtmlClass || ''"
-        [disabled]="controlDisabled"
-        [id]="'control' + layoutNode()?._id"
-        [name]="controlName"
-        [readonly]="options?.readonly ? 'readonly' : null"
-        [title]="lastValidNumber"
-        [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
-        [value]="controlValue"
-        (input)="updateValue($event)"
-        [attributes]="inputAttributes"
-        [appStopPropagation]="['mousedown', 'touchstart']"
-        >
-      <span *ngIf="layoutNode()?.type === 'range'" [innerHTML]="controlValue"></span>
+      }
+      @if (boundControl) {
+        <input #inputControl
+          [formControl]="formControl"
+          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+          [attr.max]="options?.maximum"
+          [attr.min]="options?.minimum"
+          [attr.placeholder]="options?.placeholder"
+          [attr.required]="options?.required"
+          [attr.readonly]="options?.readonly ? 'readonly' : null"
+          [attr.step]="options?.multipleOf || options?.step || 'any'"
+          [class]="options?.fieldHtmlClass || ''"
+          [id]="'control' + layoutNode()?._id"
+          [name]="controlName"
+          [readonly]="options?.readonly ? 'readonly' : null"
+          [title]="lastValidNumber"
+          [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
+          [attributes]="inputAttributes"
+          [appStopPropagation]="['mousedown', 'touchstart']"
+          >
+      }
+      @if (!boundControl) {
+        <input #inputControl
+          [attr.aria-describedby]="'control' + layoutNode()?._id + 'Status'"
+          [attr.max]="options?.maximum"
+          [attr.min]="options?.minimum"
+          [attr.placeholder]="options?.placeholder"
+          [attr.required]="options?.required"
+          [attr.readonly]="options?.readonly ? 'readonly' : null"
+          [attr.step]="options?.multipleOf || options?.step || 'any'"
+          [class]="options?.fieldHtmlClass || ''"
+          [disabled]="controlDisabled"
+          [id]="'control' + layoutNode()?._id"
+          [name]="controlName"
+          [readonly]="options?.readonly ? 'readonly' : null"
+          [title]="lastValidNumber"
+          [type]="layoutNode()?.type === 'range' ? 'range' : 'number'"
+          [value]="controlValue"
+          (input)="updateValue($event)"
+          [attributes]="inputAttributes"
+          [appStopPropagation]="['mousedown', 'touchstart']"
+          >
+      }
+      @if (layoutNode()?.type === 'range') {
+        <span [innerHTML]="controlValue"></span>
+      }
     </div>`,
+    standalone: false
 })
 //TODO look at reusing InputComponent
 export class NumberComponent implements OnInit,OnDestroy {

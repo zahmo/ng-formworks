@@ -4,9 +4,9 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'button-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'button-widget',
+    template: `
     <div
       [class]="options?.htmlClass || ''">
       <button
@@ -20,11 +20,14 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         (click)="updateValue($event)"
         [appStopPropagation]="['mousedown', 'touchstart']"
         >
-        <span *ngIf="options?.icon || options?.title"
-          [class]="options?.icon"
+        @if (options?.icon || options?.title) {
+          <span
+            [class]="options?.icon"
           [innerHTML]="options?.title"></span>
+        }
       </button>
     </div>`,
+    standalone: false
 })
 export class ButtonComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);

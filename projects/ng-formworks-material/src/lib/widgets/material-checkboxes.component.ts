@@ -6,9 +6,9 @@ import { JsonSchemaFormService, TitleMapItem, buildTitleMap } from '@ng-formwork
 // https://material.angular.io/components/list/overview
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'material-checkboxes-widget',
-  template: `
+    // tslint:disable-next-line:component-selector
+    selector: 'material-checkboxes-widget',
+    template: `
     <div>
       <mat-checkbox type="checkbox"
         [checked]="allChecked"
@@ -20,35 +20,42 @@ import { JsonSchemaFormService, TitleMapItem, buildTitleMap } from '@ng-formwork
         (change)="updateAllValues($event)">
         <span class="checkbox-name" [innerHTML]="options?.name"></span>
       </mat-checkbox>
-      <label *ngIf="options?.title"
-        class="title"
-        [class]="options?.labelHtmlClass || ''"
-        [style.display]="options?.notitle ? 'none' : ''"
+      @if (options?.title) {
+        <label
+          class="title"
+          [class]="options?.labelHtmlClass || ''"
+          [style.display]="options?.notitle ? 'none' : ''"
         [innerHTML]="layoutNode().options?.title"></label>
+      }
       <ul class="checkbox-list" [class.horizontal-list]="horizontalList">
-        <li *ngFor="let checkboxItem of checkboxList"
-          [class]="options?.htmlClass || ''">
-          <mat-checkbox type="checkbox"
-            [(ngModel)]="checkboxItem.checked"
-            [color]="options?.color || 'primary'"
-            [disabled]="controlDisabled || options?.readonly"
-            [name]="checkboxItem?.name"
-            (blur)="options.showErrors = true"
-            (change)="updateValue()">
-            <span class="checkbox-name" [innerHTML]="checkboxItem?.name"></span>
-          </mat-checkbox>
-        </li>
+        @for (checkboxItem of checkboxList; track checkboxItem) {
+          <li
+            [class]="options?.htmlClass || ''">
+            <mat-checkbox type="checkbox"
+              [(ngModel)]="checkboxItem.checked"
+              [color]="options?.color || 'primary'"
+              [disabled]="controlDisabled || options?.readonly"
+              [name]="checkboxItem?.name"
+              (blur)="options.showErrors = true"
+              (change)="updateValue()">
+              <span class="checkbox-name" [innerHTML]="checkboxItem?.name"></span>
+            </mat-checkbox>
+          </li>
+        }
       </ul>
-      <mat-error *ngIf="options?.showErrors && options?.errorMessage"
+      @if (options?.showErrors && options?.errorMessage) {
+        <mat-error
         [innerHTML]="options?.errorMessage"></mat-error>
+      }
     </div>`,
-  styles: [`
+    styles: [`
     .title { font-weight: bold; }
     .checkbox-list { list-style-type: none; }
     .horizontal-list > li { display: inline-block; margin-right: 10px; zoom: 1; }
     .checkbox-name { white-space: nowrap; }
     mat-error { font-size: 75%; }
   `],
+    standalone: false
 })
 export class MaterialCheckboxesComponent implements OnInit,OnDestroy {
   private jsf = inject(JsonSchemaFormService);

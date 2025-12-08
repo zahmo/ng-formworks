@@ -565,7 +565,11 @@ export function fixNestedArrayLayout(options: any) {
           builtLayout: item,
           indices: indices,
           indexPos: indexPos,
-          parentDataPointer: builtLayout.dataPointer || parentDataPointer
+          parentDataPointer: parentDataPointer
+          //TODO-test 
+          //commented out builtLayout.dataPointer condition
+          //-Angular 18/TS 5.5 compiliation error
+          //builtLayout.dataPointer || parentDataPointer
         })
       })
       return;

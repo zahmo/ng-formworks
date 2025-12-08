@@ -3,38 +3,60 @@
         (formControl?.dirty || options?.feedbackOnRender)" [class.has-success]="options?.enableSuccessState && !formControl?.errors &&
         (formControl?.dirty || options?.feedbackOnRender)">
 
-    <button *ngIf="showRemoveButton" [class]="widgetStyles().__remove_item__" type="button" (click)="removeItem()">
-    <span aria-hidden="true">&times;</span>
-    <span [class]="widgetStyles().__screen_reader__">Close</span>
-  </button>
-    <div *ngIf="options?.messageLocation === 'top'">
-        <p *ngIf="options?.helpBlock" [class]="widgetStyles().__help_block__" [innerHTML]="options?.helpBlock"></p>
+  @if (showRemoveButton) {
+    <button [class]="widgetStyles().__remove_item__" type="button" (click)="removeItem()">
+      <span aria-hidden="true">&times;</span>
+      <span [class]="widgetStyles().__screen_reader__">Close</span>
+    </button>
+  }
+  @if (options?.messageLocation === 'top') {
+    <div>
+      @if (options?.helpBlock) {
+        <p [class]="widgetStyles().__help_block__" [innerHTML]="options?.helpBlock"></p>
+      }
     </div>
+  }
 
-    <label *ngIf="options?.title && layoutNode()?.type !== 'tab'" [attr.for]="'control' + layoutNode()?._id" [class]="options?.labelHtmlClass || ''" [class.sr-only]="options?.notitle" [innerHTML]="dynamicTitle"></label>
-    <p *ngIf="layoutNode()?.type === 'submit' && jsf?.formOptions?.fieldsRequired">
-        <strong [class]="widgetStyles().__required_asterisk__">*</strong> = required fields
+  @if (options?.title && layoutNode()?.type !== 'tab') {
+    <label [attr.for]="'control' + layoutNode()?._id" [class]="options?.labelHtmlClass || ''" [class.sr-only]="options?.notitle" [innerHTML]="dynamicTitle"></label>
+  }
+  @if (layoutNode()?.type === 'submit' && jsf?.formOptions?.fieldsRequired) {
+    <p>
+      <strong [class]="widgetStyles().__required_asterisk__">*</strong> = required fields
     </p>
-    <div [class.input-group]="options?.fieldAddonLeft || options?.fieldAddonRight">
-        <span *ngIf="options?.fieldAddonLeft" [class]="widgetStyles().__field_addon_left__" [innerHTML]="options?.fieldAddonLeft"></span>
+  }
+  <div [class.input-group]="options?.fieldAddonLeft || options?.fieldAddonRight">
+    @if (options?.fieldAddonLeft) {
+      <span [class]="widgetStyles().__field_addon_left__" [innerHTML]="options?.fieldAddonLeft"></span>
+    }
 
-        <select-widget-widget [layoutNode]="widgetLayoutNode" [dataIndex]="dataIndex()" [layoutIndex]="layoutIndex()"></select-widget-widget>
+    <select-widget-widget [layoutNode]="widgetLayoutNode" [dataIndex]="dataIndex()" [layoutIndex]="layoutIndex()"></select-widget-widget>
 
-        <span *ngIf="options?.fieldAddonRight" [class]="widgetStyles().__field_addon_right__" [innerHTML]="options?.fieldAddonRight"></span>
+    @if (options?.fieldAddonRight) {
+      <span [class]="widgetStyles().__field_addon_right__" [innerHTML]="options?.fieldAddonRight"></span>
+    }
+  </div>
+
+  @if (options?.feedback && options?.isInputWidget &&
+    !options?.fieldAddonRight && !layoutNode().arrayItem &&
+    (formControl?.dirty || options?.feedbackOnRender)) {
+    <span [class.glyphicon-ok]="options?.enableSuccessState && !formControl?.errors" [class.glyphicon-remove]="options?.enableErrorState && formControl?.errors" aria-hidden="true" class="form-control-feedback glyphicon"></span>
+  }
+  @if (options?.messageLocation !== 'top') {
+    <div>
+      @if (options?.helpBlock) {
+        <p [class]="widgetStyles().__help_block__" [innerHTML]="options?.helpBlock"></p>
+      }
     </div>
-
-    <span *ngIf="options?.feedback && options?.isInputWidget &&
-          !options?.fieldAddonRight && !layoutNode().arrayItem &&
-          (formControl?.dirty || options?.feedbackOnRender)" [class.glyphicon-ok]="options?.enableSuccessState && !formControl?.errors" [class.glyphicon-remove]="options?.enableErrorState && formControl?.errors" aria-hidden="true" class="form-control-feedback glyphicon"></span>
-    <div *ngIf="options?.messageLocation !== 'top'">
-        <p *ngIf="options?.helpBlock" [class]="widgetStyles().__help_block__" [innerHTML]="options?.helpBlock"></p>
-    </div>
+  }
 
 </div>
 
-<div *ngIf="debug && debugOutput">debug:
+@if (debug && debugOutput) {
+  <div>debug:
     <pre>{{debugOutput}}</pre>
-</div>
+  </div>
+}
 
 <!--
 <div class="btn input input-bordered input-primary w-full max-w-xs

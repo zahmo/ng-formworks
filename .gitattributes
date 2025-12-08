@@ -1,0 +1,7 @@
+# preserve package.json and common lockfiles in any directory on merges
+**/package.json   merge=ours
+**/package-lock.json merge=ours
+**/yarn.lock      merge=ours
+**/pnpm-lock.yaml merge=ours
+
+**/ng-package.json

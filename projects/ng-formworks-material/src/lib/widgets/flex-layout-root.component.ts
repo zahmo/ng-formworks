@@ -8,49 +8,52 @@ import { memoize } from 'lodash';
     // tslint:disable-next-line:component-selector
     selector: 'flex-layout-root-widget',
     template: `
-    <div cdkDropList (cdkDropListDropped)="drop($event)" 
-    [class.flex-inherit]="true"
-    [cdkDropListSortPredicate]="sortPredicate"
-    >
+    <div cdkDropList (cdkDropListDropped)="drop($event)"
+      [class.flex-inherit]="true"
+      [cdkDropListSortPredicate]="sortPredicate"
+      >
       <!-- -for now left out
-      cdkDragHandle directive, by itself, does not disable the 
-      default drag behavior of its parent cdkDrag element. 
-      You must explicitly disable dragging on the main element 
+      cdkDragHandle directive, by itself, does not disable the
+      default drag behavior of its parent cdkDrag element.
+      You must explicitly disable dragging on the main element
       and re-enable it only when using the handle.
       -->
-      <div *ngFor="let layoutItem of layout(); let i = index;" 
-       cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
-        [cdkDragDisabled]="!isDraggable(layoutItem)"
-        [class.form-flex-item]="isFlexItem()"
-        [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
-        [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
-        [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
-        [style.align-self]="(layoutItem?.options || {})['align-self']"
-        [style.order]="layoutItem?.options?.order"
-        [attr.fxFlex]="layoutItem?.options?.fxFlex"
-        [attr.fxFlexOrder]="layoutItem?.options?.fxFlexOrder"
-        [attr.fxFlexOffset]="layoutItem?.options?.fxFlexOffset"
-        [attr.fxFlexAlign]="layoutItem?.options?.fxFlexAlign"
-
-        >
-        <!-- workaround to disbale dragging of input fields -->
-        <!--
-        <div *ngIf="layoutItem?.dataType !='object'" cdkDragHandle>
-         <p></p>
-        </div>
-        -->
-        <!--
-        <select-framework-widget *ngIf="showWidget(layoutItem)"
-          [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
-          [layoutIndex]="(layoutIndex() || []).concat(i)"
+      @for (layoutItem of layout(); track layoutItem; let i = $index) {
+        <div
+          cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
+          [cdkDragDisabled]="!isDraggable(layoutItem)"
+          [class.form-flex-item]="isFlexItem()"
+          [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
+          [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
+          [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
+          [style.align-self]="(layoutItem?.options || {})['align-self']"
+          [style.order]="layoutItem?.options?.order"
+          [attr.fxFlex]="layoutItem?.options?.fxFlex"
+          [attr.fxFlexOrder]="layoutItem?.options?.fxFlexOrder"
+          [attr.fxFlexOffset]="layoutItem?.options?.fxFlexOffset"
+          [attr.fxFlexAlign]="layoutItem?.options?.fxFlexAlign"
+          >
+          <!-- workaround to disbale dragging of input fields -->
+          <!--
+          <div *ngIf="layoutItem?.dataType !='object'" cdkDragHandle>
+            <p></p>
+          </div>
+          -->
+          <!--
+          <select-framework-widget *ngIf="showWidget(layoutItem)"
+            [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
+            [layoutIndex]="(layoutIndex() || []).concat(i)"
           [layoutNode]="layoutItem"></select-framework-widget>
-        -->
-        <select-framework-widget *ngIf="showWidget(layoutItem)"
-            [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
-            [layoutIndex]="getSelectFrameworkInputs(layoutItem,i).layoutIndex"
-            [layoutNode]="getSelectFrameworkInputs(layoutItem,i).layoutNode">
-		  </select-framework-widget>
-      </div>
+          -->
+          @if (showWidget(layoutItem)) {
+            <select-framework-widget
+              [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
+              [layoutIndex]="getSelectFrameworkInputs(layoutItem,i).layoutIndex"
+              [layoutNode]="getSelectFrameworkInputs(layoutItem,i).layoutNode">
+            </select-framework-widget>
+          }
+        </div>
+      }
     </div>`,
     styles:`
     .example-list {

@@ -6,10 +6,11 @@ import { css_fw } from './css-framework.defs';
 import { CssframeworkService } from './css-framework.service';
 
 @Component({
-  selector: 'css-framework',
-  templateUrl: './css-framework.component.html',
-  styleUrls: ['./css-framework.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'css-framework',
+    templateUrl: './css-framework.component.html',
+    styleUrls: ['./css-framework.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
   cdr = inject(ChangeDetectorRef);
