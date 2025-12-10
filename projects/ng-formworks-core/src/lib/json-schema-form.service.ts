@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, Signal } from '@angular/core';
+import { inject, Injectable, NgZone, OnDestroy, Signal } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 //import Ajv, { ErrorObject, Options } from 'ajv';
 import addFormats from "ajv-formats";
@@ -7,7 +7,7 @@ import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
 import _isArray from 'lodash/isArray';
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
   enValidationMessages,
@@ -18,7 +18,6 @@ import {
   zhValidationMessages
 } from './locale';
 import {
-  JsonPointer,
   buildFormGroup,
   buildFormGroupTemplate,
   buildLayout,
@@ -35,6 +34,7 @@ import {
   isDefined,
   isEmpty,
   isObject,
+  JsonPointer,
   removeRecursiveReferences,
   toTitleCase
 } from './shared';
@@ -170,9 +170,11 @@ export class JsonSchemaFormService implements OnDestroy {
       readonly: false, // Set control as read only? (not editable, but included in output)
       returnEmptyFields: true, // return values for fields that contain no data?
       validationMessages: {} // set by setLanguage()
-    }
+    },
+    validationDebounceMs: 50
   };
-
+  // --- Add a zone field and set it in constructor (use inject to avoid changing constructor signature) ---
+  private zone = inject(NgZone);
   fcValueChangesSubs:Subscription;
   fcStatusChangesSubs:Subscription;
 
@@ -378,19 +380,45 @@ this.ajv.addFormat("duration", {
     );
   }
 
-  buildFormGroup(ajvInstanceName?:string) {
+  buildFormGroup(ajvInstanceName?: string) {
     this.formGroup = <UntypedFormGroup>buildFormGroup(this.formGroupTemplate);
     if (this.formGroup) {
       this.compileAjvSchema(ajvInstanceName);
-      this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName);
+
+      // run initial validation synchronously so UI starts consistent
+      this.validateData(this.formGroup.getRawValue(), true, ajvInstanceName);
 
       // Set up observables to emit data and validation info when form data changes
       if (this.formValueSubscription) {
         this.formValueSubscription.unsubscribe();
       }
-      this.formValueSubscription = this.formGroup.valueChanges.subscribe(
-        formValue => this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName)
-      );
+
+      // configure debounce via formOptions
+      const debounceMs =
+        (this.formOptions && this.formOptions.validationDebounceMs) || 50;
+
+      // Subscribe with debounce and (optional) deep-equality guard
+      this.formValueSubscription = this.formGroup.valueChanges
+        .pipe(
+          // debounce to coalesce rapid updates (typing, drag, etc.)
+          debounceTime(debounceMs, asyncScheduler),
+          // optional deep-equality check to avoid redundant validation
+          distinctUntilChanged((prev, curr) => isEqual(prev, curr))
+        )
+        .subscribe(() => {
+          // run heavy validation outside angular to avoid triggering CD on every keystroke
+          this.zone.runOutsideAngular(() => {
+            // perform validation but do NOT have validateData emit Subjects (updateSubscriptions=false)
+            this.validateData(this.formGroup.getRawValue(), false, ajvInstanceName);
+
+            // re-enter angular to emit Subjects/notifications and let UI react once
+            this.zone.run(() => {
+              this.dataChanges.next(this.data);
+              this.isValidChanges.next(this.isValid);
+              this.validationErrorChanges.next(this.ajvErrors);
+            });
+          });
+        });
     }
   }
 
