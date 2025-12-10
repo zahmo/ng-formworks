@@ -6,7 +6,6 @@
     },
     "allowedNonPeerDependencies": [
         "lodash-es",
-        "ajv",
-        "eta"
+        "ajv"
     ]
 }

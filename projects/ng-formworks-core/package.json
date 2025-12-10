@@ -50,8 +50,7 @@
     "dependencies": {
         "lodash-es": "~4.17.21",
         "ajv": "^8.12.0",
-        "tslib": "^2.7.0",
-        "eta": "^4.4.1"
+        "tslib": "^2.7.0"
     },
     "peerDependencies": {
         "@angular/cdk": ">=21.0.0",
