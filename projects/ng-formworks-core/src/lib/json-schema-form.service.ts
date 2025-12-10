@@ -7,6 +7,7 @@ import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
 import _isArray from 'lodash/isArray';
+import _template from 'lodash/template';
 import { asyncScheduler, BehaviorSubject, debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
@@ -39,6 +40,7 @@ import {
   toTitleCase
 } from './shared';
 
+import { TemplateExecutor } from 'lodash';
 import { default as _isEqual, default as isEqual } from 'lodash/isEqual';
 import { setControl } from './shared/form-group.functions';
 
@@ -64,6 +66,9 @@ export interface ErrorMessages {
     code: string;
   }[];
 }
+
+type DataObject = Record<string, any>;
+type IndexKey = number | string | null;
 
 @Injectable()
 export class JsonSchemaFormService implements OnDestroy {
@@ -166,6 +171,14 @@ export class JsonSchemaFormService implements OnDestroy {
   fcValueChangesSubs:Subscription;
   fcStatusChangesSubs:Subscription;
 
+  private readonly templateCache = new Map<string, TemplateExecutor>();
+  private readonly lodashConfig = { 
+    "interpolate": /{{([\s\S]+?)}}/g,
+    // Add the 'variable' option here if you want to use data.v syntax instead of useWith
+    // variable: 'data' 
+  };
+  private readonly tagPresenceRegex: RegExp;
+
   //TODO-review,may not be needed as sortablejs replaces dnd
   //this has been added to enable or disable the dragabble state of a component
   //using the OrderableDirective, mainly when an <input type="range"> 
@@ -211,6 +224,12 @@ export class JsonSchemaFormService implements OnDestroy {
     return this.ajvRegistry[name]?.ajvValidator;
   }
 
+    /**
+   * Helper function to escape strings for use in a RegExp constructor
+   */
+    private escapeRegExp(string: string): string {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the matched whole string
+    }
   constructor() {
     this.setLanguage(this.language);
     this.ajv.addMetaSchema(jsonDraft6);
@@ -224,6 +243,13 @@ this.ajv.addFormat("duration", {
   validate: (duration) => /^P(?!$)(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$/.test(duration)
 });
 */
+
+    // Create a RegExp object dynamically using the configured tags for the presence check
+    // We escape the tag strings to ensure they are treated as literals in the regex
+    const openTag = "{{"
+    const closeTag = "}}"
+    // The regex pattern dynamically matches any character lazily between the configured tags
+    this.tagPresenceRegex = new RegExp(`${openTag}.+?${closeTag}`);
   }
   ngOnDestroy(): void {
     this.fcValueChangesSubs?.unsubscribe();
@@ -481,95 +507,119 @@ this.ajv.addFormat("duration", {
     this.tpldata = newTpldata;
   }
 
-  parseText(
-    text = '',
-    value: any = {},
-    values: any = {},
-    key: number | string = null
+   /**
+   * Parses text templates using Lodash, utilizing a cache.
+   */
+   parseText(
+    text: string = '',
+    value: DataObject = {},
+    values: DataObject = {},
+    key: IndexKey = null
   ): string {
-    if (!text || !/{{.+?}}/.test(text)) {
+    if (!text) {
       return text;
     }
-    return text.replace(/{{(.+?)}}/g, (...a) =>
-      this.parseExpression(a[1], value, values, key, this.tpldata)
-    );
+
+    // --- Caching Logic ---
+    let compiledTemplate = this.templateCache.get(text);
+
+    if (!compiledTemplate) {
+      // If not in cache, compile it
+      try {
+        compiledTemplate = _template(text, this.lodashConfig);
+        // Store the newly compiled function in the cache
+        this.templateCache.set(text, compiledTemplate);
+      } catch (error) {
+        console.error("Error compiling template:", error);
+        return text; // Return original text if compilation fails
+      }
+    }
+
+    // --- Execution Logic ---
+    const index = typeof key === 'number' ? key + 1 : key;
+    const dataContext = {
+      value: value,
+      values: values,
+      tpldata: this.tpldata,
+      idx: index,
+      $index: index,
+    };
+
+    try {
+      // Execute the function (retrieved from cache or newly compiled)
+      return compiledTemplate(dataContext);
+    } catch (error) {
+      console.error("Error during template execution with Lodash:", error);
+      return text;
+    }
   }
 
+  // The parseExpression function is less relevant now as the main logic is in parseText
+
+
+  /**
+   * This function is now a simple wrapper for rendering a single expression
+   * within an implicit template string.
+   *
+   * NOTE: The original complex manual logic is GONE, replaced by Eta's engine.
+   * This function simply provides the correct context for a single expression.
+   */
   parseExpression(
-    expression = '',
-    value: any = {},
-    values: any = {},
-    key: number | string = null,
-    tpldata: any = null
-  ) {
-    if (typeof expression !== 'string') {
+    expression: string = '',
+    value: DataObject = {},
+    values: DataObject = {},
+    key: IndexKey = null,
+    tpldata: DataObject | null = null
+  ): string | DataObject | number {
+    if (typeof expression !== 'string' || !expression.trim()) {
       return '';
     }
-    const index = typeof key === 'number' ? key + 1 + '' : key || '';
-    expression = expression.trim();
-    if (
-      (expression[0] === "'" || expression[0] === '"') &&
-      expression[0] === expression[expression.length - 1] &&
-      expression.slice(1, expression.length - 1).indexOf(expression[0]) === -1
-    ) {
-      return expression.slice(1, expression.length - 1);
+
+    // Prepare the same data context as `parseText`
+    const index = typeof key === 'number' ? key + 1 : key;
+    const dataContext = {
+      value: value,
+      values: values,
+      tpldata: tpldata || this.tpldata, // Use passed tpldata first
+      idx: index,
+      $index: index,
+    };
+
+    // Wrap the expression in the required Eta interpolation tags for evaluation
+    const templateWrapper = `{{ ${expression.trim()} }}`;
+
+    try {
+      // Render the wrapped expression
+      // Note: We cannot guarantee the return type is always a string anymore,
+      // as Eta evaluates the *actual JS expression* (e.g., if the expression is just 'value',
+      // it might return an object). We return the raw rendered string here
+      // as the original implementation seems to assume a string return value mostly.
+      let compiledTemplate = this.templateCache.get(templateWrapper);
+
+      if (!compiledTemplate) {
+        // If not in cache, compile it
+        try {
+          compiledTemplate = _template(templateWrapper, this.lodashConfig);
+          // Store the newly compiled function in the cache
+          this.templateCache.set(templateWrapper, compiledTemplate);
+        } catch (error) {
+          console.error("Error compiling template:", error);
+          return templateWrapper; // Return original text if compilation fails
+        }
+      }
+      
+      try {
+        // Execute the function (retrieved from cache or newly compiled)
+        return compiledTemplate(dataContext);
+      } catch (error) {
+        console.error("Error during template execution with Lodash:", error);
+        return templateWrapper;
+      }
+
+    } catch (error) {
+      console.error(`Error evaluating expression "${expression}":`, error);
+      return '';
     }
-    if (expression === 'idx' || expression === '$index') {
-      return index;
-    }
-    if (expression === 'value' && !hasOwn(values, 'value')) {
-      return value;
-    }
-    if (
-      ['"', "'", ' ', '||', '&&', '+'].every(
-        delim => expression.indexOf(delim) === -1
-      )
-    ) {
-      const pointer = JsonPointer.parseObjectPath(expression);
-      return pointer[0] === 'value' && JsonPointer.has(value, pointer.slice(1))
-        ? JsonPointer.get(value, pointer.slice(1))
-        : pointer[0] === 'values' && JsonPointer.has(values, pointer.slice(1))
-          ? JsonPointer.get(values, pointer.slice(1))
-          : pointer[0] === 'tpldata' && JsonPointer.has(tpldata, pointer.slice(1))
-            ? JsonPointer.get(tpldata, pointer.slice(1))
-            : JsonPointer.has(values, pointer)
-              ? JsonPointer.get(values, pointer)
-              : '';
-    }
-    if (expression.indexOf('[idx]') > -1) {
-      expression = expression.replace(/\[idx\]/g, <string>index);
-    }
-    if (expression.indexOf('[$index]') > -1) {
-      expression = expression.replace(/\[$index\]/g, <string>index);
-    }
-    // TODO: Improve expression evaluation by parsing quoted strings first
-    // let expressionArray = expression.match(/([^"']+|"[^"]+"|'[^']+')/g);
-    if (expression.indexOf('||') > -1) {
-      return expression
-        .split('||')
-        .reduce(
-          (all, term) =>
-            all || this.parseExpression(term, value, values, key, tpldata),
-          ''
-        );
-    }
-    if (expression.indexOf('&&') > -1) {
-      return expression
-        .split('&&')
-        .reduce(
-          (all, term) =>
-            all && this.parseExpression(term, value, values, key, tpldata),
-          ' '
-        )
-        .trim();
-    }
-    if (expression.indexOf('+') > -1) {
-      return expression
-        .split('+')
-        .map(term => this.parseExpression(term, value, values, key, tpldata))
-        .join('');
-    }
-    return '';
   }
 
   //TODO fix- if template has value in title
