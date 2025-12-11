@@ -240,19 +240,39 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
       // Clear the entire cache of the memoized function
+      this._showWidgetMemoized.cache.clear(); // Clear cache for showWidget
       this._getSelectFrameworkInputsMemoized.cache.clear();
       this.cdr.markForCheck();
     }
   }
 
 
-  showWidget(layoutNode: any): boolean {
-    return this.jsf.evaluateCondition(layoutNode, this.dataIndex);
+// Memoize the showWidget to avoid unnecessary recalculations
+private _showWidgetRaw = (layoutNode: any): boolean => {
+  return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+};
+
+private _showWidgetMemoized = memoize(
+  this._showWidgetRaw,
+  (layoutNode: any) => {
+    // Memoize based on the layoutNode and dataIndex
+    return JSON.stringify(layoutNode) + '-' + (this.dataIndex() || []).join('-');
   }
+);
+
+// Public function used in the template
+showWidget(layoutNode: any): boolean {
+  if (this.memoizationEnabled) {
+    return this._showWidgetMemoized(layoutNode);
+  } else {
+    return this._showWidgetRaw(layoutNode);
+  }
+}
   ngOnInit(): void {
       if(this.memoizationEnabled){
         this.jsf.dataChanges.subscribe((val)=>{
           //this.selectframeworkInputCache?.clear();
+          this._showWidgetMemoized.cache.clear();
           this._getSelectFrameworkInputsMemoized.cache.clear();
         //TODO-fix for now changed to detectChanges-
         //used to updated the dynamic titles in tab compnents 
