@@ -191,6 +191,8 @@ export class JsonSchemaFormService implements OnDestroy {
     // Add the 'variable' option here if you want to use data.v syntax instead of useWith
     // variable: 'data' 
   };
+
+  private evalFunctionCache=new Map<string, Function>();
   private readonly tagPresenceRegex: RegExp;
 
   //TODO-review,may not be needed as sortablejs replaces dnd
@@ -333,6 +335,8 @@ this.ajv.addFormat("duration", {
     this.formOptions = cloneDeep(this.defaultFormOptions);
     this.ajvRegistry={};
     this.ajvRegistry['default']={name:'default',ajvInstance:this.ajv,ajvValidator:null};
+    this.templateCache.clear();
+    this.evalFunctionCache.clear();
   }
 
   /**
@@ -757,7 +761,8 @@ this.ajv.addFormat("duration", {
   private evaluateFunctionBodyCondition(condition: FunctionCondition, dataIndex: number[]): boolean {
      // This remains an insecure pattern but respects original functionality
      try {
-        const dynFn = new Function('model', 'arrayIndices', condition.functionBody);
+        const dynFn = this._getFunctionFromBody(condition.functionBody);
+        //new Function('model', 'arrayIndices', condition.functionBody);
         return dynFn(this.data, dataIndex);
      } catch (e) {
         console.error(
@@ -766,6 +771,20 @@ this.ajv.addFormat("duration", {
         return true; // Default visibility on error
      }
   }
+
+  private _getFunctionFromBody(functionBody: string) {
+    // Try to create a function from the body in a secure manner (without new Function)
+    // You can try a safer implementation depending on your environment.
+    // For example, you could precompile these in advance or use a library to handle safe evaluation.
+    
+    const cacheKey = `${functionBody}`;
+    if (!this.evalFunctionCache.has(cacheKey)) {
+        const fn = new Function('model', 'arrayIndices', functionBody); // Still using new Function
+        this.evalFunctionCache.set(cacheKey, fn);
+    }
+
+    return this.evalFunctionCache.get(cacheKey) as Function;
+}
 
   initializeControl(ctx: WidgetContext, bind = true): boolean {
     if (!isObject(ctx)) {
