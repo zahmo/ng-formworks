@@ -8,7 +8,7 @@ import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
 import _isArray from 'lodash/isArray';
 import _template from 'lodash/template';
-import { asyncScheduler, BehaviorSubject, debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
   enValidationMessages,
@@ -81,7 +81,8 @@ export interface ErrorMessages {
 type DataObject = Record<string, any>;
 type IndexKey = number | string | null;
 interface FunctionCondition {
-  functionBody: string;
+  functionBody?: string;
+  functionBodyRaw?: string;
 }
 
 @Injectable()
@@ -412,6 +413,8 @@ this.ajv.addFormat("duration", {
     );
   }
 
+
+  
   buildFormGroup(ajvInstanceName?: string) {
     this.formGroup = <UntypedFormGroup>buildFormGroup(this.formGroupTemplate);
     if (this.formGroup) {
@@ -433,12 +436,16 @@ this.ajv.addFormat("duration", {
       this.formValueSubscription = this.formGroup.valueChanges
         .pipe(
           // debounce to coalesce rapid updates (typing, drag, etc.)
-          debounceTime(debounceMs, asyncScheduler),
+          //TODO:review seems to be causing timing issues with evaluate condition
+          //doesn't throw errors when not in place
+          debounceTime(debounceMs),
           // optional deep-equality check to avoid redundant validation
           distinctUntilChanged((prev, curr) => isEqual(prev, curr))
         )
         .subscribe(() => {
           // run heavy validation outside angular to avoid triggering CD on every keystroke
+         
+          /*
           this.zone.runOutsideAngular(() => {
             // perform validation but do NOT have validateData emit Subjects (updateSubscriptions=false)
             this.validateData(this.formGroup.getRawValue(), false, ajvInstanceName);
@@ -450,6 +457,8 @@ this.ajv.addFormat("duration", {
               this.validationErrorChanges.next(this.ajvErrors);
             });
           });
+          */
+          this.validateData(this.formGroup.getRawValue(), true, ajvInstanceName);
         });
     }
   }
@@ -728,11 +737,28 @@ this.ajv.addFormat("duration", {
       }
     } 
     
+    
     // Check if it matches the FunctionCondition interface structure
-    if (typeof condition === 'object' && typeof (condition as FunctionCondition).functionBody === 'string') {
+    if (typeof condition === 'object' 
+      && (typeof (condition as FunctionCondition)?.functionBody === 'string'
+      ||typeof (condition as FunctionCondition)?.functionBodyRaw === 'string')
+    ) {
         // This still uses the potentially insecure new Function approach, 
         // but encapsulated as requested by the original code's structure.
-        return this.evaluateFunctionBodyCondition(condition as FunctionCondition, dataIndex);
+        
+        //TODO-fix- add null checking as a workaround for issue caused by adding
+        //debounceTime in buildFormGroup
+        //also added functionBodyRaw that won't do any replacements
+        const condition_nullChecks={
+          functionBody:condition.functionBodyRaw||
+          condition.functionBody
+          .replace(/\[/g,".[").split('.')
+          .join("?.")
+          .replace(/\?\?\./g,"?")
+          .replace(/(\?)(\.\[)/g,'[')
+        }
+
+        return this.evaluateFunctionBodyCondition(condition_nullChecks as FunctionCondition, dataIndex);
     }
 
     return true; // Default visible if condition type is unknown
@@ -770,6 +796,14 @@ this.ajv.addFormat("duration", {
         );
         return true; // Default visibility on error
      }
+  }
+
+
+  evaluateConditionAsync(layoutNode: any, dataIndex: number[]): Observable<boolean> {
+    const result = this.evaluateCondition(layoutNode, dataIndex);
+    
+    // If it's synchronous, wrap the result in an observable using `of()`
+    return of(result);
   }
 
   private _getFunctionFromBody(functionBody: string) {
