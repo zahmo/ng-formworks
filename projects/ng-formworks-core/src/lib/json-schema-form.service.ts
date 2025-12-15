@@ -40,10 +40,10 @@ import {
   toTitleCase
 } from './shared';
 
-import { TemplateExecutor } from 'lodash';
 import { default as _isEqual, default as isEqual } from 'lodash/isEqual';
 import { setControl } from './shared/form-group.functions';
 
+import { Eta } from 'eta/core';
 
 export type AJVRegistryItem={
   [name: string]:{
@@ -175,15 +175,22 @@ export class JsonSchemaFormService implements OnDestroy {
   fcValueChangesSubs:Subscription;
   fcStatusChangesSubs:Subscription;
 
-  private readonly templateCache = new Map<string, TemplateExecutor>();
+  private readonly templateCache = new Map<string, Function>();
   private readonly lodashConfig = { 
     "interpolate": /{{([\s\S]+?)}}/g,
     // Add the 'variable' option here if you want to use data.v syntax instead of useWith
     // variable: 'data' 
   };
+  private readonly etaConfig:any={ 
+    tags: ["{{", "}}"],
+    cache:true,
+     functionHeader: "const value=it.value, values=it.values,tpldata=it.tpldata,idx=it.idx,$index=it.$index"
+   }
 
   private evalFunctionCache=new Map<string, Function>();
   private readonly tagPresenceRegex: RegExp;
+  eta:Eta;
+
 
   //TODO-review,may not be needed as sortablejs replaces dnd
   //this has been added to enable or disable the dragabble state of a component
@@ -256,6 +263,7 @@ this.ajv.addFormat("duration", {
     const closeTag = "}}"
     // The regex pattern dynamically matches any character lazily between the configured tags
     this.tagPresenceRegex = new RegExp(`${openTag}.+?${closeTag}`);
+    this.eta = new Eta(this.etaConfig)
   }
   ngOnDestroy(): void {
     this.fcValueChangesSubs?.unsubscribe();
@@ -542,7 +550,9 @@ this.ajv.addFormat("duration", {
     if (!compiledTemplate) {
       // If not in cache, compile it
       try {
-        compiledTemplate = _template(text, this.lodashConfig);
+        let etaTpl=text.replace(/{{/g,'{{=');
+        compiledTemplate = this.eta.compile(etaTpl,this.etaConfig)
+        //_template(text, this.lodashConfig);
         // Store the newly compiled function in the cache
         this.templateCache.set(text, compiledTemplate);
       } catch (error) {
@@ -560,12 +570,15 @@ this.ajv.addFormat("duration", {
       idx: index,
       $index: index,
     };
-
+    
     try {
+      //console.log(this.eta.renderString(text,dataContext))
       // Execute the function (retrieved from cache or newly compiled)
-      return compiledTemplate(dataContext);
+      return compiledTemplate.call(this.eta,dataContext,this.etaConfig);
+      //this.eta.renderString(text,dataContext,{name:'tpl1'});
+      
     } catch (error) {
-      console.error("Error during template execution with Lodash:", error);
+      console.error("Error during template execution:", error);
       return text;
     }
   }
@@ -580,6 +593,8 @@ this.ajv.addFormat("duration", {
    * NOTE: The original complex manual logic is GONE, replaced by Eta's engine.
    * This function simply provides the correct context for a single expression.
    */
+  //not used-was called by parseText
+  //parseText now uses template engines
   parseExpression(
     expression: string = '',
     value: DataObject = {},
@@ -628,7 +643,7 @@ this.ajv.addFormat("duration", {
         // Execute the function (retrieved from cache or newly compiled)
         return compiledTemplate(dataContext);
       } catch (error) {
-        console.error("Error during template execution with Lodash:", error);
+        console.error("Error during template execution:", error);
         return templateWrapper;
       }
 
