@@ -272,11 +272,10 @@ showWidget(layoutNode: any): boolean {
         this.jsf.dataChanges.subscribe((val)=>{
           //this.selectframeworkInputCache?.clear();
           this._showWidgetMemoized.cache.clear();
-          this._getSelectFrameworkInputsMemoized.cache.clear();
-        //TODO-fix for now changed to detectChanges-
-        //used to updated the dynamic titles in tab compnents 
+          //TODO review-causing ngOnChanges to run where ever layoutnode is used as an input
+          //commented out for now
+          //this._getSelectFrameworkInputsMemoized.cache.clear();
         this.cdr.markForCheck();
-       // this.cdr.detectChanges();-breaks oneOf/ matdatepicker
         })
       }
 
