@@ -732,6 +732,14 @@ this.ajv.addFormat("duration", {
       );
   }
 
+  getItemTitleContext(ctx: WidgetContext){
+    return {
+      value:this.getFormControlValue(ctx),
+      values:(this.getFormControlGroup(ctx) || <any>{}).value,
+      key: ctx.dataIndex()[ctx.dataIndex().length - 1]
+    }
+  }
+
   evaluateCondition(layoutNode: any, dataIndex: number[]): boolean {
     const condition = layoutNode.options?.condition;
 
