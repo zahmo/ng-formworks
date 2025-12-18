@@ -72,7 +72,7 @@ import { Subscription } from 'rxjs';
     .expandable > legend:before, .expandable > label:before  { content: '▶'; padding-right: .3em; font-family:auto }
     .expanded > legend:before, .expanded > label:before  { content: '▼'; padding-right: .2em; }
   `],
-    
+  
 })
 export class SectionComponent implements OnInit, OnDestroy, OnChanges {
 
