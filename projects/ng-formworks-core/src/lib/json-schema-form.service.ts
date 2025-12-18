@@ -709,7 +709,7 @@ this.ajv.addFormat("duration", {
     return {
       value:this.getFormControlValue(ctx),
       values:(this.getFormControlGroup(ctx) || <any>{}).value,
-      key: ctx.dataIndex()[ctx.dataIndex().length - 1]
+      key: ctx.dataIndex[ctx.dataIndex.length - 1]
     }
   }
 
