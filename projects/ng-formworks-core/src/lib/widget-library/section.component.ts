@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { JsonSchemaFormService } from '../json-schema-form.service';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, input } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -72,21 +72,25 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     .expandable > legend:before, .expandable > label:before  { content: '▶'; padding-right: .3em; font-family:auto }
     .expanded > legend:before, .expanded > label:before  { content: '▼'; padding-right: .2em; }
   `],
+    
 })
-export class SectionComponent implements OnInit {
+export class SectionComponent implements OnInit, OnDestroy, OnChanges {
+
   options: any;
   expanded = true;
   containerType: string;
-  @Input() layoutNode: any;
-  @Input() layoutIndex: number[];
-  @Input() dataIndex: number[];
+  readonly layoutNode = input<any>(undefined);
+  readonly layoutIndex = input<number[]>(undefined);
+  readonly dataIndex = input<number[]>(undefined);
 
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
-
+  dataChangesSubs: Subscription;
+  titleContext: any = {
+    value: {},
+    values: {},
+    key: null
+  }
   get sectionTitle() {
-    return this.options.notitle ? null : this.jsf.setItemTitle(this);
+    return this.jsf.setItemTitle(this);
   }
 
 
@@ -100,12 +104,18 @@ export class SectionComponent implements OnInit {
       case 'fieldset': case 'array': case 'tab': case 'advancedfieldset':
       case 'authfieldset': case 'optionfieldset': case 'selectfieldset':
         this.containerType = 'fieldset';
-      break;
+        break;
       default: // 'div', 'flex', 'section', 'conditional', 'actions', 'tagsinput'
         this.containerType = 'div';
-      break;
+        break;
     }
+    this.updateTitleContext();
+    this.dataChangesSubs = this.jsf.dataChanges.subscribe((val) => {
+      this.updateTitleContext();
+      // this.cdr.markForCheck();
+    })
   }
+
 
   toggleExpanded() {
     if (this.options.expandable) { this.expanded = !this.expanded; }
@@ -131,5 +141,17 @@ export class SectionComponent implements OnInit {
       case 'justify-content': case 'align-items': case 'align-content':
         return this.options[attribute];
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+  }
+
+  updateTitleContext() {
+    this.titleContext = this.jsf.getItemTitleContext(this);
+  }
+
+  ngOnDestroy(): void {
+    this.dataChangesSubs?.unsubscribe();
   }
 }
