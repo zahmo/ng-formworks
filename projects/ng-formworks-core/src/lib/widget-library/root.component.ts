@@ -269,7 +269,7 @@ showWidget(layoutNode: any): boolean {
 }
   ngOnInit(): void {
       if(this.memoizationEnabled){
-        this.jsf.dataChanges.subscribe((val)=>{
+        this.dataChangesSubs=this.jsf.dataChanges.subscribe((val)=>{
           //this.selectframeworkInputCache?.clear();
           this._showWidgetMemoized.cache.clear();
           //TODO review-causing ngOnChanges to run where ever layoutnode is used as an input
