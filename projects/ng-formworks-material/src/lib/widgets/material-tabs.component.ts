@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
+import { memoize } from 'lodash';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -68,7 +69,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       `],
     standalone: false
 })
-export class MaterialTabsComponent implements OnInit,OnDestroy,OnChanges {
+export class MaterialTabsComponent implements OnInit,OnChanges,OnDestroy,OnChanges {
   options: any;
   itemCount: number;
   selectedItem = 0;
@@ -81,6 +82,7 @@ export class MaterialTabsComponent implements OnInit,OnDestroy,OnChanges {
     private jsf: JsonSchemaFormService,
     private cdr: ChangeDetectorRef
   ) { }
+  readonly memoizationEnabled= input<boolean>(true);
 
   ngOnInit() {
     this.options = this.layoutNode.options || {};
@@ -91,6 +93,12 @@ export class MaterialTabsComponent implements OnInit,OnDestroy,OnChanges {
     this.updateControl();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
+      this._getSelectFrameworkInputsMemoized.cache.clear();
+
+    }
+  }
   select(index) {
     if (this.layoutNode.items[index].type === '$ref') {
       this.jsf.addItem({
@@ -113,14 +121,32 @@ export class MaterialTabsComponent implements OnInit,OnDestroy,OnChanges {
   setTabTitle(item: any, index: number): string {
     return this.jsf.setArrayItemTitle(this, item, index);
   }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    //TODO review/test-introduced to fix dynamic titles not updating
-    //when their conditional linked field is destroyed
-    //-forces change detection!
-    this.cdr.detectChanges();
-  }
-  ngOnDestroy(): void {
-    
-  }
+    private _getSelectFrameworkInputsRaw = (layoutItem: any, i: number) => {
+      const dataIndexValue = this.layoutNode()?.dataType === 'array' ? (this.dataIndex() || []).concat(i) : this.dataIndex()
+      const layoutIndexValue = (this.layoutIndex() || []).concat(i);
+  
+      return {
+        layoutNode: layoutItem,
+        layoutIndex: layoutIndexValue,
+        dataIndex:dataIndexValue
+      };
+    };
+  
+    // Define a separate function to hold the memoized version
+    private _getSelectFrameworkInputsMemoized = memoize(
+      this._getSelectFrameworkInputsRaw,
+      (layoutItem: any, i: number) => {
+        const layoutItemKey = layoutItem?.id ?? JSON.stringify(layoutItem);
+        return `${layoutItemKey}-${i}`;
+      }
+    );
+  
+    // This is the public function that the template calls
+    getSelectFrameworkInputs(layoutItem: any, i: number) {
+      if (this.memoizationEnabled) {
+        return this._getSelectFrameworkInputsMemoized(layoutItem, i);
+      } else {
+        return this._getSelectFrameworkInputsRaw(layoutItem, i);
+      }
+    }
 }
