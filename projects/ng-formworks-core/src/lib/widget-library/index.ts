@@ -58,6 +58,7 @@ export { SubmitComponent } from './submit.component';
 export { TabComponent } from './tab.component';
 export { TabsComponent } from './tabs.component';
 export { TemplateComponent } from './template.component';
+export { TextTemplatePipe } from './text-template.pipe';
 export { TextareaComponent } from './textarea.component';
 export { WidgetLibraryService } from './widget-library.service';
 
