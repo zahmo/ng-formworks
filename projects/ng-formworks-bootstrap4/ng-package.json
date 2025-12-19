@@ -10,4 +10,5 @@
         "@ng-formworks/core",
         "@ng-formworks/cssframework"
     ]
+
 }
