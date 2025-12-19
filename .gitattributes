@@ -6,3 +6,4 @@
 **/ng-package.json merge=ours
 **/environment.prod.ts merge=ours
 **/environment.ts merge=ours
+.gitattributes  merge=ours
