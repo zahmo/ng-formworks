@@ -1,6 +1,6 @@
 {
     "name": "demo",
-    "version": "17.6.9",
+    "version": "17.7.0",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "description": "Angular JSON Schema Form builder Demo",
     "engines": {
@@ -132,9 +132,11 @@
         "karma-coverage": "~2.2.0",
         "karma-jasmine": "~5.1.0",
         "karma-jasmine-html-reporter": "^2.1.0",
+        "minimist": "^1.2.8",
         "ng-packagr": "^17.3.0",
         "postcss": "^8.4.47",
         "protractor": "^7.0.0",
+        "simple-git": "^3.30.0",
         "ts-node": "^10.9.2",
         "tslib": "^2.7.0",
         "tslint": "~6.1.0",
