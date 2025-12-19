@@ -3,5 +3,7 @@
 **/package-lock.json merge=ours
 **/yarn.lock      merge=ours
 **/pnpm-lock.yaml merge=ours
-
-**/ng-package.json
+**/ng-package.json merge=ours
+**/environment.prod.ts merge=ours
+**/environment.ts merge=ours
+.gitattributes  merge=ours
