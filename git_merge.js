@@ -1,16 +1,33 @@
 const simpleGit = require('simple-git');
+const minimist = require('minimist');
 const fs = require('fs');
 const path = require('path');
 
 const git = simpleGit();
 
 /**
- * Reads the ignore list from a JSON file.
- * Priority: Command line argument > git_merge_ignore.json > empty array
+ * Configure minimist
+ * argv.config: captures --config <path>
+ * argv.revertonly: boolean flag
  */
-function readConfigFromCLI() {
-    const configFile = process.argv[3] || 'git_merge_ignore.json';
-    const absolutePath = path.resolve(process.cwd(), configFile);
+const argv = minimist(process.argv.slice(2), {
+    string: ['config'], // --config is followed by a string
+    boolean: ['revertonly'], // --revertonly is a boolean toggle
+    alias: {
+        c: 'config',
+        r: 'revertonly'
+    },
+    default: {
+        config: 'git_merge_ignore.json', // Default config file
+        revertonly: false
+    }
+});
+
+/**
+ * Reads the ignore list from the JSON file specified by the --config flag.
+ */
+function readConfig() {
+    const absolutePath = path.resolve(process.cwd(), argv.config);
 
     if (fs.existsSync(absolutePath)) {
         try {
@@ -18,56 +35,55 @@ function readConfigFromCLI() {
             const json = JSON.parse(data);
             return Array.isArray(json) ? json : (json.ignore || []);
         } catch (err) {
-            console.error(`Error parsing JSON file at ${configFile}:`, err.message);
+            console.error(`Error parsing JSON at ${argv.config}:`, err.message);
             process.exit(1);
         }
     }
 
-    console.log(`No config file found at ${configFile}. Proceeding with 0 files ignored.`);
+    // If a custom config was provided but not found, throw an error
+    if (argv.config !== 'git_merge_ignore.json') {
+        console.error(`Error: Config file not found at ${argv.config}`);
+        process.exit(1);
+    }
+
     return [];
 }
 
-/**
- * Merges sourceBranch into current branch while keeping local versions of filesToIgnore
- */
+async function revertIgnored(filesToIgnore) {
+    console.log(`Reverting ${filesToIgnore.length} files...`);
+    for (const file of filesToIgnore) {
+        try {
+            await git.reset(['HEAD', file]);
+            await git.checkout(file);
+            console.log(`  [OK] Kept local: ${file}`);
+        } catch (e) {
+            console.warn(`  [SKIP] Could not revert ${file}`);
+        }
+    }
+}
+
 async function mergeWithIgnore(sourceBranch, filesToIgnore) {
     try {
         console.log(`Starting merge from ${sourceBranch}...`);
-
-        // 1. Start Merge (no commit, no fast-forward)
         await git.merge([sourceBranch, '--no-commit', '--no-ff']);
-
-        // 2. Reset and Checkout specific files to keep current branch versions
-        for (const file of filesToIgnore) {
-            try {
-                await git.reset(['HEAD', file]);
-                await git.checkout(file);
-                console.log(`  [OK] Kept local version of: ${file}`);
-            } catch (fileErr) {
-                console.warn(`  [SKIP] Could not protect ${file} (file may not exist in merge)`);
-            }
-        }
-
-        // 3. Commit the merge
+        await revertIgnored(filesToIgnore);
         await git.commit(`Merged ${sourceBranch} while ignoring specific files`);
         console.log('Successfully merged and committed.');
     } catch (err) {
         console.error('Error during merge:', err.message);
-        console.error('The merge may have conflicts. Please resolve them manually.');
     }
 }
 
-// --- Execution ---
+// --- Execution Logic ---
 
-const sourceBranch = process.argv[2];
+const sourceBranch = argv._[0]; // Positional argument for branch
+const isRevertOnly = argv.revertonly;
+const filesToIgnore = readConfig();
 
-if (!sourceBranch) {
-    console.error('Usage: node script.js <source-branch> [config-file.json]');
-    process.exit(1);
+if (isRevertOnly) {
+    revertIgnored(filesToIgnore);
+} else if (sourceBranch) {
+    mergeWithIgnore(sourceBranch, filesToIgnore);
+} else {
+    console.error('Usage: node git_merge.js <branch> [--config path.json] [--revertonly]');
 }
-
-// 1. Read the list
-const filesToIgnore = readConfigFromCLI();
-
-// 2. Execute the merge
-mergeWithIgnore(sourceBranch, filesToIgnore);
