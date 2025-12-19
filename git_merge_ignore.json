@@ -19,6 +19,8 @@
         "projects/ng-formworks-material/package.json",
         "projects/ng-formworks-material/ng-package.json",
         "demo/environments/environment.ts",
-        "demo/environments/environment.prod.ts"
+        "demo/environments/environment.prod.ts",
+        "projects/ng-formworks-material/src/lib/material-design-themes.scss",
+        "demo/styles.scss"
     ]
 }
