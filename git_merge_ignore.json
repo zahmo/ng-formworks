@@ -1,3 +1,24 @@
 {
-    "ignore": []
+    "ignore": [
+        ".gitattributes",
+        "git_merge_ignore.json",
+        "package.json",
+        "package-lock.json",
+        "projects/ng-formworks-bootstrap3/package.json",
+        "projects/ng-formworks-bootstrap3/ng-package.json",
+        "projects/ng-formworks-bootstrap4/package.json",
+        "projects/ng-formworks-bootstrap4/ng-package.json",
+        "projects/ng-formworks-bootstrap5/package.json",
+        "projects/ng-formworks-bootstrap5/ng-package.json",
+        "projects/ng-formworks-core/package.json",
+        "projects/ng-formworks-core/ng-package.json",
+        "projects/ng-formworks-cssframework/package.json",
+        "projects/ng-formworks-cssframeworkng-package.json",
+        "projects/ng-formworks-daisyui/package.json",
+        "projects/ng-formworks-daisyui/ng-package.json",
+        "projects/ng-formworks-material/package.json",
+        "projects/ng-formworks-material/ng-package.json",
+        "demo/environments/environment.ts",
+        "demo/environments/environment.prod.ts"
+    ]
 }
