@@ -281,6 +281,7 @@ addClasses(this.options.htmlClass, this.widgetStyles.array.htmlClass):
           this.debugOutput = map(vars, thisVar => JSON.stringify(thisVar, null, 2)).join('\n');
         }
       }
+      this.updateTitle();
       this.frameworkInitialized = true;
     }
 

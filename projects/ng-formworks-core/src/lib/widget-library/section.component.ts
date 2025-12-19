@@ -1,21 +1,22 @@
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, inject, input } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
-    selector: 'section-widget',
-    template: `
+  // tslint:disable-next-line:component-selector
+  selector: 'section-widget',
+  template: `
     @if (containerType === 'div') {
       <div
         [class]="options?.htmlClass || ''"
         [class.expandable]="options?.expandable && !expanded"
         [class.expanded]="options?.expandable && expanded">
-        @if (sectionTitle) {
+        @if (!options.notitle) {
           <label
             class="legend"
             [class]="options?.labelHtmlClass || ''"
-            [innerHTML]="sectionTitle"
+            [innerHTML]="options.title|textTemplate:titleContext"
           (click)="toggleExpanded()"></label>
         }
         <root-widget
@@ -40,11 +41,11 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         [class.expandable]="options?.expandable && !expanded"
         [class.expanded]="options?.expandable && expanded"
         [disabled]="options?.readonly">
-        @if (sectionTitle) {
+        @if (!options.notitle) {
           <legend
             class="legend"
             [class]="options?.labelHtmlClass || ''"
-            [innerHTML]="sectionTitle"
+            [innerHTML]="options.title|textTemplate:titleContext"
           (click)="toggleExpanded()"></legend>
         }
         @if (options?.messageLocation !== 'bottom') {
@@ -83,14 +84,15 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
         }
       </fieldset>
     }`,
-    styles: [`
+  styles: [`
     .legend { font-weight: bold; }
     .expandable > legend:before, .expandable > label:before  { content: '▶'; padding-right: .3em; font-family:auto }
     .expanded > legend:before, .expanded > label:before  { content: '▼'; padding-right: .2em; }
   `],
-    standalone: false
+  standalone: false
 })
-export class SectionComponent implements OnInit {
+export class SectionComponent implements OnInit, OnDestroy, OnChanges {
+
   private jsf = inject(JsonSchemaFormService);
 
   options: any;
@@ -100,8 +102,14 @@ export class SectionComponent implements OnInit {
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
 
+  dataChangesSubs: Subscription;
+  titleContext: any = {
+    value: {},
+    values: {},
+    key: null
+  }
   get sectionTitle() {
-    return this.options.notitle ? null : this.jsf.setItemTitle(this);
+    return this.jsf.setItemTitle(this);
   }
 
 
@@ -115,12 +123,18 @@ export class SectionComponent implements OnInit {
       case 'fieldset': case 'array': case 'tab': case 'advancedfieldset':
       case 'authfieldset': case 'optionfieldset': case 'selectfieldset':
         this.containerType = 'fieldset';
-      break;
+        break;
       default: // 'div', 'flex', 'section', 'conditional', 'actions', 'tagsinput'
         this.containerType = 'div';
-      break;
+        break;
     }
+    this.updateTitleContext();
+    this.dataChangesSubs = this.jsf.dataChanges.subscribe((val) => {
+      this.updateTitleContext();
+      // this.cdr.markForCheck();
+    })
   }
+
 
   toggleExpanded() {
     if (this.options.expandable) { this.expanded = !this.expanded; }
@@ -146,5 +160,17 @@ export class SectionComponent implements OnInit {
       case 'justify-content': case 'align-items': case 'align-content':
         return this.options[attribute];
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+  }
+
+  updateTitleContext() {
+    this.titleContext = this.jsf.getItemTitleContext(this);
+  }
+
+  ngOnDestroy(): void {
+    this.dataChangesSubs?.unsubscribe();
   }
 }
