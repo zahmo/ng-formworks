@@ -1,58 +1,62 @@
 import { CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 import { memoize } from 'lodash';
+import { Subscription } from 'rxjs';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
-    selector: 'flex-layout-root-widget',
-    template: `
-    <div cdkDropList (cdkDropListDropped)="drop($event)" 
-    [class.flex-inherit]="true"
-    [cdkDropListSortPredicate]="sortPredicate"
-    >
+  // tslint:disable-next-line:component-selector
+  selector: 'flex-layout-root-widget',
+  template: `
+    <div cdkDropList (cdkDropListDropped)="drop($event)"
+      [class.flex-inherit]="true"
+      [cdkDropListSortPredicate]="sortPredicate"
+      >
       <!-- -for now left out
-      cdkDragHandle directive, by itself, does not disable the 
-      default drag behavior of its parent cdkDrag element. 
-      You must explicitly disable dragging on the main element 
+      cdkDragHandle directive, by itself, does not disable the
+      default drag behavior of its parent cdkDrag element.
+      You must explicitly disable dragging on the main element
       and re-enable it only when using the handle.
       -->
-      <div *ngFor="let layoutItem of layout(); let i = index;" 
-       cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
-        [cdkDragDisabled]="!isDraggable(layoutItem)"
-        [class.form-flex-item]="isFlexItem()"
-        [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
-        [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
-        [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
-        [style.align-self]="(layoutItem?.options || {})['align-self']"
-        [style.order]="layoutItem?.options?.order"
-        [attr.fxFlex]="layoutItem?.options?.fxFlex"
-        [attr.fxFlexOrder]="layoutItem?.options?.fxFlexOrder"
-        [attr.fxFlexOffset]="layoutItem?.options?.fxFlexOffset"
-        [attr.fxFlexAlign]="layoutItem?.options?.fxFlexAlign"
-
-        >
-        <!-- workaround to disbale dragging of input fields -->
-        <!--
-        <div *ngIf="layoutItem?.dataType !='object'" cdkDragHandle>
-         <p></p>
-        </div>
-        -->
-        <!--
-        <select-framework-widget *ngIf="showWidget(layoutItem)"
-          [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
-          [layoutIndex]="(layoutIndex() || []).concat(i)"
+      @for (layoutItem of layout(); track layoutItem; let i = $index) {
+        <div
+          cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
+          [cdkDragDisabled]="!isDraggable(layoutItem)"
+          [class.form-flex-item]="isFlexItem()"
+          [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
+          [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
+          [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
+          [style.align-self]="(layoutItem?.options || {})['align-self']"
+          [style.order]="layoutItem?.options?.order"
+          [attr.fxFlex]="layoutItem?.options?.fxFlex"
+          [attr.fxFlexOrder]="layoutItem?.options?.fxFlexOrder"
+          [attr.fxFlexOffset]="layoutItem?.options?.fxFlexOffset"
+          [attr.fxFlexAlign]="layoutItem?.options?.fxFlexAlign"
+          >
+          <!-- workaround to disbale dragging of input fields -->
+          <!--
+          <div *ngIf="layoutItem?.dataType !='object'" cdkDragHandle>
+            <p></p>
+          </div>
+          -->
+          <!--
+          <select-framework-widget *ngIf="showWidget(layoutItem)"
+            [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
+            [layoutIndex]="(layoutIndex() || []).concat(i)"
           [layoutNode]="layoutItem"></select-framework-widget>
-        -->
-        <select-framework-widget *ngIf="showWidget(layoutItem)"
-            [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
-            [layoutIndex]="getSelectFrameworkInputs(layoutItem,i).layoutIndex"
-            [layoutNode]="getSelectFrameworkInputs(layoutItem,i).layoutNode">
-		  </select-framework-widget>
-      </div>
+          -->
+          @if (showWidget(layoutItem)) {
+            <select-framework-widget
+              [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
+              [layoutIndex]="getSelectFrameworkInputs(layoutItem,i).layoutIndex"
+              [layoutNode]="getSelectFrameworkInputs(layoutItem,i).layoutNode">
+            </select-framework-widget>
+          }
+        </div>
+      }
     </div>`,
-    styles:`
+  styles: `
     .example-list {
   width: 500px;
   max-width: 100%;
@@ -111,21 +115,34 @@ import { memoize } from 'lodash';
 }
     
 `,
-    //changeDetection: ChangeDetectionStrategy.Default,
-    changeDetection:ChangeDetectionStrategy.OnPush,
-    standalone: false
+  //changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
-export class FlexLayoutRootComponent implements OnInit,OnDestroy,OnChanges {
+export class FlexLayoutRootComponent implements OnInit, OnDestroy, OnChanges {
 
   private jsf = inject(JsonSchemaFormService);
+  private cdr = inject(ChangeDetectorRef);
 
   readonly dataIndex = input<number[]>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly layout = input<any[]>(undefined);
   readonly isOrderable = input<boolean>(undefined);
   readonly isFlexItem = input(false);
-  readonly memoizationEnabled= input<boolean>(true);
+  readonly memoizationEnabled = input<boolean>(true);
+
+  dataChangesSubs: Subscription;
   ngOnInit() {
+    if (this.memoizationEnabled) {
+      this.dataChangesSubs = this.jsf.dataChanges.subscribe((val) => {
+        //this.selectframeworkInputCache?.clear();
+        this._showWidgetMemoized.cache.clear();
+        //TODO review-causing ngOnChanges to run where ever layoutnode is used as an input
+        //commented out for now
+        //this._getSelectFrameworkInputsMemoized.cache.clear();
+        this.cdr.markForCheck();
+      })
+    }
 
   }
   removeItem(item) {
@@ -134,42 +151,42 @@ export class FlexLayoutRootComponent implements OnInit,OnDestroy,OnChanges {
 
   drop(event: CdkDragDrop<string[]>) {
     // most likely why this event is used is to get the dragging element's current index
-    let srcInd=event.previousIndex;
-    let trgInd=event.currentIndex;
-    let layoutItem=this.layout()[trgInd];
-    let dataInd=layoutItem?.arrayItem ? (this.dataIndex() || []).concat(trgInd) : (this.dataIndex() || []);
-    let layoutInd=(this.layoutIndex() || []).concat(trgInd)
-    let itemCtx:any={
-      dataIndex:()=>{return dataInd},
-      layoutIndex:()=>{return layoutInd},
-      layoutNode:()=>{return layoutItem},
+    let srcInd = event.previousIndex;
+    let trgInd = event.currentIndex;
+    let layoutItem = this.layout()[trgInd];
+    let dataInd = layoutItem?.arrayItem ? (this.dataIndex() || []).concat(trgInd) : (this.dataIndex() || []);
+    let layoutInd = (this.layoutIndex() || []).concat(trgInd)
+    let itemCtx: any = {
+      dataIndex: () => { return dataInd },
+      layoutIndex: () => { return layoutInd },
+      layoutNode: () => { return layoutItem },
     }
-    this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
+    this.jsf.moveArrayItem(itemCtx, srcInd, trgInd, true);
   }
 
   isDraggable(node: any): boolean {
-    let result=node.arrayItem && node.type !== '$ref' &&
-    node.arrayItemType === 'list' && this.isOrderable() !== false
-    && node.type !=='submit'
+    let result = node.arrayItem && node.type !== '$ref' &&
+      node.arrayItemType === 'list' && this.isOrderable() !== false
+      && node.type !== 'submit'
     return result;
   }
 
 
-    /**
-   * Predicate function that disallows '$ref' item sorts
-   * NB declared as a var instead of a function 
-   * like sortPredicate(index: number, item: CdkDrag<number>){..}
-   * since 'this' is bound to the draglist and doesn't reference the
-   * FlexLayoutRootComponent instance
-   */
-    //TODO also need to think of other types such as button which can be
-    //created by an arbitrary layout
-    sortPredicate=(index: number, item: CdkDrag<number>)=> {
-      let layoutItem=this.layout()[index];
-      let result=this.isDraggable(layoutItem);
-      //layoutItem.type != '$ref';
-      return result;
-    }
+  /**
+ * Predicate function that disallows '$ref' item sorts
+ * NB declared as a var instead of a function 
+ * like sortPredicate(index: number, item: CdkDrag<number>){..}
+ * since 'this' is bound to the draglist and doesn't reference the
+ * FlexLayoutRootComponent instance
+ */
+  //TODO also need to think of other types such as button which can be
+  //created by an arbitrary layout
+  sortPredicate = (index: number, item: CdkDrag<number>) => {
+    let layoutItem = this.layout()[index];
+    let result = this.isDraggable(layoutItem);
+    //layoutItem.type != '$ref';
+    return result;
+  }
 
   // Set attributes for flexbox child
   // (container attributes are set in flex-layout-section.component)
@@ -209,23 +226,41 @@ export class FlexLayoutRootComponent implements OnInit,OnDestroy,OnChanges {
   }
   //TODO investigate-causing layout issue with layout,for now
   //removed from template
-    trackByFn(index: number, item: any): any {
-      return item._id ?? index;
-    }
-
+  trackByFn(index: number, item: any): any {
+    return item._id ?? index;
+  }
+  // Public function used in the template
   showWidget(layoutNode: any): boolean {
-    return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+    if (this.memoizationEnabled) {
+      return this._showWidgetMemoized(layoutNode);
+    } else {
+      return this._showWidgetRaw(layoutNode);
+    }
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
       // Clear the entire cache of the memoized function
+      this._showWidgetMemoized.cache.clear(); // Clear cache for showWidget
       this._getSelectFrameworkInputsMemoized.cache.clear();
+      this.cdr.markForCheck();
     }
   }
+  // Memoize the showWidget to avoid unnecessary recalculations
+  private _showWidgetRaw = (layoutNode: any): boolean => {
+    return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+  };
+
+  private _showWidgetMemoized = memoize(
+    this._showWidgetRaw,
+    (layoutNode: any) => {
+      // Memoize based on the layoutNode and dataIndex
+      return JSON.stringify(layoutNode) + '-' + (this.dataIndex() || []).join('-');
+    }
+  );
   ngOnDestroy(): void {
     //this.selectframeworkInputCache?.clear()
     //this.selectframeworkInputCache=null;
     this._getSelectFrameworkInputsMemoized.cache.clear();
-    //this.dataChangesSubs?.unsubscribe();
-}
+    this.dataChangesSubs?.unsubscribe();
+  }
 }

@@ -20,8 +20,12 @@ import { Subscription } from 'rxjs';
         (click)="updateValue($event)"
         [appStopPropagation]="['mousedown', 'touchstart']"
         >
-        <mat-icon *ngIf="options?.icon" class="mat-24">{{options?.icon}}</mat-icon>
-        <span *ngIf="options?.title" [innerHTML]="layoutNode().options?.title"></span>
+        @if (options?.icon) {
+          <mat-icon class="mat-24">{{options?.icon}}</mat-icon>
+        }
+        @if (options?.title) {
+          <span [innerHTML]="layoutNode().options?.title"></span>
+        }
       </button>
     </div>`,
     styles: [` button { margin-top: 10px; } `],

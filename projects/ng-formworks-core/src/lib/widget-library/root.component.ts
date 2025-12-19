@@ -7,55 +7,58 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
   // tslint:disable-next-line:component-selector
   selector: 'root-widget',
   template: `
-    <div cdkDropList (cdkDropListDropped)="drop($event)" 
+    <div cdkDropList (cdkDropListDropped)="drop($event)"
       [class.flex-inherit]="true"
       [cdkDropListSortPredicate]="sortPredicate"
-    >
+      >
       <!-- -for now left out
-      cdkDragHandle directive, by itself, does not disable the 
-      default drag behavior of its parent cdkDrag element. 
-      You must explicitly disable dragging on the main element 
+      cdkDragHandle directive, by itself, does not disable the
+      default drag behavior of its parent cdkDrag element.
+      You must explicitly disable dragging on the main element
       and re-enable it only when using the handle.
       -->
-      <div *ngFor="let layoutItem of layout(); let i = index;"
-         cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
-        [cdkDragDisabled]="!isDraggable(layoutItem)"
-        [class.form-flex-item]="isFlexItem()"
-        [style.align-self]="(layoutItem.options || {})['align-self']"
-        [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
-        [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
-        [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
-        [style.order]="(layoutItem.options || {}).order"
-        >
-
-        <!-- workaround to disbale dragging of input fields -->
-        <!--
-        <div *ngIf="layoutItem?.dataType !='object'"  cdkDragHandle>
-         <p>Drag Handle {{layoutItem?.dataType}}</p>
-        </div>
-        -->
-        <!--NB orderable directive is not used but has been left in for now and set to false
-          otherwise the compiler won't recognize dataIndex and other dependent attributes
-        -->
-        <!--
-        <div 
-          [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
-          [layoutIndex]="(layoutIndex() || []).concat(i)"
-          [layoutNode]="layoutItem"
-          [orderable]="false"
+      @for (layoutItem of layout(); track layoutItem; let i = $index) {
+        <div
+          cdkDrag  [cdkDragStartDelay]="{touch:1000,mouse:0}"
+          [cdkDragDisabled]="!isDraggable(layoutItem)"
+          [class.form-flex-item]="isFlexItem()"
+          [style.align-self]="(layoutItem.options || {})['align-self']"
+          [style.flex-basis]="getFlexAttribute(layoutItem, 'flex-basis')"
+          [style.flex-grow]="getFlexAttribute(layoutItem, 'flex-grow')"
+          [style.flex-shrink]="getFlexAttribute(layoutItem, 'flex-shrink')"
+          [style.order]="(layoutItem.options || {}).order"
           >
-          <select-framework-widget *ngIf="showWidget(layoutItem)"
+          <!-- workaround to disbale dragging of input fields -->
+          <!--
+          <div *ngIf="layoutItem?.dataType !='object'"  cdkDragHandle>
+            <p>Drag Handle {{layoutItem?.dataType}}</p>
+          </div>
+          -->
+          <!--NB orderable directive is not used but has been left in for now and set to false
+          otherwise the compiler won't recognize dataIndex and other dependent attributes
+          -->
+          <!--
+          <div
             [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
             [layoutIndex]="(layoutIndex() || []).concat(i)"
+            [layoutNode]="layoutItem"
+            [orderable]="false"
+            >
+            <select-framework-widget *ngIf="showWidget(layoutItem)"
+              [dataIndex]="layoutItem?.arrayItem ? (dataIndex() || []).concat(i) : (dataIndex() || [])"
+              [layoutIndex]="(layoutIndex() || []).concat(i)"
             [layoutNode]="layoutItem"></select-framework-widget>
+          </div>
+          -->
+          @if (showWidget(layoutItem)) {
+            <select-framework-widget
+              [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
+              [layoutIndex]="getSelectFrameworkInputs(layoutItem,i).layoutIndex"
+              [layoutNode]="getSelectFrameworkInputs(layoutItem,i).layoutNode">
+            </select-framework-widget>
+          }
         </div>
-        -->
-      <select-framework-widget *ngIf="showWidget(layoutItem)"
-            [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
-            [layoutIndex]="getSelectFrameworkInputs(layoutItem,i).layoutIndex"
-            [layoutNode]="getSelectFrameworkInputs(layoutItem,i).layoutNode">
-		  </select-framework-widget>
-      </div>
+      }
     </div>
     `,
   styles: [`
@@ -236,24 +239,43 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
       // Clear the entire cache of the memoized function
+      this._showWidgetMemoized.cache.clear(); // Clear cache for showWidget
       this._getSelectFrameworkInputsMemoized.cache.clear();
       this.cdr.markForCheck();
     }
   }
 
 
-  showWidget(layoutNode: any): boolean {
-    return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+// Memoize the showWidget to avoid unnecessary recalculations
+private _showWidgetRaw = (layoutNode: any): boolean => {
+  return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+};
+
+private _showWidgetMemoized = memoize(
+  this._showWidgetRaw,
+  (layoutNode: any) => {
+    // Memoize based on the layoutNode and dataIndex
+    return JSON.stringify(layoutNode) + '-' + (this.dataIndex() || []).join('-');
   }
+);
+
+// Public function used in the template
+showWidget(layoutNode: any): boolean {
+  if (this.memoizationEnabled) {
+    return this._showWidgetMemoized(layoutNode);
+  } else {
+    return this._showWidgetRaw(layoutNode);
+  }
+}
   ngOnInit(): void {
       if(this.memoizationEnabled){
-        this.jsf.dataChanges.subscribe((val)=>{
+        this.dataChangesSubs=this.jsf.dataChanges.subscribe((val)=>{
           //this.selectframeworkInputCache?.clear();
-          this._getSelectFrameworkInputsMemoized.cache.clear();
-        //TODO-fix for now changed to detectChanges-
-        //used to updated the dynamic titles in tab compnents 
+          this._showWidgetMemoized.cache.clear();
+          //TODO review-causing ngOnChanges to run where ever layoutnode is used as an input
+          //commented out for now
+          //this._getSelectFrameworkInputsMemoized.cache.clear();
         this.cdr.markForCheck();
-       // this.cdr.detectChanges();-breaks oneOf/ matdatepicker
         })
       }
 

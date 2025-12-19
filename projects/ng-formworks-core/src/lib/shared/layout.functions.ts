@@ -594,10 +594,13 @@ export function fixNestedArrayLayout(options: any) {
           numActualItems--;
         }
       });
+      //TODO fix-need to take listItems into account
+      //esp when the layout is built for the first time
+      let numListItems=builtLayout.options?.listItems;
       numActualItems = Math.max(numActualItems, 0);//avoid dealing with negatives
-      if (numActualItems < numDataItems) {
+      if (numActualItems < Math.max(numDataItems,numListItems)) {
 
-        let numItemsNeeded = numDataItems - numActualItems;
+        let numItemsNeeded = Math.max(numDataItems,numListItems) - numActualItems;
         //added to ignore recursive references
         if (numActualItems == 0 && builtLayout.items[0].recursiveReference) {
           numItemsNeeded = 0
@@ -614,8 +617,8 @@ export function fixNestedArrayLayout(options: any) {
          // builtLayout.items=[newItem, ...builtLayout.items];
           
         }
-      }else if (numActualItems > numDataItems) {
-        let numItemsToRemove = numActualItems-numDataItems;
+      }else if (numActualItems > Math.max(numDataItems,numListItems)) {
+        let numItemsToRemove = numActualItems-Math.max(numDataItems,numListItems);
         for (let i = 0; i < numItemsToRemove; i++) {
           builtLayout.items.pop();
           //builtLayout.items=builtLayout.items.slice(0, -1);
