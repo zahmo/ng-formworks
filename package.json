@@ -149,6 +149,7 @@
         "ng-packagr": "^21.0.0",
         "postcss": "^8.4.47",
         "protractor": "^7.0.0",
+        "simple-git": "^3.30.0",
         "ts-node": "^10.9.2",
         "tslib": "^2.7.0",
         "tslint": "~6.1.0",
