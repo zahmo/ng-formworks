@@ -249,14 +249,14 @@ export class RootComponent implements OnInit, OnDestroy,OnChanges{
 
 // Memoize the showWidget to avoid unnecessary recalculations
 private _showWidgetRaw = (layoutNode: any): boolean => {
-  return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+  return this.jsf.evaluateCondition(layoutNode, this.dataIndex);
 };
 
 private _showWidgetMemoized = memoize(
   this._showWidgetRaw,
   (layoutNode: any) => {
     // Memoize based on the layoutNode and dataIndex
-    return JSON.stringify(layoutNode) + '-' + (this.dataIndex() || []).join('-');
+    return JSON.stringify(layoutNode) + '-' + (this.dataIndex || []).join('-');
   }
 );
 

@@ -1,5 +1,6 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, input } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
 @Component({
@@ -10,10 +11,10 @@ import { Subscription } from 'rxjs';
       [class]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
       [class.expanded]="options?.expandable && expanded">
-      <label *ngIf="sectionTitle"
+      <label *ngIf="!options.notitle"
         class="legend"
         [class]="options?.labelHtmlClass || ''"
-        [innerHTML]="sectionTitle"
+        [innerHTML]="options.title|textTemplate:titleContext"
         (click)="toggleExpanded()"></label>
       <root-widget 
         [dataIndex]="dataIndex"
@@ -35,10 +36,10 @@ import { Subscription } from 'rxjs';
       [class.expandable]="options?.expandable && !expanded"
       [class.expanded]="options?.expandable && expanded"
       [disabled]="options?.readonly">
-      <legend *ngIf="sectionTitle"
+      <legend *ngIf="!options.notitle"
         class="legend"
         [class]="options?.labelHtmlClass || ''"
-        [innerHTML]="sectionTitle"
+        [innerHTML]="options.title|textTemplate:titleContext"
         (click)="toggleExpanded()"></legend>
       <div *ngIf="options?.messageLocation !== 'bottom'">
         <p *ngIf="options?.description"
@@ -79,9 +80,9 @@ export class SectionComponent implements OnInit, OnDestroy, OnChanges {
   options: any;
   expanded = true;
   containerType: string;
-  readonly layoutNode = input<any>(undefined);
-  readonly layoutIndex = input<number[]>(undefined);
-  readonly dataIndex = input<number[]>(undefined);
+  @Input() layoutNode:any;
+  @Input() layoutIndex: number[];
+  @Input() dataIndex: number[];
 
   dataChangesSubs: Subscription;
   titleContext: any = {
@@ -93,7 +94,9 @@ export class SectionComponent implements OnInit, OnDestroy, OnChanges {
     return this.jsf.setItemTitle(this);
   }
 
+constructor(private jsf:JsonSchemaFormService){
 
+}
 
   ngOnInit() {
     this.jsf.initializeControl(this);

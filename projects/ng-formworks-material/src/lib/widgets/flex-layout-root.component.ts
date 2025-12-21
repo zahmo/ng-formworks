@@ -1,7 +1,8 @@
 import { CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleChanges } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 import { memoize } from 'lodash';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -112,8 +113,7 @@ import { memoize } from 'lodash';
     
 `],
     //changeDetection: ChangeDetectionStrategy.Default,
-    changeDetection:ChangeDetectionStrategy.OnPush,
-    standalone: false
+    changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class FlexLayoutRootComponent {
   @Input() dataIndex: number[];
@@ -122,8 +122,25 @@ export class FlexLayoutRootComponent {
   @Input() isOrderable:boolean;
   @Input() isFlexItem = false;
   @Input() memoizationEnabled =true;
-  constructor(
-    private jsf: JsonSchemaFormService
+
+  dataChangesSubs: Subscription;
+  ngOnInit() {
+    if (this.memoizationEnabled) {
+      this.dataChangesSubs = this.jsf.dataChanges.subscribe((val) => {
+        //this.selectframeworkInputCache?.clear();
+        this._showWidgetMemoized.cache.clear();
+        //TODO review-causing ngOnChanges to run where ever layoutnode is used as an input
+        //commented out for now
+        //this._getSelectFrameworkInputsMemoized.cache.clear();
+        this.cdr.markForCheck();
+      })
+    }
+
+  }
+
+ constructor(
+    private jsf: JsonSchemaFormService,
+    private cdr:ChangeDetectorRef
   ) { }
 
   removeItem(item) {
@@ -228,20 +245,25 @@ export class FlexLayoutRootComponent {
   }
   // Memoize the showWidget to avoid unnecessary recalculations
   private _showWidgetRaw = (layoutNode: any): boolean => {
-    return this.jsf.evaluateCondition(layoutNode, this.dataIndex());
+    return this.jsf.evaluateCondition(layoutNode, this.dataIndex);
   };
 
   private _showWidgetMemoized = memoize(
     this._showWidgetRaw,
     (layoutNode: any) => {
       // Memoize based on the layoutNode and dataIndex
-      return JSON.stringify(layoutNode) + '-' + (this.dataIndex() || []).join('-');
+      return JSON.stringify(layoutNode) + '-' + (this.dataIndex || []).join('-');
     }
   );
+
+  
   ngOnDestroy(): void {
     //this.selectframeworkInputCache?.clear()
     //this.selectframeworkInputCache=null;
     this._getSelectFrameworkInputsMemoized.cache.clear();
     this.dataChangesSubs?.unsubscribe();
   }
+
+
+  
 }

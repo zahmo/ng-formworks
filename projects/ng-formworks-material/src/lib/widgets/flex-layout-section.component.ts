@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 import { Subscription } from 'rxjs';
@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
       [class.expanded]="options?.expandable && expanded">
       <label *ngIf="sectionTitle"
         [class]="'legend ' + (options?.labelHtmlClass || '')"
-        [innerHTML]="sectionTitle"
+        [innerHTML]="options.title|textTemplate:titleContext"
         (click)="toggleExpanded()"></label>
       <flex-layout-root-widget 
         [layout]="layoutNode.items"
@@ -42,9 +42,9 @@ import { Subscription } from 'rxjs';
       [class.expandable]="options?.expandable && !expanded"
       [class.expanded]="options?.expandable && expanded"
       [disabled]="options?.readonly">
-      <legend *ngIf="sectionTitle"
+      <legend *ngIf="!options.notitle"
         [class]="'legend ' + (options?.labelHtmlClass || '')"
-        [innerHTML]="sectionTitle"
+        [innerHTML]="options.title|textTemplate:titleContext"
         (click)="toggleExpanded()"></legend>
       <flex-layout-root-widget 
         [layout]="layoutNode.items"
@@ -71,10 +71,10 @@ import { Subscription } from 'rxjs';
       [ngClass]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
       [class.expanded]="options?.expandable && expanded">
-      <mat-card-header *ngIf="sectionTitle">
+      <mat-card-header *ngIf="!options.notitle">
         <legend
           [class]="'legend ' + (options?.labelHtmlClass || '')"
-          [innerHTML]="sectionTitle"
+          [innerHTML]="options.title|textTemplate:titleContext"
           (click)="toggleExpanded()"></legend>
       </mat-card-header>
       <mat-card-content >
@@ -109,9 +109,9 @@ import { Subscription } from 'rxjs';
       [hideToggle]="!options?.expandable">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <legend *ngIf="sectionTitle"
+          <legend *ngIf="!options.notitle"
             [class]="options?.labelHtmlClass"
-            [innerHTML]="sectionTitle"
+            [innerHTML]="options.title|textTemplate:titleContext"
             (click)="toggleExpanded()"></legend>
         </mat-panel-title>
       </mat-expansion-panel-header>
