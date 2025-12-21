@@ -43,7 +43,7 @@ import {
 import { default as _isEqual, default as isEqual } from 'lodash/isEqual';
 import { setControl } from './shared/form-group.functions';
 
-import { Eta } from 'eta/core';
+import { Eta } from 'eta';
 
 export type AJVRegistryItem={
   [name: string]:{
@@ -705,7 +705,7 @@ this.ajv.addFormat("duration", {
   
   }
 
-  getItemTitleContext(ctx: WidgetContext){
+  getItemTitleContext(ctx: any){
     return {
       value:this.getFormControlValue(ctx),
       values:(this.getFormControlGroup(ctx) || <any>{}).value,
