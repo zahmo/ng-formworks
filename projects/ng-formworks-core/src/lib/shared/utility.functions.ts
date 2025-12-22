@@ -647,7 +647,8 @@ export function hasNonNullValue(obj: Record<string, any>): boolean {
     // To check if a parameter is a literal or contains variables (e.g., "model.devices[arrayIndices].accessoryType")
     static checkIfVariableOrLiteral(value: string): 'literal' | 'variable' {
       // Remove white spaces and check each part of the expression (split by dots and brackets)
-      const parts = value.split('.').flatMap(part => part.split('[').map(subPart => subPart.replace(']', '')));
+      const parts = value.split('.').map(part => part.split('[').map(subPart => subPart.replace(']', '')))
+      .reduce((acc, curr) => acc.concat(curr), []);
   
       for (const part of parts) {
         if (this.isVariableOrLiteral(part) === 'variable') {
