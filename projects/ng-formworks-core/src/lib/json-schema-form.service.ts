@@ -42,8 +42,8 @@ import {
 
 import { default as _isEqual, default as isEqual } from 'lodash/isEqual';
 import { setControl } from './shared/form-group.functions';
-
-import { Eta } from 'eta/core';
+//import not working for ts<5 //will use lodash
+//import { Eta } from 'eta';
 
 export type AJVRegistryItem={
   [name: string]:{
@@ -189,7 +189,7 @@ export class JsonSchemaFormService implements OnDestroy {
 
   private evalFunctionCache=new Map<string, Function>();
   private readonly tagPresenceRegex: RegExp;
-  eta:Eta;
+  //eta:Eta;
 
 
   //TODO-review,may not be needed as sortablejs replaces dnd
@@ -263,7 +263,7 @@ this.ajv.addFormat("duration", {
     const closeTag = "}}"
     // The regex pattern dynamically matches any character lazily between the configured tags
     this.tagPresenceRegex = new RegExp(`${openTag}.+?${closeTag}`);
-    this.eta = new Eta(this.etaConfig)
+    //this.eta = new Eta(this.etaConfig)
   }
   ngOnDestroy(): void {
     this.fcValueChangesSubs?.unsubscribe();
@@ -551,8 +551,8 @@ this.ajv.addFormat("duration", {
       // If not in cache, compile it
       try {
         let etaTpl=text.replace(/{{/g,'{{=');
-        compiledTemplate = this.eta.compile(etaTpl,this.etaConfig)
-        //_template(text, this.lodashConfig);
+        compiledTemplate = //this.eta.compile(etaTpl,this.etaConfig)
+        _template(text, this.lodashConfig);
         // Store the newly compiled function in the cache
         this.templateCache.set(text, compiledTemplate);
       } catch (error) {
@@ -574,7 +574,8 @@ this.ajv.addFormat("duration", {
     try {
       //console.log(this.eta.renderString(text,dataContext))
       // Execute the function (retrieved from cache or newly compiled)
-      return compiledTemplate.call(this.eta,dataContext,this.etaConfig);
+      return compiledTemplate(dataContext);
+      //compiledTemplate.call(this.eta,dataContext,this.etaConfig);
       //this.eta.renderString(text,dataContext,{name:'tpl1'});
       
     } catch (error) {
