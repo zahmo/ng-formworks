@@ -121,8 +121,7 @@ export class FlexLayoutRootComponent {
   @Input() layout: any[];
   @Input() isOrderable:boolean;
   @Input() isFlexItem = false;
-  @Input() memoizationEnabled =true;
-
+  @Input() memoizationEnabled =true;  
   dataChangesSubs: Subscription;
   ngOnInit() {
     if (this.memoizationEnabled) {
@@ -138,9 +137,10 @@ export class FlexLayoutRootComponent {
 
   }
 
- constructor(
+  constructor(
     private jsf: JsonSchemaFormService,
-    private cdr:ChangeDetectorRef
+    private cdr: ChangeDetectorRef
+
   ) { }
 
   removeItem(item) {

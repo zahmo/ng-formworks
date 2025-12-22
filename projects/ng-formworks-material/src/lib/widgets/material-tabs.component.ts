@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 import { memoize } from 'lodash';
 
@@ -66,10 +66,9 @@ import { memoize } from 'lodash';
 `,
     styles: [` a { cursor: pointer; } 
             .ngf-hidden{display:none}
-      `],
-    standalone: false
+      `]
 })
-export class MaterialTabsComponent implements OnInit,OnChanges,OnDestroy,OnChanges {
+export class MaterialTabsComponent implements OnInit,OnChanges,OnChanges {
   options: any;
   itemCount: number;
   selectedItem = 0;
@@ -82,7 +81,7 @@ export class MaterialTabsComponent implements OnInit,OnChanges,OnDestroy,OnChang
     private jsf: JsonSchemaFormService,
     private cdr: ChangeDetectorRef
   ) { }
-  readonly memoizationEnabled= input<boolean>(true);
+  @Input() memoizationEnabled:boolean=true;
 
   ngOnInit() {
     this.options = this.layoutNode.options || {};
@@ -122,8 +121,8 @@ export class MaterialTabsComponent implements OnInit,OnChanges,OnDestroy,OnChang
     return this.jsf.setArrayItemTitle(this, item, index);
   }
     private _getSelectFrameworkInputsRaw = (layoutItem: any, i: number) => {
-      const dataIndexValue = this.layoutNode()?.dataType === 'array' ? (this.dataIndex() || []).concat(i) : this.dataIndex()
-      const layoutIndexValue = (this.layoutIndex() || []).concat(i);
+      const dataIndexValue = this.layoutNode()?.dataType === 'array' ? (this.dataIndex || []).concat(i) : this.dataIndex
+      const layoutIndexValue = (this.layoutIndex || []).concat(i);
   
       return {
         layoutNode: layoutItem,
