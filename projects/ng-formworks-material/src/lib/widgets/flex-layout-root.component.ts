@@ -1,7 +1,8 @@
 import { CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleChanges } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
 import { memoize } from 'lodash';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -112,8 +113,7 @@ import { memoize } from 'lodash';
     
 `],
     //changeDetection: ChangeDetectionStrategy.Default,
-    changeDetection:ChangeDetectionStrategy.OnPush,
-    standalone: false
+    changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class FlexLayoutRootComponent {
   @Input() dataIndex: number[];
@@ -121,9 +121,26 @@ export class FlexLayoutRootComponent {
   @Input() layout: any[];
   @Input() isOrderable:boolean;
   @Input() isFlexItem = false;
-  @Input() memoizationEnabled =true;
+  @Input() memoizationEnabled =true;  
+  dataChangesSubs: Subscription;
+  ngOnInit() {
+    if (this.memoizationEnabled) {
+      this.dataChangesSubs = this.jsf.dataChanges.subscribe((val) => {
+        //this.selectframeworkInputCache?.clear();
+        this._showWidgetMemoized.cache.clear();
+        //TODO review-causing ngOnChanges to run where ever layoutnode is used as an input
+        //commented out for now
+        //this._getSelectFrameworkInputsMemoized.cache.clear();
+        this.cdr.markForCheck();
+      })
+    }
+
+  }
+
   constructor(
-    private jsf: JsonSchemaFormService
+    private jsf: JsonSchemaFormService,
+    private cdr: ChangeDetectorRef
+
   ) { }
 
   removeItem(item) {
@@ -142,32 +159,32 @@ export class FlexLayoutRootComponent {
       layoutIndex: layoutInd,
       layoutNode: layoutItem
     }
-    this.jsf.moveArrayItem(itemCtx, srcInd, trgInd,true);
+    this.jsf.moveArrayItem(itemCtx, srcInd, trgInd, true);
   }
 
   isDraggable(node: any): boolean {
-    let result=node.arrayItem && node.type !== '$ref' &&
-    node.arrayItemType === 'list' && this.isOrderable !== false
-    && node.type !=='submit'
+    let result = node.arrayItem && node.type !== '$ref' &&
+      node.arrayItemType === 'list' && this.isOrderable !== false
+      && node.type !== 'submit'
     return result;
   }
 
 
-    /**
-   * Predicate function that disallows '$ref' item sorts
-   * NB declared as a var instead of a function 
-   * like sortPredicate(index: number, item: CdkDrag<number>){..}
-   * since 'this' is bound to the draglist and doesn't reference the
-   * FlexLayoutRootComponent instance
-   */
-    //TODO also need to think of other types such as button which can be
-    //created by an arbitrary layout
-    sortPredicate=(index: number, item: CdkDrag<number>)=> {
-      let layoutItem=this.layout[index];
-      let result=this.isDraggable(layoutItem);
-      //layoutItem.type != '$ref';
-      return result;
-    }
+  /**
+ * Predicate function that disallows '$ref' item sorts
+ * NB declared as a var instead of a function 
+ * like sortPredicate(index: number, item: CdkDrag<number>){..}
+ * since 'this' is bound to the draglist and doesn't reference the
+ * FlexLayoutRootComponent instance
+ */
+  //TODO also need to think of other types such as button which can be
+  //created by an arbitrary layout
+  sortPredicate = (index: number, item: CdkDrag<number>) => {
+    let layoutItem = this.layout[index];
+    let result = this.isDraggable(layoutItem);
+    //layoutItem.type != '$ref';
+    return result;
+  }
 
   // Set attributes for flexbox child
   // (container attributes are set in flex-layout-section.component)
@@ -207,23 +224,46 @@ export class FlexLayoutRootComponent {
   }
   //TODO investigate-causing layout issue with layout,for now
   //removed from template
-    trackByFn(index: number, item: any): any {
-      return item._id ?? index;
-    }
-
+  trackByFn(index: number, item: any): any {
+    return item._id ?? index;
+  }
+  // Public function used in the template
   showWidget(layoutNode: any): boolean {
-    return this.jsf.evaluateCondition(layoutNode, this.dataIndex);
+    if (this.memoizationEnabled) {
+      return this._showWidgetMemoized(layoutNode);
+    } else {
+      return this._showWidgetRaw(layoutNode);
+    }
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
       // Clear the entire cache of the memoized function
+      this._showWidgetMemoized.cache.clear(); // Clear cache for showWidget
       this._getSelectFrameworkInputsMemoized.cache.clear();
+      this.cdr.markForCheck();
     }
   }
+  // Memoize the showWidget to avoid unnecessary recalculations
+  private _showWidgetRaw = (layoutNode: any): boolean => {
+    return this.jsf.evaluateCondition(layoutNode, this.dataIndex);
+  };
+
+  private _showWidgetMemoized = memoize(
+    this._showWidgetRaw,
+    (layoutNode: any) => {
+      // Memoize based on the layoutNode and dataIndex
+      return JSON.stringify(layoutNode) + '-' + (this.dataIndex || []).join('-');
+    }
+  );
+
+  
   ngOnDestroy(): void {
     //this.selectframeworkInputCache?.clear()
     //this.selectframeworkInputCache=null;
     this._getSelectFrameworkInputsMemoized.cache.clear();
-    //this.dataChangesSubs?.unsubscribe();
-}
+    this.dataChangesSubs?.unsubscribe();
+  }
+
+
+  
 }

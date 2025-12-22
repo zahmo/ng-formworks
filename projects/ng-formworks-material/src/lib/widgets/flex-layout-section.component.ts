@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { JsonSchemaFormService } from '@ng-formworks/core';
+import { Subscription } from 'rxjs';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -13,7 +14,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [class.expanded]="options?.expandable && expanded">
       <label *ngIf="sectionTitle"
         [class]="'legend ' + (options?.labelHtmlClass || '')"
-        [innerHTML]="sectionTitle"
+        [innerHTML]="options.title|textTemplate:titleContext"
         (click)="toggleExpanded()"></label>
       <flex-layout-root-widget 
         [layout]="layoutNode.items"
@@ -41,9 +42,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [class.expandable]="options?.expandable && !expanded"
       [class.expanded]="options?.expandable && expanded"
       [disabled]="options?.readonly">
-      <legend *ngIf="sectionTitle"
+      <legend *ngIf="!options.notitle"
         [class]="'legend ' + (options?.labelHtmlClass || '')"
-        [innerHTML]="sectionTitle"
+        [innerHTML]="options.title|textTemplate:titleContext"
         (click)="toggleExpanded()"></legend>
       <flex-layout-root-widget 
         [layout]="layoutNode.items"
@@ -70,10 +71,10 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [ngClass]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
       [class.expanded]="options?.expandable && expanded">
-      <mat-card-header *ngIf="sectionTitle">
+      <mat-card-header *ngIf="!options.notitle">
         <legend
           [class]="'legend ' + (options?.labelHtmlClass || '')"
-          [innerHTML]="sectionTitle"
+          [innerHTML]="options.title|textTemplate:titleContext"
           (click)="toggleExpanded()"></legend>
       </mat-card-header>
       <mat-card-content >
@@ -108,9 +109,9 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       [hideToggle]="!options?.expandable">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <legend *ngIf="sectionTitle"
+          <legend *ngIf="!options.notitle"
             [class]="options?.labelHtmlClass"
-            [innerHTML]="sectionTitle"
+            [innerHTML]="options.title|textTemplate:titleContext"
             (click)="toggleExpanded()"></legend>
         </mat-panel-title>
       </mat-expansion-panel-header>
@@ -143,7 +144,8 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
     .expanded > .legend:before { content: '▼'; padding-right: .2em; }
   `],
 })
-export class FlexLayoutSectionComponent implements OnInit {
+export class FlexLayoutSectionComponent implements OnInit, OnDestroy, OnChanges
+ {
   formControl: AbstractControl;
   controlName: string;
   controlValue: any;
@@ -159,6 +161,14 @@ export class FlexLayoutSectionComponent implements OnInit {
   constructor(
     private jsf: JsonSchemaFormService
   ) { }
+
+   dataChangesSubs: Subscription;
+    titleContext: any = {
+      value: {},
+      values: {},
+      key: null
+    }
+
 
   get sectionTitle() {
     return this.options.notitle ? null : this.jsf.setItemTitle(this);
@@ -183,6 +193,11 @@ export class FlexLayoutSectionComponent implements OnInit {
       default: // 'div', 'flex', 'tab', 'conditional', 'actions'
         this.containerType = 'div';
     }
+    this.updateTitleContext();
+    this.dataChangesSubs = this.jsf.dataChanges.subscribe((val) => {
+      this.updateTitleContext();
+      // this.cdr.markForCheck();
+    })
   }
 
   toggleExpanded() {
@@ -213,5 +228,17 @@ export class FlexLayoutSectionComponent implements OnInit {
           this.options.fxLayoutWrap ? ' ' + this.options.fxLayoutWrap : '';
 
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+  }
+
+  updateTitleContext() {
+    this.titleContext = this.jsf.getItemTitleContext(this);
+  }
+
+  ngOnDestroy(): void {
+    this.dataChangesSubs?.unsubscribe();
   }
 }

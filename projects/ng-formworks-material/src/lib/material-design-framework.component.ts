@@ -92,7 +92,7 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
       this.initializeFramework();
     }
     if (this.dynamicTitle) {
-      this.updateTitle();
+      //this.updateTitle();
     }
   }
 
@@ -121,7 +121,7 @@ export class MaterialDesignFrameworkComponent implements OnInit, OnChanges ,OnDe
         /{{.+?}}/.test(this.widgetOptions.title || '')
       ) {
         this.dynamicTitle = this.options?.title;//this.widgetOptions.title;
-        this.updateTitle();
+        //this.updateTitle();
       }
 
       if (this.layoutNode.arrayItem && this.layoutNode.type !== '$ref') {
