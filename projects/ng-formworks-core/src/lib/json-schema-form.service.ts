@@ -43,7 +43,7 @@ import {
 import { default as _isEqual, default as isEqual } from 'lodash/isEqual';
 import { setControl } from './shared/form-group.functions';
 
-import { Eta } from 'eta';
+import { Eta } from 'eta/core';
 
 export type AJVRegistryItem={
   [name: string]:{
