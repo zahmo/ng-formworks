@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { JsonSchemaFormService } from '../json-schema-form.service';
 
 
@@ -10,10 +11,10 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       [class]="options?.htmlClass || ''"
       [class.expandable]="options?.expandable && !expanded"
       [class.expanded]="options?.expandable && expanded">
-      <label *ngIf="sectionTitle"
+      <label *ngIf="!options.notitle"
         class="legend"
         [class]="options?.labelHtmlClass || ''"
-        [innerHTML]="sectionTitle"
+        [innerHTML]="options.title|textTemplate:titleContext"
         (click)="toggleExpanded()"></label>
       <root-widget 
         [dataIndex]="dataIndex"
@@ -35,10 +36,10 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
       [class.expandable]="options?.expandable && !expanded"
       [class.expanded]="options?.expandable && expanded"
       [disabled]="options?.readonly">
-      <legend *ngIf="sectionTitle"
+      <legend *ngIf="!options.notitle"
         class="legend"
         [class]="options?.labelHtmlClass || ''"
-        [innerHTML]="sectionTitle"
+        [innerHTML]="options.title|textTemplate:titleContext"
         (click)="toggleExpanded()"></legend>
       <div *ngIf="options?.messageLocation !== 'bottom'">
         <p *ngIf="options?.description"
@@ -72,22 +73,30 @@ import { JsonSchemaFormService } from '../json-schema-form.service';
     .expandable > legend:before, .expandable > label:before  { content: '▶'; padding-right: .3em; font-family:auto }
     .expanded > legend:before, .expanded > label:before  { content: '▼'; padding-right: .2em; }
   `],
+  
 })
-export class SectionComponent implements OnInit {
+export class SectionComponent implements OnInit, OnDestroy, OnChanges {
+
   options: any;
   expanded = true;
   containerType: string;
-  @Input() layoutNode: any;
+  @Input() layoutNode:any;
   @Input() layoutIndex: number[];
   @Input() dataIndex: number[];
 
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
-
-  get sectionTitle() {
-    return this.options.notitle ? null : this.jsf.setItemTitle(this);
+  dataChangesSubs: Subscription;
+  titleContext: any = {
+    value: {},
+    values: {},
+    key: null
   }
+  get sectionTitle() {
+    return this.jsf.setItemTitle(this);
+  }
+
+constructor(private jsf:JsonSchemaFormService){
+
+}
 
 
 
@@ -100,12 +109,18 @@ export class SectionComponent implements OnInit {
       case 'fieldset': case 'array': case 'tab': case 'advancedfieldset':
       case 'authfieldset': case 'optionfieldset': case 'selectfieldset':
         this.containerType = 'fieldset';
-      break;
+        break;
       default: // 'div', 'flex', 'section', 'conditional', 'actions', 'tagsinput'
         this.containerType = 'div';
-      break;
+        break;
     }
+    this.updateTitleContext();
+    this.dataChangesSubs = this.jsf.dataChanges.subscribe((val) => {
+      this.updateTitleContext();
+      // this.cdr.markForCheck();
+    })
   }
+
 
   toggleExpanded() {
     if (this.options.expandable) { this.expanded = !this.expanded; }
@@ -131,5 +146,17 @@ export class SectionComponent implements OnInit {
       case 'justify-content': case 'align-items': case 'align-content':
         return this.options[attribute];
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+  }
+
+  updateTitleContext() {
+    this.titleContext = this.jsf.getItemTitleContext(this);
+  }
+
+  ngOnDestroy(): void {
+    this.dataChangesSubs?.unsubscribe();
   }
 }

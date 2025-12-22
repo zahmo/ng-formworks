@@ -448,6 +448,217 @@ export function hasNonNullValue(obj: Record<string, any>): boolean {
   
     return true; // all checks passed
   }
+
+//below are experimental helpers to make conditions more stricter
+//example allowing 
+//"or(equals(model.devices[arrayIndices].accessoryType, 'airpurifier'), greaterThan(model.devices[arrayIndices].batteryLevel, 20))"
+//but not
+//"model.devices[arrayIndices].accessoryType === 'airpurifier'"
+// predefinedFunctions = ['equals', 'greaterThan', 'contains', 'or', 'and'];
+//use 
+//const functionBody = "or(equals(model.devices[arrayIndices].accessoryType, 'airpurifier'), greaterThan(model.devices[arrayIndices].batteryLevel, 20))";
+// try {
+//   const parsedConditions = ConditionParser.parseFunctionBody(functionBody);
+//   console.log(parsedConditions);
+// } catch (error) {
+//   console.error('Error:', error.message);
+// } 
+//should out put
+// {
+//   "conditions": [
+//     {
+//       "conditionName": "or",
+//       "parameters": {
+//         "conditions": [
+//           {
+//             "conditionName": "equals",
+//             "parameters": {
+//               "src": "model.devices[arrayIndices].accessoryType",
+//               "trg": "airpurifier"
+//             }
+//           },
+//           {
+//             "conditionName": "greaterThan",
+//             "parameters": {
+//               "src": "model.devices[arrayIndices].batteryLevel",
+//               "trg": "20"
+//             }
+//           }
+//         ]
+//       }
+//     }
+//   ]
+// }
+
+  /* predefinedFunctions something like
+  predefinedFunctions = {
+    equals: (src: string, trg: string) => src === trg,
+    greaterThan: (src: number, trg: number) => src > trg,
+    contains: (src: string, trg: string) => src.includes(trg),
+    or: (conditions: any[]) => conditions.some(cond => cond),
+    and: (conditions: any[]) => conditions.every(cond => cond)
+  };
+  */
+  class ConditionParser {
+    private static predefinedFunctions = ['equals', 'greaterThan', 'contains', 'or', 'and'];
+  
+    static parseFunctionBody(functionBody: string): any[] {
+      const regex = /(\w+)\s*\(([^)]+)\)/g;
+      let match;
+      const conditions: any[] = [];
+  
+      while ((match = regex.exec(functionBody)) !== null) {
+        const functionName = match[1];
+        const params = match[2].split(',').map(param => param.trim());
+  
+        if (!this.predefinedFunctions.includes(functionName)) {
+          throw new Error(`Invalid function: ${functionName}`);
+        }
+  
+        // Recursively parse the parameters if they are function calls (e.g., in 'or' or 'and')
+        const parsedParams = params.map(param => {
+          if (param.startsWith('or(') || param.startsWith('and(')) {
+            return this.parseFunctionBody(param); // Handle nested conditions
+          }
+          return param;
+        });
+  
+        // Extract dependencies (data paths) from the parameters
+        const dependencies = this.extractDependencies(parsedParams);
+  
+        conditions.push({
+          conditionName: functionName,
+          parameters: this.buildParameters(functionName, parsedParams),
+          dependencies: dependencies // Add dependencies
+        });
+      }
+  
+      return conditions;
+    }
+  
+    static buildParameters(functionName: string, params: string[]): any {
+      switch (functionName) {
+        case 'equals':
+        case 'greaterThan':
+        case 'contains':
+          return { src: params[0], trg: params[1] };
+        case 'or':
+        case 'and':
+          return { conditions: params };
+        default:
+          throw new Error(`Unsupported function: ${functionName}`);
+      }
+    }
+  
+    // Extract data paths from parameters
+    static extractDependencies(params: string[]): string[] {
+      const dependencies: string[] = [];
+  
+      params.forEach(param => {
+        // Regex to match data paths (e.g., "model.devices[arrayIndices].accessoryType")
+        const regex = /model\.[a-zA-Z0-9_]+\[(.*)\]\.[a-zA-Z0-9_]+|model\.[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+/g;
+        const matches = param.match(regex);
+  
+        if (matches) {
+          dependencies.push(...matches);
+        }
+      });
+  
+      return dependencies;
+    }
+  }
+  
+  class ConditionEvaluator {
+    private static predefinedFunctions = {
+      equals: (src: string, trg: string) => src === trg,
+      greaterThan: (src: number, trg: number) => src > trg,
+      contains: (src: string, trg: string) => src.includes(trg),
+      or: (conditions: any[]) => conditions.some(cond => cond),
+      and: (conditions: any[]) => conditions.every(cond => cond)
+    };
+  
+    static evaluateChangedConditions(changedData: string, conditions: any[]) {
+      return conditions.filter(condition => {
+        // Check if any condition's dependencies contain the changed data
+        return condition.dependencies.some(dep => dep.includes(changedData));
+      });
+    }
+  
+    static evaluateCondition(condition: any): boolean {
+      const { conditionName, parameters } = condition;
+  
+      if (this.predefinedFunctions[conditionName]) {
+        // Evaluate basic conditions
+        return this.predefinedFunctions[conditionName](parameters.src, parameters.trg);
+      } else if (conditionName === 'or' || conditionName === 'and') {
+        // Evaluate logical conditions
+        const subResults = parameters.conditions.map((subCond: any) => this.evaluateCondition(subCond));
+        return this.predefinedFunctions[conditionName](subResults);
+      }
+  
+      return false;
+    }
+  
+    static evaluate(conditions: any[], changedData: string): boolean {
+      const changedConditions = this.evaluateChangedConditions(changedData, conditions);
+      
+      const results = changedConditions.map(condition => this.evaluateCondition(condition));
+      return results.every(result => result === true);  // Default to AND logic
+    }
+  }
+  
+  class ExpressionAnalyzer {
+    // Regex to detect a variable reference (e.g., model.devices[arrayIndices].accessoryType)
+    private static variablePattern = /[a-zA-Z_][a-zA-Z0-9_]*|\[.*?\]/g;
+  
+    // Regex to detect string literals (e.g., 'airpurifier', "batteryLevel")
+    private static stringLiteralPattern = /^['"].*['"]$/;
+  
+    // Regex to detect numeric literals (e.g., 20, -5.5)
+    private static numericLiteralPattern = /^[+-]?\d+(\.\d+)?([eE][+-]?\d+)?$/;
+  
+    // Regex to detect boolean literals (e.g., true, false)
+    private static booleanLiteralPattern = /^(true|false)$/;
+  
+    static isVariableOrLiteral(value: string): 'variable' | 'literal' {
+      // Check if the value is a string literal
+      if (this.stringLiteralPattern.test(value)) {
+        return 'literal';
+      }
+  
+      // Check if the value is a numeric literal
+      if (this.numericLiteralPattern.test(value)) {
+        return 'literal';
+      }
+  
+      // Check if the value is a boolean literal
+      if (this.booleanLiteralPattern.test(value)) {
+        return 'literal';
+      }
+  
+      // If it matches variable-like pattern, then it's a variable
+      if (this.variablePattern.test(value)) {
+        return 'variable';
+      }
+  
+      return 'literal'; // Default to literal if no matches are found
+    }
+  
+    // To check if a parameter is a literal or contains variables (e.g., "model.devices[arrayIndices].accessoryType")
+    static checkIfVariableOrLiteral(value: string): 'literal' | 'variable' {
+      // Remove white spaces and check each part of the expression (split by dots and brackets)
+      const parts = value.split('.').map(part => part.split('[').map(subPart => subPart.replace(']', '')))
+      .reduce((acc, curr) => acc.concat(curr), []);
+  
+      for (const part of parts) {
+        if (this.isVariableOrLiteral(part) === 'variable') {
+          return 'variable'; // If any part is a variable, return 'variable'
+        }
+      }
+  
+      return 'literal'; // If no part is a variable, return 'literal'
+    }
+  }
   
 
 
