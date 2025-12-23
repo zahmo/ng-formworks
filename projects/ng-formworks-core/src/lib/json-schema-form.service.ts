@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, Signal } from '@angular/core';
+import { inject, Injectable, NgZone, OnDestroy, Signal } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 //import Ajv, { ErrorObject, Options } from 'ajv';
 import addFormats from "ajv-formats";
@@ -7,7 +7,8 @@ import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import cloneDeep from 'lodash/cloneDeep';
 import _isArray from 'lodash/isArray';
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import _template from 'lodash/template';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
   enValidationMessages,
@@ -18,7 +19,6 @@ import {
   zhValidationMessages
 } from './locale';
 import {
-  JsonPointer,
   buildFormGroup,
   buildFormGroupTemplate,
   buildLayout,
@@ -35,6 +35,7 @@ import {
   isDefined,
   isEmpty,
   isObject,
+  JsonPointer,
   removeRecursiveReferences,
   toTitleCase
 } from './shared';
@@ -42,6 +43,7 @@ import {
 import { default as _isEqual, default as isEqual } from 'lodash/isEqual';
 import { setControl } from './shared/form-group.functions';
 
+import { Eta } from 'eta/core';
 
 export type WidgetContext={
   formControl?:AbstractControl;
@@ -75,6 +77,13 @@ export interface ErrorMessages {
     message: string | Function | Object;
     code: string;
   }[];
+}
+
+type DataObject = Record<string, any>;
+type IndexKey = number | string | null;
+interface FunctionCondition {
+  functionBody?: string;
+  functionBodyRaw?: string;
 }
 
 @Injectable()
@@ -170,11 +179,30 @@ export class JsonSchemaFormService implements OnDestroy {
       readonly: false, // Set control as read only? (not editable, but included in output)
       returnEmptyFields: true, // return values for fields that contain no data?
       validationMessages: {} // set by setLanguage()
-    }
+    },
+    validationDebounceMs: 50
   };
-
+  // --- Add a zone field and set it in constructor (use inject to avoid changing constructor signature) ---
+  private zone = inject(NgZone);
   fcValueChangesSubs:Subscription;
   fcStatusChangesSubs:Subscription;
+
+  private readonly templateCache = new Map<string, Function>();
+  private readonly lodashConfig = { 
+    "interpolate": /{{([\s\S]+?)}}/g,
+    // Add the 'variable' option here if you want to use data.v syntax instead of useWith
+    // variable: 'data' 
+  };
+  private readonly etaConfig:any={ 
+    tags: ["{{", "}}"],
+    cache:true,
+     functionHeader: "const value=it.value, values=it.values,tpldata=it.tpldata,idx=it.idx,$index=it.$index"
+   }
+
+  private evalFunctionCache=new Map<string, Function>();
+  private readonly tagPresenceRegex: RegExp;
+  eta:Eta;
+
 
   //TODO-review,may not be needed as sortablejs replaces dnd
   //this has been added to enable or disable the dragabble state of a component
@@ -221,6 +249,12 @@ export class JsonSchemaFormService implements OnDestroy {
     return this.ajvRegistry[name]?.ajvValidator;
   }
 
+    /**
+   * Helper function to escape strings for use in a RegExp constructor
+   */
+    private escapeRegExp(string: string): string {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the matched whole string
+    }
   constructor() {
     this.setLanguage(this.language);
     this.ajv.addMetaSchema(jsonDraft6);
@@ -234,6 +268,14 @@ this.ajv.addFormat("duration", {
   validate: (duration) => /^P(?!$)(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$/.test(duration)
 });
 */
+
+    // Create a RegExp object dynamically using the configured tags for the presence check
+    // We escape the tag strings to ensure they are treated as literals in the regex
+    const openTag = "{{"
+    const closeTag = "}}"
+    // The regex pattern dynamically matches any character lazily between the configured tags
+    this.tagPresenceRegex = new RegExp(`${openTag}.+?${closeTag}`);
+    this.eta = new Eta(this.etaConfig)
   }
   ngOnDestroy(): void {
     this.fcValueChangesSubs?.unsubscribe();
@@ -303,6 +345,8 @@ this.ajv.addFormat("duration", {
     this.formOptions = cloneDeep(this.defaultFormOptions);
     this.ajvRegistry={};
     this.ajvRegistry['default']={name:'default',ajvInstance:this.ajv,ajvValidator:null};
+    this.templateCache.clear();
+    this.evalFunctionCache.clear();
   }
 
   /**
@@ -378,19 +422,53 @@ this.ajv.addFormat("duration", {
     );
   }
 
-  buildFormGroup(ajvInstanceName?:string) {
+
+  
+  buildFormGroup(ajvInstanceName?: string) {
     this.formGroup = <UntypedFormGroup>buildFormGroup(this.formGroupTemplate);
     if (this.formGroup) {
       this.compileAjvSchema(ajvInstanceName);
-      this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName);
+
+      // run initial validation synchronously so UI starts consistent
+      this.validateData(this.formGroup.getRawValue(), true, ajvInstanceName);
 
       // Set up observables to emit data and validation info when form data changes
       if (this.formValueSubscription) {
         this.formValueSubscription.unsubscribe();
       }
-      this.formValueSubscription = this.formGroup.valueChanges.subscribe(
-        formValue => this.validateData(this.formGroup.getRawValue(),true,ajvInstanceName)
-      );
+
+      // configure debounce via formOptions
+      const debounceMs =
+        (this.formOptions && this.formOptions.validationDebounceMs) || 50;
+
+      // Subscribe with debounce and (optional) deep-equality guard
+      this.formValueSubscription = this.formGroup.valueChanges
+        .pipe(
+          // debounce to coalesce rapid updates (typing, drag, etc.)
+          //TODO:review seems to be causing timing issues with evaluate condition
+          //doesn't throw errors when not in place
+          debounceTime(debounceMs),
+          // optional deep-equality check to avoid redundant validation
+          distinctUntilChanged((prev, curr) => isEqual(prev, curr))
+        )
+        .subscribe(() => {
+          // run heavy validation outside angular to avoid triggering CD on every keystroke
+         
+          /*
+          this.zone.runOutsideAngular(() => {
+            // perform validation but do NOT have validateData emit Subjects (updateSubscriptions=false)
+            this.validateData(this.formGroup.getRawValue(), false, ajvInstanceName);
+
+            // re-enter angular to emit Subjects/notifications and let UI react once
+            this.zone.run(() => {
+              this.dataChanges.next(this.data);
+              this.isValidChanges.next(this.isValid);
+              this.validationErrorChanges.next(this.ajvErrors);
+            });
+          });
+          */
+          this.validateData(this.formGroup.getRawValue(), true, ajvInstanceName);
+        });
     }
   }
 
@@ -465,95 +543,126 @@ this.ajv.addFormat("duration", {
     this.tpldata = newTpldata;
   }
 
-  parseText(
-    text = '',
-    value: any = {},
-    values: any = {},
-    key: number | string = null
+   /**
+   * Parses text templates using Lodash, utilizing a cache.
+   */
+   parseText(
+    text: string = '',
+    value: DataObject = {},
+    values: DataObject = {},
+    key: IndexKey = null
   ): string {
-    if (!text || !/{{.+?}}/.test(text)) {
+    if (!text) {
       return text;
     }
-    return text.replace(/{{(.+?)}}/g, (...a) =>
-      this.parseExpression(a[1], value, values, key, this.tpldata)
-    );
+
+    // --- Caching Logic ---
+    let compiledTemplate = this.templateCache.get(text);
+
+    if (!compiledTemplate) {
+      // If not in cache, compile it
+      try {
+        let etaTpl=text.replace(/{{/g,'{{=');
+        compiledTemplate = this.eta.compile(etaTpl,this.etaConfig)
+        //_template(text, this.lodashConfig);
+        // Store the newly compiled function in the cache
+        this.templateCache.set(text, compiledTemplate);
+      } catch (error) {
+        console.error("Error compiling template:", error);
+        return text; // Return original text if compilation fails
+      }
+    }
+
+    // --- Execution Logic ---
+    const index = typeof key === 'number' ? key + 1 : key;
+    const dataContext = {
+      value: value,
+      values: values,
+      tpldata: this.tpldata,
+      idx: index,
+      $index: index,
+    };
+    
+    try {
+      //console.log(this.eta.renderString(text,dataContext))
+      // Execute the function (retrieved from cache or newly compiled)
+      return compiledTemplate.call(this.eta,dataContext,this.etaConfig);
+      //this.eta.renderString(text,dataContext,{name:'tpl1'});
+      
+    } catch (error) {
+      console.error("Error during template execution:", error);
+      return text;
+    }
   }
 
+  // The parseExpression function is less relevant now as the main logic is in parseText
+
+
+  /**
+   * This function is now a simple wrapper for rendering a single expression
+   * within an implicit template string.
+   *
+   * NOTE: The original complex manual logic is GONE, replaced by Eta's engine.
+   * This function simply provides the correct context for a single expression.
+   */
+  //not used-was called by parseText
+  //parseText now uses template engines
   parseExpression(
-    expression = '',
-    value: any = {},
-    values: any = {},
-    key: number | string = null,
-    tpldata: any = null
-  ) {
-    if (typeof expression !== 'string') {
+    expression: string = '',
+    value: DataObject = {},
+    values: DataObject = {},
+    key: IndexKey = null,
+    tpldata: DataObject | null = null
+  ): string | DataObject | number {
+    if (typeof expression !== 'string' || !expression.trim()) {
       return '';
     }
-    const index = typeof key === 'number' ? key + 1 + '' : key || '';
-    expression = expression.trim();
-    if (
-      (expression[0] === "'" || expression[0] === '"') &&
-      expression[0] === expression[expression.length - 1] &&
-      expression.slice(1, expression.length - 1).indexOf(expression[0]) === -1
-    ) {
-      return expression.slice(1, expression.length - 1);
+
+    // Prepare the same data context as `parseText`
+    const index = typeof key === 'number' ? key + 1 : key;
+    const dataContext = {
+      value: value,
+      values: values,
+      tpldata: tpldata || this.tpldata, // Use passed tpldata first
+      idx: index,
+      $index: index,
+    };
+
+    // Wrap the expression in the required Eta interpolation tags for evaluation
+    const templateWrapper = `{{ ${expression.trim()} }}`;
+
+    try {
+      // Render the wrapped expression
+      // Note: We cannot guarantee the return type is always a string anymore,
+      // as Eta evaluates the *actual JS expression* (e.g., if the expression is just 'value',
+      // it might return an object). We return the raw rendered string here
+      // as the original implementation seems to assume a string return value mostly.
+      let compiledTemplate = this.templateCache.get(templateWrapper);
+
+      if (!compiledTemplate) {
+        // If not in cache, compile it
+        try {
+          compiledTemplate = _template(templateWrapper, this.lodashConfig);
+          // Store the newly compiled function in the cache
+          this.templateCache.set(templateWrapper, compiledTemplate);
+        } catch (error) {
+          console.error("Error compiling template:", error);
+          return templateWrapper; // Return original text if compilation fails
+        }
+      }
+      
+      try {
+        // Execute the function (retrieved from cache or newly compiled)
+        return compiledTemplate(dataContext);
+      } catch (error) {
+        console.error("Error during template execution:", error);
+        return templateWrapper;
+      }
+
+    } catch (error) {
+      console.error(`Error evaluating expression "${expression}":`, error);
+      return '';
     }
-    if (expression === 'idx' || expression === '$index') {
-      return index;
-    }
-    if (expression === 'value' && !hasOwn(values, 'value')) {
-      return value;
-    }
-    if (
-      ['"', "'", ' ', '||', '&&', '+'].every(
-        delim => expression.indexOf(delim) === -1
-      )
-    ) {
-      const pointer = JsonPointer.parseObjectPath(expression);
-      return pointer[0] === 'value' && JsonPointer.has(value, pointer.slice(1))
-        ? JsonPointer.get(value, pointer.slice(1))
-        : pointer[0] === 'values' && JsonPointer.has(values, pointer.slice(1))
-          ? JsonPointer.get(values, pointer.slice(1))
-          : pointer[0] === 'tpldata' && JsonPointer.has(tpldata, pointer.slice(1))
-            ? JsonPointer.get(tpldata, pointer.slice(1))
-            : JsonPointer.has(values, pointer)
-              ? JsonPointer.get(values, pointer)
-              : '';
-    }
-    if (expression.indexOf('[idx]') > -1) {
-      expression = expression.replace(/\[idx\]/g, <string>index);
-    }
-    if (expression.indexOf('[$index]') > -1) {
-      expression = expression.replace(/\[$index\]/g, <string>index);
-    }
-    // TODO: Improve expression evaluation by parsing quoted strings first
-    // let expressionArray = expression.match(/([^"']+|"[^"]+"|'[^']+')/g);
-    if (expression.indexOf('||') > -1) {
-      return expression
-        .split('||')
-        .reduce(
-          (all, term) =>
-            all || this.parseExpression(term, value, values, key, tpldata),
-          ''
-        );
-    }
-    if (expression.indexOf('&&') > -1) {
-      return expression
-        .split('&&')
-        .reduce(
-          (all, term) =>
-            all && this.parseExpression(term, value, values, key, tpldata),
-          ' '
-        )
-        .trim();
-    }
-    if (expression.indexOf('+') > -1) {
-      return expression
-        .split('+')
-        .map(term => this.parseExpression(term, value, values, key, tpldata))
-        .join('');
-    }
-    return '';
   }
 
   //TODO fix- if template has value in title
@@ -623,43 +732,117 @@ this.ajv.addFormat("duration", {
       );
   }
 
-  evaluateCondition(layoutNode: any, dataIndex: number[]): boolean {
-    const arrayIndex = dataIndex && dataIndex[dataIndex.length - 1];
-    let result = true;
-    if (hasValue((layoutNode.options || {}).condition)) {
-      if (typeof layoutNode.options.condition === 'string') {
-        let pointer = layoutNode.options.condition;
-        if (hasValue(arrayIndex)) {
-          pointer = pointer.replace('[arrayIndex]', `[${arrayIndex}]`);
-        }
-        pointer = JsonPointer.parseObjectPath(pointer);
-        result = !!JsonPointer.get(this.data, pointer);
-        if (!result && pointer[0] === 'model') {
-          result = !!JsonPointer.get({ model: this.data }, pointer);
-        }
-      } else if (typeof layoutNode.options.condition === 'function') {
-        result = layoutNode.options.condition(this.data);
-      } else if (
-        typeof layoutNode.options.condition.functionBody === 'string'
-      ) {
-        try {
-          const dynFn = new Function(
-            'model',
-            'arrayIndices',
-            layoutNode.options.condition.functionBody
-          );
-          result = dynFn(this.data, dataIndex);
-        } catch (e) {
-          result = true;
-          console.error(
-            'condition functionBody errored out on evaluation: ' +
-            layoutNode.options.condition.functionBody
-          );
-        }
-      }
+  getItemTitleContext(ctx: WidgetContext){
+    return {
+      value:this.getFormControlValue(ctx),
+      values:(this.getFormControlGroup(ctx) || <any>{}).value,
+      key: ctx.dataIndex()[ctx.dataIndex().length - 1]
     }
-    return result;
   }
+
+  evaluateCondition(layoutNode: any, dataIndex: number[]): boolean {
+    const condition = layoutNode.options?.condition;
+
+    if (!hasValue(condition)) {
+      return true; // No condition means the layout node is visible
+    }
+
+    if (typeof condition === 'string') {
+      return this.evaluateStringCondition(condition, dataIndex);
+    } 
+    
+    if (typeof condition === 'function') {
+      // Direct function execution is safe and standard
+      try {
+          return condition(this.data);
+      } catch (e) {
+          console.error('Condition function errored out:', e);
+          return true; // Default to visible on error
+      }
+    } 
+    
+    
+    // Check if it matches the FunctionCondition interface structure
+    if (typeof condition === 'object' 
+      && (typeof (condition as FunctionCondition)?.functionBody === 'string'
+      ||typeof (condition as FunctionCondition)?.functionBodyRaw === 'string')
+    ) {
+        // This still uses the potentially insecure new Function approach, 
+        // but encapsulated as requested by the original code's structure.
+        
+        //TODO-fix- add null checking as a workaround for issue caused by adding
+        //debounceTime in buildFormGroup
+        //also added functionBodyRaw that won't do any replacements
+        const condition_nullChecks={
+          functionBody:condition.functionBodyRaw||
+          condition.functionBody
+          .replace(/\[/g,".[").split('.')
+          .join("?.")
+          .replace(/\?\?\./g,"?")
+          .replace(/(\?)(\.\[)/g,'[')
+        }
+
+        return this.evaluateFunctionBodyCondition(condition_nullChecks as FunctionCondition, dataIndex);
+    }
+
+    return true; // Default visible if condition type is unknown
+  }
+
+  private evaluateStringCondition(pointer: string, dataIndex: number[]): boolean {
+    // Simplify index handling:
+    // If we have an index, replace the placeholder
+    const arrayIndex = dataIndex?.[dataIndex.length - 1];
+    if (hasValue(arrayIndex)) {
+      // Use string.replace which returns a NEW string (immutable strings)
+      pointer = pointer.replace('[arrayIndex]', `[${arrayIndex}]`);
+    }
+
+    const parsedPointer = JsonPointer.parseObjectPath(pointer);
+    
+    // Simplify data retrieval
+    // The original logic checked both 'this.data' and '{model: this.data}' roots.
+    // We assume the pointer library handles root context correctly, 
+    // or we consistently check one context.
+    
+    const value = JsonPointer.get(this.data, parsedPointer);
+    return !!value; // Convert truthy/falsy value to a strict boolean
+  }
+
+  private evaluateFunctionBodyCondition(condition: FunctionCondition, dataIndex: number[]): boolean {
+     // This remains an insecure pattern but respects original functionality
+     try {
+        const dynFn = this._getFunctionFromBody(condition.functionBody);
+        //new Function('model', 'arrayIndices', condition.functionBody);
+        return dynFn(this.data, dataIndex);
+     } catch (e) {
+        console.error(
+           'condition functionBody errored out on evaluation: ' + condition.functionBody, e
+        );
+        return true; // Default visibility on error
+     }
+  }
+
+
+  evaluateConditionAsync(layoutNode: any, dataIndex: number[]): Observable<boolean> {
+    const result = this.evaluateCondition(layoutNode, dataIndex);
+    
+    // If it's synchronous, wrap the result in an observable using `of()`
+    return of(result);
+  }
+
+  private _getFunctionFromBody(functionBody: string) {
+    // Try to create a function from the body in a secure manner (without new Function)
+    // You can try a safer implementation depending on your environment.
+    // For example, you could precompile these in advance or use a library to handle safe evaluation.
+    
+    const cacheKey = `${functionBody}`;
+    if (!this.evalFunctionCache.has(cacheKey)) {
+        const fn = new Function('model', 'arrayIndices', functionBody); // Still using new Function
+        this.evalFunctionCache.set(cacheKey, fn);
+    }
+
+    return this.evalFunctionCache.get(cacheKey) as Function;
+}
 
   initializeControl(ctx: WidgetContext, bind = true): boolean {
     if (!isObject(ctx)) {

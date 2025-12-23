@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges, inject, input, signal } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
+import { memoize } from 'lodash';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -57,11 +58,21 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
               }
             }
             @if (options?.tabMode !='oneOfMode') {
+            <!--
               <select-framework-widget
                 [class]="(options?.fieldHtmlClass || '') + ' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')"
                 [dataIndex]="layoutNode()?.dataType === 'array' ? (dataIndex() || []).concat(i) : dataIndex()"
                 [layoutIndex]="(layoutIndex() || []).concat(i)"
               [layoutNode]="layoutItem"></select-framework-widget>
+            -->
+             
+            <select-framework-widget
+               [class]="(options?.fieldHtmlClass || '') + ' ' + (options?.activeClass || '') + ' ' + (options?.style?.selected || '')"
+              [dataIndex]="getSelectFrameworkInputs(layoutItem,i).dataIndex"
+              [layoutIndex]="getSelectFrameworkInputs(layoutItem,i).layoutIndex"
+              [layoutNode]="layoutItem">
+            </select-framework-widget> 
+             
             }
           </div>
         }
@@ -73,7 +84,7 @@ import { JsonSchemaFormService } from '@ng-formworks/core';
       `],
     standalone: false
 })
-export class MaterialTabsComponent implements OnInit {
+export class MaterialTabsComponent implements OnInit,OnChanges {
   private jsf = inject(JsonSchemaFormService);
 
   options: any;
@@ -83,6 +94,7 @@ export class MaterialTabsComponent implements OnInit {
   readonly layoutNode = input<any>(undefined);
   readonly layoutIndex = input<number[]>(undefined);
   readonly dataIndex = input<number[]>(undefined);
+  readonly memoizationEnabled= input<boolean>(true);
 
   ngOnInit() {
     this.options = this.layoutNode().options || {};
@@ -93,6 +105,12 @@ export class MaterialTabsComponent implements OnInit {
     this.updateControl();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['layout'] || changes['dataIndex'] || changes['layoutIndex']) {
+      this._getSelectFrameworkInputsMemoized.cache.clear();
+
+    }
+  }
   select(index) {
     const layoutNode = this.layoutNode();
     if (layoutNode.items[index].type === '$ref') {
@@ -116,4 +134,32 @@ export class MaterialTabsComponent implements OnInit {
   setTabTitle(item: any, index: number): string {
     return this.jsf.setArrayItemTitle(this, item, index);
   }
+    private _getSelectFrameworkInputsRaw = (layoutItem: any, i: number) => {
+      const dataIndexValue = this.layoutNode()?.dataType === 'array' ? (this.dataIndex() || []).concat(i) : this.dataIndex()
+      const layoutIndexValue = (this.layoutIndex() || []).concat(i);
+  
+      return {
+        layoutNode: layoutItem,
+        layoutIndex: layoutIndexValue,
+        dataIndex:dataIndexValue
+      };
+    };
+  
+    // Define a separate function to hold the memoized version
+    private _getSelectFrameworkInputsMemoized = memoize(
+      this._getSelectFrameworkInputsRaw,
+      (layoutItem: any, i: number) => {
+        const layoutItemKey = layoutItem?.id ?? JSON.stringify(layoutItem);
+        return `${layoutItemKey}-${i}`;
+      }
+    );
+  
+    // This is the public function that the template calls
+    getSelectFrameworkInputs(layoutItem: any, i: number) {
+      if (this.memoizationEnabled) {
+        return this._getSelectFrameworkInputsMemoized(layoutItem, i);
+      } else {
+        return this._getSelectFrameworkInputsRaw(layoutItem, i);
+      }
+    }
 }

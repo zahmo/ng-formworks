@@ -33,7 +33,7 @@ export const cssFrameworkCfgDaisyUI:css_fw.frameworkcfg={
         "__active__": {
             "activeClass": "active"
         },
-        "__required_asterisk__": "text-danger",
+        "__required_asterisk__": "text-error",
         "__screen_reader__": "sr-only",
         "__remove_item__": "float-right text-2xl opacity-50",
         "__help_block__": "help-block",

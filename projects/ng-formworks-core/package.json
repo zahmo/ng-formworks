@@ -1,6 +1,6 @@
 {
     "name": "@ng-formworks/core",
-    "version": "21.6.9",
+    "version": "21.7.0",
     "description": "Angular ng-formworks - JSON Schema Form builder core",
     "author": "https://github.com/zahmo/ng-formworks/graphs/contributors",
     "keywords": [
@@ -50,7 +50,8 @@
     "dependencies": {
         "lodash-es": "~4.17.21",
         "ajv": "^8.12.0",
-        "tslib": "^2.7.0"
+        "tslib": "^2.7.0",
+        "eta": "^4.5.0"
     },
     "peerDependencies": {
         "@angular/cdk": ">=21.0.0",
