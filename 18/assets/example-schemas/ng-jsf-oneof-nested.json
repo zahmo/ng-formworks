@@ -1,0 +1,75 @@
+{
+    "schema": {
+        "type": "object",
+        "properties": {
+            "offeringType": {
+                "type": "string",
+                "enum": [
+                    "service",
+                    "product"
+                ]
+            }
+        },
+        "required": [
+            "offeringType"
+        ],
+        "oneOf": [{
+                "type": "object",
+                "properties": {
+                    "serviceType": {
+                        "type": "string",
+                        "enum": [
+                            "finance",
+                            "legal"
+                        ]
+                    }
+                },
+                "required": [
+                    "serviceType"
+                ]
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "productDetails": {
+                        "type": "object",
+                        "properties": {
+                            "productName": {
+                                "type": "string"
+                            },
+                            "price": {
+                                "type": "number"
+                            }
+                        },
+                        "oneOf": [{
+                                "type": "object",
+                                "title": "inventory(levels)",
+                                "properties": {
+                                    "inventory": {
+                                        "type": "string",
+                                        "enum": [
+                                            "high",
+                                            "low"
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "title": "inventory(amount)",
+                                "properties": {
+                                    "inventory": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "productDetails"
+                ]
+            }
+        ]
+    }
+}

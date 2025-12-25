@@ -1,0 +1,49 @@
+{
+    "schema": {
+        "properties": {
+            "name": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "name"
+        ],
+        "anyOf": [{
+                "type": "object",
+                "title": "Birthday",
+                "properties": {
+                    "birthday": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "required": [
+                    "birthday"
+                ]
+            },
+            {
+                "type": "object",
+                "title": "age",
+                "properties": {
+                    "age": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "age"
+                ]
+            }
+        ]
+    },
+    "layout": [{
+            "type": "help",
+            "helpvalue": "<h3>Any of birthday or age will be accepted as well as both</h2>"
+        },
+        {
+            "type": "help",
+            "helpvalue": "<h4>*a known issue for now is that only the schema is validated while the input might still show as required even if the any of condition is met</h4>"
+        },
+
+        "*"
+    ]
+}
