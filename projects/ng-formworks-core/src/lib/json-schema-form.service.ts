@@ -776,11 +776,11 @@ this.ajv.addFormat("duration", {
         const condition_nullChecks={
           functionBody:condition.functionBodyRaw||
           condition.functionBody
-          .replace(/\[/g,".[").split('.')
-          .join("?.")
-          .replace(/\?\?\./g,"?")
-          .replace(/(\?)(\.\[)/g,'[')
-        }
+          // Add ?. before [ when preceded by letter/underscore/$ (not digits)
+          .replace(/([a-zA-Z_$])(\[)/g, '$1?.[')
+          // Add ?. before . when preceded by letter/underscore/$/] and followed by valid identifier start
+          .replace(/([a-zA-Z_$\]])(\.)(?=[a-zA-Z_$])/g, '$1?.')
+        };
 
         return this.evaluateFunctionBodyCondition(condition_nullChecks as FunctionCondition, dataIndex);
     }
