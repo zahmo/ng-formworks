@@ -453,7 +453,7 @@ export function hasNonNullValue(obj: Record<string, any>): boolean {
 //example allowing 
 //"or(equals(model.devices[arrayIndices].accessoryType, 'airpurifier'), greaterThan(model.devices[arrayIndices].batteryLevel, 20))"
 //but not
-//"model.devices[arrayIndices].accessoryType === 'airpurifier'"
+//"model.devices[arrayIndices].accessoryType === 'airpurifier' || model.devices[arrayIndices].batteryLevel > 20"
 // predefinedFunctions = ['equals', 'greaterThan', 'contains', 'or', 'and'];
 //use 
 //const functionBody = "or(equals(model.devices[arrayIndices].accessoryType, 'airpurifier'), greaterThan(model.devices[arrayIndices].batteryLevel, 20))";
