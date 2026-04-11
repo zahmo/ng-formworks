@@ -1254,7 +1254,7 @@ this.ajv.addFormat("duration", {
       const layoutArray = this.getLayoutArray(ctx);
       layoutArray.splice(newIndex, 0, layoutArray.splice(oldIndex, 1)[0]);
     }
-
+    this.updateData();
     return true;
   }
 
@@ -1282,6 +1282,7 @@ this.ajv.addFormat("duration", {
     }
 
     // Remove layoutNode from layout
+    this.updateData();
     JsonPointer.remove(this.layout, this.getLayoutPointer(ctx));
     return true;
   }
@@ -1349,6 +1350,17 @@ this.ajv.addFormat("duration", {
         })
       }
 
+    }
+
+    //taken from https://github.com/homebridge/homebridge-config-ui-x/blob/efc61f9abd9916152cb55be95049cff26638c504/ui/patches/%40ng-formworks%2Bcore%2B21.7.0.patch#L55
+    //to help resolve https://github.com/zahmo/ng-formworks/issues/93
+    //called in removeItem and moveItem
+    updateData(){
+        // Synchronously update this.data so that condition evaluations
+        // during the next change detection cycle use consistent data.
+        // Without this, the debounced valueChanges leaves this.data stale,
+        // causing conditions that reference array indices to see wrong items.
+        this.data = formatFormData(this.formGroup.getRawValue(), this.dataMap, this.dataRecursiveRefMap, this.arrayMap, this.formOptions.returnEmptyFields);
     }
 
     
