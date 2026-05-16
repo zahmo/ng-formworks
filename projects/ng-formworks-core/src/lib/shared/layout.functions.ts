@@ -1,7 +1,7 @@
-import cloneDeep from 'lodash/cloneDeep';
-import _isArray from 'lodash/isArray';
-import _isPlainObject from 'lodash/isPlainObject';
-import uniqueId from 'lodash/uniqueId';
+import cloneDeep from 'lodash-es/cloneDeep';
+import _isArray from 'lodash-es/isArray';
+import _isPlainObject from 'lodash-es/isPlainObject';
+import uniqueId from 'lodash-es/uniqueId';
 import { TitleMapItem } from '../json-schema-form.service';
 import {
   checkInlineType,

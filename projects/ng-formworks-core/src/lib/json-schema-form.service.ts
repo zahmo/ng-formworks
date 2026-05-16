@@ -5,9 +5,9 @@ import addFormats from "ajv-formats";
 import Ajv2019, { ErrorObject, Options, ValidateFunction } from 'ajv/dist/2019';
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import jsonDraft7 from 'ajv/lib/refs/json-schema-draft-07.json';
-import cloneDeep from 'lodash/cloneDeep';
-import _isArray from 'lodash/isArray';
-import _template from 'lodash/template';
+import cloneDeep from 'lodash-es/cloneDeep';
+import _isArray from 'lodash-es/isArray';
+import _template from 'lodash-es/template';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, Subject, Subscription } from 'rxjs';
 import {
   deValidationMessages,
@@ -40,7 +40,7 @@ import {
   toTitleCase
 } from './shared';
 
-import { default as _isEqual, default as isEqual } from 'lodash/isEqual';
+import { default as _isEqual, default as isEqual } from 'lodash-es/isEqual';
 import { setControl } from './shared/form-group.functions';
 
 import { Eta } from 'eta/core';

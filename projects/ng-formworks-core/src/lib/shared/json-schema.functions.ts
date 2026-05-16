@@ -1,6 +1,6 @@
-import { isEmpty } from 'lodash';
-import cloneDeep from 'lodash/cloneDeep';
-import omit from 'lodash/omit';
+import { isEmpty } from 'lodash-es';
+import cloneDeep from 'lodash-es/cloneDeep';
+import omit from 'lodash-es/omit';
 import { JsonPointer } from './jsonpointer.functions';
 import { mergeSchemas } from './merge-schemas.function';
 import { forEach, hasOwn, mergeFilteredObject } from './utility.functions';

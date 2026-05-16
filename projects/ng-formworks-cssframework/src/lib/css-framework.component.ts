@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, ViewEncapsulation, inject, input, model } from '@angular/core';
 import { FrameworkLibraryService, JsonSchemaFormService, addClasses, inArray } from '@ng-formworks/core';
-import _, { cloneDeep, map } from 'lodash';
+import { cloneDeep, isArray, isEmpty, isObject, isString, map } from 'lodash-es';
 import { Subscription } from 'rxjs';
 import { css_fw } from './css-framework.defs';
 import { CssframeworkService } from './css-framework.service';
@@ -43,7 +43,7 @@ export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
   applyCssClasses(type, widgetOptions, styleOptions) {
     //console.log("applyCssClasses for type:"+type);
     let cssClasses = this.widgetStyles()[type];
-    if (!cssClasses || _.isEmpty(cssClasses) ) {
+    if (!cssClasses || isEmpty(cssClasses) ) {
       cssClasses = this.widgetStyles().default;
     }
     Object.keys(cssClasses).forEach(catName => {
@@ -68,23 +68,23 @@ export class CssFrameworkComponent implements OnInit, OnChanges,OnDestroy {
         flattened[wkey]=wstyle;
         return;
       }
-      if(_.isArray(wstyle)){
+      if(isArray(wstyle)){
         
         flattened[wkey]=wstyle.join(" ");
       }
-      if(_.isObject(wstyle)){//is csscategories
+      if(isObject(wstyle)){//is csscategories
           flattened[wkey]=flattened[wkey]||{};
         Object.keys(wstyle).forEach(catName=>{
           let cssCat=wstyle[catName];
           
-          if(_.isArray(cssCat)){
+          if(isArray(cssCat)){
             flattened[wkey][catName]=cssCat.join(" ");
           }else{
             flattened[wkey][catName]=cssCat;
           }
         })
       }
-      if(_.isString(wstyle)){
+      if(isString(wstyle)){
         flattened[wkey]=wstyle;
       }
     })
