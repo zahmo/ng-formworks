@@ -53,11 +53,12 @@
         "@angular/cdk": "^21.0.0"
     },
     "dependencies": {
+        "lodash-es": "~4.18.1",
         "tslib": "^2.7.0",
         "@ng-formworks/core": "~21.7.0"
     },
     "devDependencies": {
-        "@types/lodash-es": "^4.17.6"
+        "@types/lodash-es": "^4.17.12"
     },
     "sideEffects": false
 }

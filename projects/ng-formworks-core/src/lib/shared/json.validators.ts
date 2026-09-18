@@ -1,5 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import isEqual from 'lodash/isEqual';
+import isEqual from 'lodash-es/isEqual';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JsonSchemaFormatNames, jsonSchemaFormatTests } from './format-regex.constants';

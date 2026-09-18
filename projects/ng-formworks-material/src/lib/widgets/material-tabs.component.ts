@@ -1,6 +1,6 @@
 import { Component, OnChanges, OnInit, SimpleChanges, inject, input, signal } from '@angular/core';
 import { JsonSchemaFormService } from '@ng-formworks/core';
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 
 @Component({
     // tslint:disable-next-line:component-selector

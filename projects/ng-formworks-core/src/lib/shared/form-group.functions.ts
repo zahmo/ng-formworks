@@ -5,9 +5,9 @@ import {
   UntypedFormGroup,
   ValidatorFn
 } from '@angular/forms';
-import cloneDeep from 'lodash/cloneDeep';
-import filter from 'lodash/filter';
-import map from 'lodash/map';
+import cloneDeep from 'lodash-es/cloneDeep';
+import filter from 'lodash-es/filter';
+import map from 'lodash-es/map';
 import { getControlValidators, removeRecursiveReferences } from './json-schema.functions';
 import { JsonValidators } from './json.validators';
 import { JsonPointer, Pointer } from './jsonpointer.functions';
